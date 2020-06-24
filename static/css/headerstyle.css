@@ -1,0 +1,64 @@
+body {
+	margins: auto;
+	
+}
+
+.header {
+  width: 100%;
+  background-color:rgb(152, 0, 0);
+  color: white;
+  top: 0;
+  position: fixed;
+}
+
+.container{
+	width: 1000px;	
+    margin: auto; /* Center the DIV horizontally */
+}
+.logo{
+	float:left;
+}
+
+a{
+	text-decoration:none;
+	color:white;
+}
+
+li {
+	list-style:none;
+	float:left;
+	margin-left:15px;
+	margin-top:15px;
+}
+
+table{ width: 95%; }
+tr{margin:0px 20px 0px 20px;}
+
+
+
+input{
+	width: 95%;
+	height:40px;  
+	border-radius: 10px;
+	outline: none;
+	border: 1px solid black;
+}
+
+
+.initialSearch{
+	margin-top:90px;
+}
+
+.nav {
+	float:right;
+}
+
+button{
+	background-color:rgb(152, 0, 0);
+	  color: white;
+	  border: none;
+	padding:10px 15px 10px 15px;
+	font-size: 20px;
+	width: 100%;
+	border-radius: 12px;
+}

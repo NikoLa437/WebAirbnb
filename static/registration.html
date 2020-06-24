@@ -1,0 +1,54 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>AirBnB</title>
+
+<link href="css/registrationstyle.css" rel="stylesheet" type="text/css"/>
+	<link href="css/toast.css" rel="stylesheet" />
+	<script src="../scripts/toast.js"></script>
+
+	<script src="../scripts/jquery.min.js"></script>
+</head>
+<body>
+
+<form v-on:submit.prevent="checkFormValid">
+	<table>
+		<tr>
+			<td>Korisnicko ime:</td>
+			<td><input placeholder="Unesite korisnicko ime" type="text" name="username"/></td>	
+		</tr>
+		<tr>
+			<td>Ime:</td>
+			<td><input placeholder="Unesite ime" type="text" name="name"/></td>	
+		</tr>
+		<tr>
+			<td>Prezime:</td>
+			<td><input placeholder="Unesite prezime" type="text" name="surname"/></td>	
+		</tr>
+		<tr>
+			<td>Pol:</td>
+			<td>
+  				<div class="pol"><input type="radio" name="gender" value="male"> Muski<br></div>
+  				<div class="pol"><input type="radio" name="gender" value="female"> Zenski<br></div>
+			</td>	
+		</tr>
+		<tr>
+			<td>Lozinka:</td>
+			<td><input placeholder="Unesite lozinku" type="password" name="password"/></td>	
+		</tr>
+		<tr>
+			<td>Ponovo unesite lozinku:</td>
+			<td><input placeholder="Ponovo unesite lozinku" type="password" name="aggainpassword"/></td>	
+		</tr>
+		<tr>
+			<td colspan="2" align="center"><input type="submit"  value="Registruj se"/></td>
+		</tr>
+	</table>
+</form>
+
+	<script src="../scripts/vue.js"></script>
+	<script src="../scripts/axios.js"></script>
+	<script src="../scripts/moment.min.js"></script>
+	<script src="../js/registration.js"></script>
+</body>
+</html>
