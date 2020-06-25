@@ -31,12 +31,13 @@ li {
 	margin-top:15px;
 }
 
-table{ width: 95%; }
+.searchtable {
+	width: 95%; }
 tr{margin:0px 20px 0px 20px;}
 
 
 
-input{
+.searchinput{
 	width: 95%;
 	height:40px;  
 	border-radius: 10px;
@@ -45,7 +46,7 @@ input{
 }
 
 
-.initialSearch{
+#initialSearch{
 	margin-top:90px;
 }
 
