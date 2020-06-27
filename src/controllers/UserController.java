@@ -14,13 +14,13 @@ public class UserController {
 	public UserController(final UserService userService) {
 		
 		post("/users/add", (req, res) -> 
-			userService.Register(g.fromJson(req.body(), User.class)));
+		userService.Register(g.fromJson(req.body(), User.class)));
 
 		get("/users/:username", (req,res) -> userService.getUser(req.params("username")));
-		
+	
 		get("/users", (req,res) -> userService.GetAll());
-
-		post("/users/add", (req, res) -> 
-		UserService.Login(req.body(),req.body()));
+		
+		post("/login", (req, res) -> 
+			UserService.Login(req.body(),req.body()));
 	}
 }

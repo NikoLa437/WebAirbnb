@@ -29,9 +29,6 @@ public class UserService {
 		return g.toJson(user);		
 	}
 	
-	public static User Login(String username,String password) {
-		return null;
-	}
 	public String getUser(String username) {
 		try {
 			return g.toJson(userDao.get(username));
@@ -47,5 +44,11 @@ public class UserService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
+	
+	public static User Login(String username,String password) {
+		return null;
+	}
+	
 }
