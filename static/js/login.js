@@ -41,7 +41,7 @@ Vue.component("login", {
 			else
 				{
 				 axios
-				 .post('http://localhost:8000/users/login', {
+				 .post('http://localhost:8080/users/login', {
 					    Username: this.username,
 					    Password: this.password
 					  })
@@ -50,7 +50,7 @@ Vue.component("login", {
 					  })
 				 
 				 
-				 window.location.href = "http://localhost:8000/";
+				 window.location.href = "http://localhost:8080/";
 				}
 		}
 	}

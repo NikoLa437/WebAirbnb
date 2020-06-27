@@ -20,7 +20,7 @@ public class UserController {
 	
 		get("/users", (req,res) -> userService.GetAll());
 		
-		post("/login", (req, res) -> 
+		post("/users/login", (req, res) -> 
 			UserService.Login(req.body(),req.body()));
 	}
 }

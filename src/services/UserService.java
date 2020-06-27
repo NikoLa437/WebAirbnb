@@ -48,6 +48,7 @@ public class UserService {
 	}
 	
 	public static User Login(String username,String password) {
+		System.out.println(username+ " " + password);
 		return null;
 	}
 	
