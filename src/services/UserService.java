@@ -29,5 +29,9 @@ public class UserService {
 		
 		return g.toJson(user);		
 	}
+	
+	public static User Login(String username,String password) {
+		return null;
+	}
 
 }

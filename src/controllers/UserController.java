@@ -15,5 +15,7 @@ public class UserController {
 		post("/users/add", (req, res) -> 
 			UserService.Register(g.fromJson(req.body(), User.class)));
 
+		post("/users/add", (req, res) -> 
+		UserService.Login(req.body(),req.body()));
 	}
 }
