@@ -5,7 +5,7 @@ import java.io.IOException;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-
+import UtilData.LoginData;
 import beans.User;
 import dao.UserDAO;
 
@@ -47,8 +47,8 @@ public class UserService {
 		return null;
 	}
 	
-	public static User Login(String username,String password) {
-		System.out.println(username+ " " + password);
+	public static User Login(LoginData data) {
+		System.out.println(data.getUsername()+ " " + data.getPassword());
 		return null;
 	}
 	

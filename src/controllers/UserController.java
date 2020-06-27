@@ -5,6 +5,7 @@ import static spark.Spark.get;
 
 import com.google.gson.Gson;
 
+import UtilData.LoginData;
 import beans.User;
 import services.UserService;
 
@@ -21,6 +22,6 @@ public class UserController {
 		get("/users", (req,res) -> userService.GetAll());
 		
 		post("/users/login", (req, res) -> 
-			UserService.Login(req.body(),req.body()));
+			UserService.Login(g.fromJson(req.body(), LoginData.class)));
 	}
 }

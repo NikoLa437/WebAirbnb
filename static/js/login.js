@@ -40,17 +40,15 @@ Vue.component("login", {
 				toast('Sifra je obavezno polje!');
 			else
 				{
-				 axios
-				 .post('http://localhost:8080/users/login', {
-					    Username: this.username,
-					    Password: this.password
-					  })
-					  .then(function (response) {
-					    console.log("TEST");
-					  })
+				let loginData = {username: this.username, password : this.password};
+
+				
+				axios
+		          .post('http://localhost:8080/users/login', JSON.stringify(loginData))
+		          .then(response => toast('Korisnik ' + this.username + ' uspesno dodat!'));
 				 
-				 
-				 window.location.href = "http://localhost:8080/";
+      		  	window.location.href = "http://localhost:8080/";
+				
 				}
 		}
 	}
