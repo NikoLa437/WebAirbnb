@@ -22,6 +22,6 @@ public class UserController {
 		get("/users", (req,res) -> userService.GetAll());
 		
 		post("/users/login", (req, res) -> 
-			UserService.Login(g.fromJson(req.body(), LoginData.class)));
+				userService.Login(g.fromJson(req.body(), LoginData.class)));
 	}
 }

@@ -47,9 +47,16 @@ public class UserService {
 		return null;
 	}
 	
-	public static User Login(LoginData data) {
+	public String Login(LoginData data) {
 		System.out.println(data.getUsername()+ " " + data.getPassword());
+		
+		try {
+			return g.toJson(userDao.Login(data.getUsername(),data.getPassword()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return null;
+
 	}
 	
 }

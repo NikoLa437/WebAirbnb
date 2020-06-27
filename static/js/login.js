@@ -45,9 +45,10 @@ Vue.component("login", {
 				
 				axios
 		          .post('http://localhost:8080/users/login', JSON.stringify(loginData))
-		          .then(response => toast('Korisnik ' + this.username + ' uspesno dodat!'));
-				 
-      		  	window.location.href = "http://localhost:8080/";
+				  .then(function (response) {
+					  console.log(response);
+					})
+      		  	//window.location.href = "http://localhost:8080/";
 				
 				}
 		}

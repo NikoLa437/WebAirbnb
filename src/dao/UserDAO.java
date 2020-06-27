@@ -57,5 +57,14 @@ public class UserDAO {
 		
 		return null;
 	}
+	
+	public User Login(String username,String password) throws JsonSyntaxException, IOException {
+		for(User user : GetAll()) {
+			if(user.getUsername().equals(username) && user.getPassword().equals(password)) {
+				return user;
+			}
+		}
+		return null;
+	}
 
 }
