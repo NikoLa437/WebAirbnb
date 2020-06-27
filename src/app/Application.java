@@ -6,9 +6,9 @@ import static spark.Spark.staticFiles;
 import java.io.File;
 import java.io.IOException;
 
-import com.google.gson.Gson;
-
+import controllers.AmenityController;
 import controllers.UserController;
+import services.AmenityService;
 import services.UserService;
 
 public class Application {
@@ -19,6 +19,8 @@ public class Application {
 		staticFiles.externalLocation(new File("./static").getCanonicalPath());
 
 		new UserController(new UserService());
+		new AmenityController(new AmenityService());
+
 	}
 
 }

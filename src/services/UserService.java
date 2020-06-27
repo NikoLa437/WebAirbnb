@@ -19,7 +19,7 @@ public class UserService {
 		this.userDao = new UserDAO();
 	}
 
-	public static String Register(User user) throws JsonSyntaxException, IOException {
+	public String Register(User user) throws JsonSyntaxException, IOException {
 		try {
 			userDao.Create(user);
 		}  catch (Exception e) {
@@ -28,6 +28,24 @@ public class UserService {
 		}
 		
 		return g.toJson(user);		
+	}
+	
+	public String getUser(String username) {
+		try {
+			return g.toJson(userDao.get(username));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return g.toJson(null);
+	}
+	
+	public String GetAll() {
+		try {
+			return g.toJson(userDao.GetAll());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

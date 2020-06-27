@@ -54,7 +54,7 @@ tr{margin:0px 20px 0px 20px;}
 	float:right;
 }
 
-button{
+.button{
 	background-color:rgb(152, 0, 0);
 	  color: white;
 	  border: none;

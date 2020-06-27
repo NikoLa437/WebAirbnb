@@ -3,7 +3,7 @@ function initialIsCapital( word ){
 }
 
 
-Vue.component("registration", {
+Vue.component("account", {
 	data: function () {
 		    return {
 		    	username: '',
@@ -26,11 +26,6 @@ Vue.component("registration", {
 
 <form v-on:submit.prevent="checkFormValid" method="post">
 	<table class="table">
-		<tr>
-			<td>Korisnicko ime:</td>
-			<td><input class="input" placeholder="Unesite korisnicko ime" type="text" v-model="username" name="username"/></td>
-			<td><p style="color: red">{{usernameError}}</p></td>	
-		</tr>
 		<tr>
 			<td>Ime:</td>
 			<td><input class="input" placeholder="Unesite ime" type="text" v-model="name" name="name"/></td>
@@ -63,7 +58,7 @@ Vue.component("registration", {
 			<td colspan="3" align="center"><p style="color: red" >{{uniqueError}}</p></td>		
 		</tr>
 		<tr>
-			<td colspan="3" align="center"><input type="submit"  value="Registruj se"/></td>
+			<td colspan="3" align="center"><input type="submit"  value="Izmeni"/></td>
 		</tr>
 	</table>
 </form>
@@ -110,9 +105,9 @@ Vue.component("registration", {
 		        	  }else{
 		        	  
 		        		  let user = {username: this.username, name : this.name, surname : this.surname, gender : this.gender, password : this.password};
-		        		  axios
+		        		  /*axios
 				          .post('http://localhost:8080/users/add', JSON.stringify(user))
-				          .then(response => toast('Korisnik ' + this.username + ' uspesno dodat!'));
+				          .then(response => toast('Korisnik ' + this.username + ' uspesno dodat!'));*/
 						 
 		        		  window.location.href = "http://localhost:8080/";
 						}
