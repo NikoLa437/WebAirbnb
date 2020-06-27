@@ -1,13 +1,19 @@
 const registration = { template: '<registration></registration>' }
 const HomePage = { template: '<home-page></home-page>' }
-const login = { template: '<login></login>'}
+const account = { template: '<account></account>' }
+const users = { template: '<users></users>' }
+const amenities = { template: '<amenities></amenities>' }
+
 
 const router = new VueRouter({
 	  mode: 'hash',
 	  routes: [
 	    { path: '/', component: HomePage},
 	    { path: '/register', component: registration },
-	    { path: '/login', component: login }
+	    { path: '/account', component: account },
+	    { path: '/users', component: users },	    
+	    { path: '/amenities', component: amenities }
+
 	  ]
 });
 

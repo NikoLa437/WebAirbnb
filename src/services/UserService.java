@@ -5,8 +5,7 @@ import java.io.IOException;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-import beans.Gender;
-import beans.Guest;
+
 import beans.User;
 import dao.UserDAO;
 
@@ -19,7 +18,7 @@ public class UserService {
 		this.userDao = new UserDAO();
 	}
 
-	public static String Register(User user) throws JsonSyntaxException, IOException {
+	public String Register(User user) throws JsonSyntaxException, IOException {
 		try {
 			userDao.Create(user);
 		}  catch (Exception e) {
@@ -33,5 +32,20 @@ public class UserService {
 	public static User Login(String username,String password) {
 		return null;
 	}
-
+	public String getUser(String username) {
+		try {
+			return g.toJson(userDao.get(username));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return g.toJson(null);
+	}
+	
+	public String GetAll() {
+		try {
+			return g.toJson(userDao.GetAll());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
