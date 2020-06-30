@@ -21,7 +21,8 @@ Vue.component("apartment", {
 		    	apartmentStatus: '',
 		        amenities: null,
 		        checkedAmenities: {},
-		        selectedAmenities: []
+		        selectedAmenities: [],
+		        url: {}
 		    }
 	},
 	template: ` 
@@ -98,6 +99,7 @@ Vue.component("apartment", {
      <p>User's selected roels</p>
 		{{selectedAmenities}}	
 
+</div>
 </form>
 </div>
 `
@@ -135,7 +137,6 @@ Vue.component("apartment", {
 				
 				}
 		},
-	
 	},
     
 });
