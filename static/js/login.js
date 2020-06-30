@@ -46,10 +46,18 @@ Vue.component("login", {
 				axios
 		          .post('http://localhost:8080/users/login', JSON.stringify(loginData))
 				  .then(function (response) {
-					  console.log(response);
+					  if(response.data!=null){
+						  //TODO 1: set cookie
+						  window.location.href = "http://localhost:8080/";
+					  }
+					  else{
+						  //TODO 2: napraviti neki lepsi nacin prikaza 
+						  alert("Uneti su pogresni podaci");
+					  }
+
+					  
 					})
       		  	
-				//window.location.href = "http://localhost:8080/";
 				
 				}
 		}

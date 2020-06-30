@@ -4,6 +4,8 @@ const account = { template: '<account></account>' }
 const users = { template: '<users></users>' }
 const amenities = { template: '<amenities></amenities>' }
 const login = { template: '<login></login>' }
+const apartment = { template: '<apartment></apartment>' }
+
 
 
 const router = new VueRouter({
@@ -14,7 +16,9 @@ const router = new VueRouter({
 	    { path: '/account', component: account },
 	    { path: '/users', component: users },	    
 	    { path: '/amenities', component: amenities },
-	    { path: '/login', component: login }
+	    { path: '/login', component: login },
+	    { path: '/apartment', component: apartment }
+
 	  ]
 });
 
