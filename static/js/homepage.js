@@ -12,5 +12,4 @@ Vue.component("home-page", {
 	
 </div>		  
 `
-
 });

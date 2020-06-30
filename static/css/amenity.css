@@ -56,6 +56,16 @@ tr.selected {
 	margin-top: 10px;
 		outline: none;
 }
+#buttonPassword{
+	background-color:grey;
+	  color: white;
+	  border: none;
+	padding:5px 8px 5px 8px;
+	font-size: 17px;
+	border-radius: 7px;
+	margin-top: 10px;
+		outline: none;
+}
 
 #buttonOdustanak{
 	background-color:grey;
@@ -68,13 +78,15 @@ tr.selected {
 	
 }
 
-.buttonChange{
-	background-color:rgb(152, 0, 0);
+
+.buttonOdustanak{
+	background-color:grey;
 	  color: white;
 	  border: none;
 	padding:5px 8px 5px 8px;
-	font-size: 15px;
+	font-size: 17px;
 	border-radius: 7px;
-			outline: none;
+		outline: none;
 }
+
 

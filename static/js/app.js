@@ -22,7 +22,25 @@ const router = new VueRouter({
 	  ]
 });
 
+var a = new Vue({
+	el: '#header',
+	data: {
+        mod: "PROBA"
+	},
+	mounted (){
+		axios
+        .get('/users/log/test')
+        .then(response => {
+        	if(response.data == null)
+        		this.mod='PROBA';
+        	else
+        		this.mod='BLAB';
+        })
+	}
+});
+
 var app = new Vue({
 	router,
 	el: '#initialSearch'
 });
+
