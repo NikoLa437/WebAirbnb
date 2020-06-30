@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.List;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -45,6 +44,18 @@ public class UserDAO {
 	    Writer writer = new FileWriter(path);
 		g.toJson(users, writer);
 	    writer.close();
+	}
+	
+	public User Update(User user) throws JsonSyntaxException, IOException {
+		ArrayList<User> users = (ArrayList<User>) GetAll();
+		for(User u : users) {
+			if(u.getUsername().equals(user.getUsername())) {
+				users.set(users.indexOf(u),user);
+				break;
+			}
+		}
+		SaveAll(users);
+		return user;
 	}
 	
 	public User get(String username) throws JsonSyntaxException, IOException {

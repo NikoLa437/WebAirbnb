@@ -12,7 +12,7 @@ import dao.UserDAO;
 public class UserService {
 
 	private static Gson g = new Gson();
-	private static UserDAO userDao;
+	private UserDAO userDao;
 	
 	public UserService() {
 		this.userDao = new UserDAO();
@@ -27,6 +27,16 @@ public class UserService {
 		}
 		
 		return g.toJson(user);		
+	}
+	
+	public String Update(User user) {
+		try {
+			return g.toJson(userDao.Update(user));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return null;
 	}
 	
 	public String getUser(String username) {
@@ -47,9 +57,7 @@ public class UserService {
 		return null;
 	}
 	
-	public String Login(LoginData data) {
-		System.out.println(data.getUsername()+ " " + data.getPassword());
-		
+	public String Login(LoginData data) {		
 		try {
 			return g.toJson(userDao.Login(data.getUsername(),data.getPassword()));
 		} catch (Exception e) {
