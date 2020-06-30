@@ -42,7 +42,13 @@ Vue.component("amenities", {
 </tr>
 
 </table>
-<button v-on:click="editAmenity" v-bind:disabled="selectedAmenity==null" class="buttonChange">Izmeni</button><br />
+<table>
+<tr>
+		<td><button v-on:click="editAmenity" v-bind:disabled="selectedAmenity==null" class="buttonChange">Izmeni</button><br />
+		<td><button v-on:click="deleteAmenity(selectedAmenity)" v-bind:disabled="selectedAmenity==null" id="buttonBrisanje">Izbrisi</button><br />
+</td>
+</tr>
+</table>
 
 <form v-on:submit.prevent="checkFormValid" method="post">
 	<table>
@@ -116,6 +122,22 @@ Vue.component("amenities", {
 	    		this.selectedAmenity.name = this.backup[1];
 	    		this.mode = 'BROWSE';
 	    		this.width = '60%';
+	    	},
+	    	
+	    	deleteAmenity : function(amenity){
+	    		let id = amenity.id;
+	    		axios
+	    		.delete("/amenities/" + id)
+	    		.then(response => {
+	    			for(let a of this.amenities){
+	    				if(a.id === id){
+	    					const index = this.amenities.indexOf(a);
+	    					this.amenities.splice(index, 1);
+	    					break;
+	    				}
+	    			}
+	    			toast('Sadrzaj ' + amenity.name + " uspešno izbrisan.");
+	    		});
 	    	}
 	}
 	

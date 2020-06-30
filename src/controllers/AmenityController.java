@@ -3,6 +3,7 @@ package controllers;
 import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.Spark.put;
+import static spark.Spark.delete;
 
 import com.google.gson.Gson;
 
@@ -22,6 +23,7 @@ public class AmenityController {
 		
 		post("/amenities", (req, res) -> 
 						amenityService.Update(g.fromJson(req.body(), Amenity.class)));
-
+		
+		delete("/amenities/:id", (req,res) -> amenityService.Delete(req.params("id")));
 	}
 }
