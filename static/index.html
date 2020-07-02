@@ -25,7 +25,18 @@
 		</div>
 			<div class="nav">
 				<ul>
-					<li><a href="#/users">Korisnici</a></li>
+					<li  >
+						<div class="dropdown">
+						    <button class="dropbtn">Korisnici 
+						      <i class="fa fa-caret-down"></i>
+						    </button>
+						    <div class="dropdown-content">
+						      <a href="#/users">Svi korisnici</a>
+						      <a href="#/register">Dodavanje domacina</a>
+						      <a href="#">Link 3</a>
+						    </div>
+					  </div> 
+					</li>
 					<li>
 						<div class="dropdown">
 						    <button class="dropbtn">Apartmani 
@@ -39,10 +50,19 @@
 					  </div> 
 					</li>
 					<li><a href="#/apartment">Moji gosti</a></li>
-					<li><a href="#/account">Profil</a></li>
-					<li><a href="#/login">Prijava</a></li>
-					<li><a v-bind:hidden="mod!='PROBA'" href="#/register">Registracija</a></li>	
-					<li><a v-bind:hidden="mod=='PROBA'" href="#/">Odjava</a></li>	
+					<li v-bind:hidden="mod=='USER'">
+						<div class="dropdown">
+						    <button class="dropbtn">Nalog 
+						      <i class="fa fa-caret-down"></i>
+						    </button>
+						    <div class="dropdown-content">
+						      <a href="#/account">Profil</a>
+						      <a href="" v-on:click="odjavaEvents">Odjava</a>
+						    </div>
+					  </div> 
+					</li>
+					<li><a v-bind:hidden="mod!='USER'" href="#/login">Prijava</a></li>
+					<li><a v-bind:hidden="mod!='USER'" href="#/register">Registracija</a></li>	
 				</ul>
             </div>
      </div>

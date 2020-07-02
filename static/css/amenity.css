@@ -35,15 +35,13 @@ tr.selected {
 }
 
 #submit{
-	background-color:rgb(152, 0, 0);
+	background-color:rgb(1, 142, 199);
 	  color: white;
 	  border: none;
-	padding:5px 8px 5px 8px;
+	padding:5px 10px 5px 10px;
 	font-size: 17px;
 	border-radius: 7px;
-	margin-top:10px;
 	outline: none;
-
 }
 
 #buttonBrisanje{
@@ -89,4 +87,12 @@ tr.selected {
 		outline: none;
 }
 
-
+.buttonGray{
+	background-color:grey;
+	  color: white;
+	  border: none;
+	padding:5px 8px 5px 8px;
+	font-size: 15px;
+	border-radius: 7px;
+	outline: none;
+}

@@ -24,7 +24,7 @@ Vue.component("login", {
 		</tr>
 	</table>
 	<p v-bind:hidden="!logged">Kosirnik je vec ulogovan!</p>
-	<button v-bind:hidden="!logged" v-on:click="odjavaEvent" id="buttonBrisanje">Odjava</button><br />
+	<button v-bind:hidden="!logged" id="buttonBrisanje">Odjava</button><br />
 </form>
 </div>
 `
@@ -56,7 +56,7 @@ Vue.component("login", {
 				  .then(function (response) {
 					  if(response.data!=null){
 						  //TODO 1: set cookie
-						  location.reload();
+						  window.location.href = "http://localhost:8080/";
 					  }
 					  else{
 						  //TODO 2: napraviti neki lepsi nacin prikaza 
@@ -68,14 +68,6 @@ Vue.component("login", {
       		  	
 				
 				}
-		},
-		odjavaEvent : function(){
-			axios
-	          .get('/users/log/logout')
-	          .then(response => {
-				  window.location.href = "http://localhost:8080/";
-
-	          });
 		}
 	}
 });

@@ -18,12 +18,14 @@ Vue.component("registration", {
 			    genderError:'',
 			    againpasswordError:'',
 			    passwordError:'',
-			    uniqueError:''
+			    uniqueError:'',
+			    userType: null
 		    }
 	},
 	template: ` 
 <div>
-
+<h2 v-bind:hidden="userType=='USER'">Registracija domacina</h2>
+<h2 v-bind:hidden="userType=='ADMIN'">Registracija</h2>
 <form v-on:submit.prevent="checkFormValid" method="post">
 	<table class="table">
 		<tr>
@@ -69,7 +71,17 @@ Vue.component("registration", {
 </form>
 </div>
 `
-	, 
+	, mounted (){
+		axios
+        .get('/users/log/test')
+        .then(response => {
+        	if(response.data == null)
+        		this.userType='USER';
+        	else{
+        		this.userType = 'ADMIN';
+        	}
+        })
+	},
 	methods : {
 		checkFormValid : function() {
 			this.usernameError = '';
@@ -108,12 +120,18 @@ Vue.component("registration", {
 		        	  if(response.data != null){
 		        		  this.uniqueError = "Uneto korisnicko ime vec postoji!";
 		        	  }else{
-		        	  
-		        		  let user = {username: this.username, name : this.name, surname : this.surname, gender : this.gender, password : this.password};
-		        		  axios
-				          .post('http://localhost:8080/users/add', JSON.stringify(user))
-				          .then(response => toast('Korisnik ' + this.username + ' uspesno dodat!'));
-						 
+		        		  if(this.userType ==='USER'){
+			        		  let user = {username: this.username, name : this.name, surname : this.surname, gender : this.gender, password : this.password, userType : 'Guest' ,rentedAppartments: [], reservations : [] };
+			        		  axios
+					          .post('http://localhost:8080/users/addGuest', JSON.stringify(user))
+					          .then(response => toast('Korisnik ' + this.username + ' uspesno dodat!'));
+							 
+		        		  }else{
+		        			  let user = {username: this.username, name : this.name, surname : this.surname, gender : this.gender, password : this.password, userType : 'Host', appartments: []};
+			        		  axios
+					          .post('http://localhost:8080/users/addHost', JSON.stringify(user))
+					          .then(response => toast('Korisnik ' + this.username + ' uspesno dodat!'));
+		        		  }
 		        		  window.location.href = "http://localhost:8080/";
 						}
 		          

@@ -44,8 +44,8 @@ Vue.component("amenities", {
 </table>
 <table>
 <tr>
-		<td><button v-on:click="editAmenity" v-bind:disabled="selectedAmenity==null" class="buttonChange">Izmeni</button><br />
-		<td><button v-on:click="deleteAmenity(selectedAmenity)" v-bind:disabled="selectedAmenity==null" id="buttonBrisanje">Izbrisi</button><br />
+		<td><button v-on:click="editAmenity" v-bind:disabled="selectedAmenity==null" class="buttonGray">Izmeni</button><br />
+		<td><button v-on:click="deleteAmenity(selectedAmenity)" v-bind:disabled="selectedAmenity==null" class="buttonChange">Izbrisi</button><br />
 </td>
 </tr>
 </table>

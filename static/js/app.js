@@ -32,10 +32,25 @@ var a = new Vue({
         .get('/users/log/test')
         .then(response => {
         	if(response.data == null)
-        		this.mod='PROBA';
-        	else
-        		this.mod='BLAB';
+        		this.mod='USER';
+        	else{
+        		if(response.data.userType == "Guest")
+        			this.mod='GUEST';
+        		else if(response.data.userType == "Host")
+        			this.mod='HOST';
+        		else 
+        			this.mod = 'ADMIN';
+        	}
         })
+	},
+	methods : {
+		odjavaEvents : function(){
+			axios
+	          .get('/users/log/logout')
+	          .then(response => {
+				  window.location.href = "http://localhost:8080/#/login";
+	          });
+		}
 	}
 });
 
