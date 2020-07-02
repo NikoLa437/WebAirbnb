@@ -34,7 +34,8 @@ Vue.component("apartment", {
 		        street:'',
 		        streetError:'',
 		        streetNumber:'',
-		        streetNumberError:''
+		        streetNumberError:'',
+		        images: []
 		    }
 	},
 	template: ` 
@@ -97,6 +98,9 @@ Vue.component("apartment", {
 			<td colspan="3" align="center"><input type="submit"  value="Unesi apartman"/></td>
 		</tr>
 	</table>
+	    
+	   <input type="file" @change="onFileChange" />
+
 	
 	<h1>Sadrzaj apartmana:</h1>
 	
@@ -139,10 +143,7 @@ Vue.component("apartment", {
 		</tr>
 	
 	</table>
-</form>
-
-
-	
+</form>	
 
   </div>
 </div>
@@ -154,6 +155,10 @@ Vue.component("apartment", {
         .then(response => (this.amenities = response.data))
 	}, 
 	methods : {	
+		onFileChange(e) {
+		      const file = e.target.files[0];
+		      this.images.push(URL.createObjectURL(file));
+		},
 		checkFormValid : function() {
 			
 			this.apartmentTypeError='';
@@ -184,9 +189,12 @@ Vue.component("apartment", {
 
 
 					//let period= { dateFrom:dateFrom, dateTo:dateTo }
-					let period = [ { dateFrom: new Date(this.dateFrom) , dateTo: new Date(this.To)} ];
 					let adressLocation = { city:this.city,postNumber:this.postNumber, street:this.street, streetNumber:this.streetNumber }
 					
+					var json = JSON.stringify(this.dateFrom);
+					var dateStr = JSON.parse(json);  
+					let period = [ { dateFrom: dateStr , dateTo: null }];
+
 					
 					let latitude;
 					let longitude;
@@ -209,7 +217,8 @@ Vue.component("apartment", {
 					//period,
 					//checkin 
 					//checkout
-				 	let apartment = {id: 0,type:this.apartmentType, numberOfRoom: this.numberOfRooms,numberOfGuest: this.numberOfGuests,location:location,dateForRenting:null,freeDateForRenting:null,host:null,comments:null,pictures:null,priceForNight:this.price,checkInTime:null,checkOutTime:null,amenities:this.selectedAmenities,status:this.apartmentStatus,reservations:null};
+				 	let apartment = {id: 0,type:this.apartmentType, numberOfRoom: this.numberOfRooms,numberOfGuest: this.numberOfGuests,location:location,dateForRenting:null,freeDateForRenting:null
+							,host:null,comments:null,pictures:this.images,priceForNight:this.price,checkInTime:null,checkOutTime:null,amenities:this.selectedAmenities,status:this.apartmentStatus,reservations:null};
 				 	
 	        		axios
 			        .post('http://localhost:8080/apartment/add', JSON.stringify(apartment))
@@ -222,11 +231,12 @@ Vue.component("apartment", {
 			          });
 				
 				}
-		},
-    	backEndDateFormat: function(date) {
-    		return moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD');
-    	}
+		}
 	},
+	uploadImage(event) {
+
+	    images.append(event.target.files[0]); 
+	  },
     
 });
 

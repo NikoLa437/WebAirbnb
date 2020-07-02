@@ -37,7 +37,12 @@ public class ApartmentService {
 			System.out.println(apartment.getLocation().getAdress().getStreetNumber());
 			System.out.println(apartment.getLocation().getLatitude());
 			System.out.println(apartment.getLocation().getLongitude());
+			
+			for(String item : apartment.getPictures()) {
+				System.out.println(item);
+			}
 
+			apartmentDao.Create(apartment);
 
 
 

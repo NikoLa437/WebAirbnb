@@ -16,7 +16,7 @@ import services.UserService;
 public class Application {
 
 	public static void main(String[] args) throws IOException {
-		port(80);
+		port(8080);
 
 		staticFiles.externalLocation(new File("./static").getCanonicalPath());
 
