@@ -18,3 +18,14 @@
     background-color: rgb(152, 0, 0);
     color: #ffffff;
 }
+
+.option {
+    font-size: 18px;
+    padding: 5px;
+}
+.select{
+	font-size: 18px;
+	border-radius: 10px;
+	height:40px;
+	outline:none;
+}

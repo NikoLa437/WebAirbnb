@@ -4,7 +4,8 @@ public class Amenity {
 
 	private int id;
 	private String name;
-	
+	private boolean deleted = false;
+
 	public Amenity() {}
 	
 	public Amenity(int id, String name) {
@@ -24,6 +25,12 @@ public class Amenity {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
 	
 }

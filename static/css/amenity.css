@@ -35,18 +35,26 @@ tr.selected {
 }
 
 #submit{
-	background-color:rgb(152, 0, 0);
+	background-color:rgb(1, 142, 199);
+	  color: white;
+	  border: none;
+	padding:5px 10px 5px 10px;
+	font-size: 17px;
+	border-radius: 7px;
+	outline: none;
+}
+
+#buttonBrisanje{
+	background-color:grey;
 	  color: white;
 	  border: none;
 	padding:5px 8px 5px 8px;
 	font-size: 17px;
 	border-radius: 7px;
-	margin-top:10px;
-	outline: none;
-
+	margin-top: 10px;
+		outline: none;
 }
-
-#buttonOdustanak{
+#buttonPassword{
 	background-color:grey;
 	  color: white;
 	  border: none;
@@ -57,12 +65,34 @@ tr.selected {
 		outline: none;
 }
 
-.buttonChange{
-	background-color:rgb(152, 0, 0);
+#buttonOdustanak{
+	background-color:grey;
 	  color: white;
 	  border: none;
 	padding:5px 8px 5px 8px;
 	font-size: 15px;
 	border-radius: 7px;
+			outline: none;
+	
 }
 
+
+.buttonOdustanak{
+	background-color:grey;
+	  color: white;
+	  border: none;
+	padding:5px 8px 5px 8px;
+	font-size: 17px;
+	border-radius: 7px;
+		outline: none;
+}
+
+.buttonGray{
+	background-color:grey;
+	  color: white;
+	  border: none;
+	padding:5px 8px 5px 8px;
+	font-size: 15px;
+	border-radius: 7px;
+	outline: none;
+}

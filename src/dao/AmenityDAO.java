@@ -25,8 +25,13 @@ public class AmenityDAO {
 		
 	}
 	
-	public List<Amenity> GetAll() throws JsonSyntaxException, IOException{		
-		return g.fromJson((Files.readAllLines(Paths.get(path),Charset.defaultCharset()).size() == 0) ? "" : Files.readAllLines(Paths.get(path),Charset.defaultCharset()).get(0), new TypeToken<List<Amenity>>(){}.getType());
+	public List<Amenity> GetAll() throws JsonSyntaxException, IOException{
+		List<Amenity> retVal = new ArrayList<Amenity>();
+		List<Amenity> fromFile = g.fromJson((Files.readAllLines(Paths.get(path),Charset.defaultCharset()).size() == 0) ? "" : Files.readAllLines(Paths.get(path),Charset.defaultCharset()).get(0), new TypeToken<List<Amenity>>(){}.getType());
+		for(Amenity a: fromFile)
+			if(!a.isDeleted())
+				retVal.add(a);
+		return retVal;
 	}
 	
 	public Amenity Create(Amenity amenity) throws JsonSyntaxException, IOException {
@@ -38,6 +43,20 @@ public class AmenityDAO {
 		amenities.add(amenity);
 		SaveAll(amenities);
 		return amenity;
+	}
+	
+	public Amenity Delete(String id) throws JsonSyntaxException, IOException {
+		ArrayList<Amenity> amenities = (ArrayList<Amenity>) GetAll();
+		Amenity retVal = null;
+		for(Amenity a : amenities) {
+			if(a.getId() == Integer.parseInt(id)) {
+				a.setDeleted(true);
+				retVal = a;
+				break;
+			}
+		}
+		SaveAll(amenities);
+		return retVal;
 	}
 	
 	public Amenity Update(Amenity amenity) throws JsonSyntaxException, IOException {

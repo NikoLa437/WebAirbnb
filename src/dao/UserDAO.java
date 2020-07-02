@@ -1,8 +1,7 @@
 package dao;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
+import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,20 +10,31 @@ import java.util.Collection;
 import java.util.List;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
+import beans.Administrator;
+import beans.Guest;
+import beans.Host;
 import beans.User;
+import beans.UserType;
+import dao.adapter.RuntimeTypeAdapterFactory;
 
 public class UserDAO {
 
 	private final String path = "./files/users.json";
-	private static Gson g = new Gson();
+	private static Gson g;
 
 	public UserDAO() {
-		
+		RuntimeTypeAdapterFactory<User> userAdapterFactory = RuntimeTypeAdapterFactory.of(User.class)
+				        .registerSubtype(Guest.class)
+				        .registerSubtype(Administrator.class)
+				        .registerSubtype(Host.class);
+		g = new GsonBuilder()
+				     .registerTypeAdapterFactory(userAdapterFactory)
+			         .create();
 	}
 	
 	public List<User> GetAll() throws JsonSyntaxException, IOException{		
@@ -42,16 +52,31 @@ public class UserDAO {
 	}
 	
 	public void SaveAll(Collection<User> users) throws JsonIOException, IOException{
-	    Writer writer = new FileWriter(path);
-		g.toJson(users, writer);
-	    writer.close();
+		PrintWriter out = new PrintWriter(path);
+		String str = g.toJson(users, new TypeToken<List<User>>(){}.getType());
+		out.println(str);
+		out.close();
+	}
+	
+	public User Update(User user) throws JsonSyntaxException, IOException {
+		ArrayList<User> users = (ArrayList<User>) GetAll();
+		for(User u : users) {
+			if(u.getUsername().equals(user.getUsername())) {
+				users.set(users.indexOf(u),user);
+				break;
+			}
+		}
+		SaveAll(users);
+		return user;
 	}
 	
 	public User get(String username) throws JsonSyntaxException, IOException {
 		ArrayList<User> users = (ArrayList<User>) GetAll();
-		for(User u : users) {
-			if(u.getUsername().equals(username)) {
-				return u;
+		if(users != null) {
+			for(User u : users) {
+				if(u.getUsername().equals(username)) {
+					return u;
+				}
 			}
 		}
 		
@@ -65,6 +90,28 @@ public class UserDAO {
 			}
 		}
 		return null;
+	}
+	
+	public List<User> searchUsers(String username, String name, String surname, String userType) throws JsonSyntaxException, IOException{
+		UserType tip = UserType.Guest;
+		if(userType.equals("Guest"))
+			tip = UserType.Guest;
+		else if(userType.equals("Host"))
+			tip = UserType.Host;
+		else if(userType.equals("Administrator"))
+			tip = UserType.Administrator;
+		
+		ArrayList<User> list = (ArrayList<User>) GetAll();
+		List<User> retVal = new ArrayList<User>();
+
+		for(User user : list) {
+			if(((!username.isEmpty()) ? user.getUsername().equals(username) : true) && ((!name.isEmpty()) ? user.getName().equals(name) : true) 
+				&& ((!surname.isEmpty()) ? user.getSurname().equals(surname) : true) && ((!userType.isEmpty()) ? tip == user.getUserType() : true)) {
+					retVal.add(user);
+			}
+		}		
+		return retVal;
+
 	}
 
 }

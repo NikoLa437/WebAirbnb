@@ -9,7 +9,6 @@ public class Guest extends User{
 	private List<Reservation> reservations;
 	
 	public Guest() {
-		super();
 		rentedAppartments = new ArrayList<Apartment>();
 		reservations = new ArrayList<Reservation>();
 		// TODO Auto-generated constructor stub
@@ -27,7 +26,12 @@ public class Guest extends User{
 		this.reservations = reservations;
 	}
 	public Guest(String username, String password, String name, String surname, Gender gender) {
-		super(username, password, name, surname, gender);
+		setGender(gender);
+		setSurname(surname);
+		setName(name);
+		setPassword(password);
+		setUsername(username);
+		setUserType(UserType.Guest);
 		rentedAppartments = new ArrayList<Apartment>();
 		reservations = new ArrayList<Reservation>();
 
