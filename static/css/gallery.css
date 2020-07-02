@@ -1,0 +1,45 @@
+/* The grid: Four equal columns that floats next to each other */
+.columnS {
+  float: left;
+  width: 20%;
+  padding: 10px;
+}
+
+/* Style the images inside the grid */
+.columnS img {
+  opacity: 0.8; 
+  cursor: pointer; 
+}
+.containerG{
+	margin-left: auto;
+	margin-right: auto;  
+	width: 80%;		
+
+}
+
+.columnS img:hover {
+  opacity: 1;
+}
+
+/* Clear floats after the columns */
+.rowS:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+#slike {
+	  width: 60%;		
+}
+
+#info {
+	  width: 40%;		
+}
+
+#apartmanInfo{
+	font-size:30;
+}
+
+.infotext{
+	color:rgb(152, 0, 0);
+}

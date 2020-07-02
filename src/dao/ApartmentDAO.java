@@ -16,6 +16,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import beans.Apartment;
+import beans.User;
 
 
 public class ApartmentDAO {
@@ -39,6 +40,18 @@ public class ApartmentDAO {
 		apartments.add(apartment);
 		SaveAll(apartments);
 		return apartment;
+	}
+	
+	public Apartment get(String id) throws JsonSyntaxException, IOException {
+		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
+		if(apartments != null) {
+			for(Apartment a : apartments) {
+				if(a.getId() == Integer.parseInt(id)) {
+					return a;
+				}
+			}
+		}
+		return null;
 	}
 	
 	private int GetMaxID() throws JsonSyntaxException, IOException {

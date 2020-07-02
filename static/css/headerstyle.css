@@ -9,6 +9,8 @@ body {
   color: white;
   top: 0;
   position: fixed;
+      z-index: 99;
+
 }
 
 .container{
