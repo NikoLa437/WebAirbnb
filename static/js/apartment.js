@@ -22,7 +22,11 @@ Vue.component("apartment", {
 		        amenities: null,
 		        checkedAmenities: {},
 		        selectedAmenities: [],
-		        url: {}
+		        url: {},
+		        dateFrom: '',
+		        dateFromError: '',
+		        dateTo: '',
+		        dateToError: ''
 		    }
 	},
 	template: ` 
@@ -33,8 +37,8 @@ Vue.component("apartment", {
 		<tr>
 			<td>Tip apartmana:</td>
 			<td>
-  				<div class="pol"><input type="radio" name="apartmentType" v-model="apartmentType" value="Apartman"> Apartman<br></div>
-  				<div class="pol"><input type="radio" name="apartmentType" v-model="apartmentType" value="Soba"> Soba<br></div>
+  				<div class="pol"><input type="radio" name="apartmentType" v-model="apartmentType" value="room"> Apartman<br></div>
+  				<div class="pol"><input type="radio" name="apartmentType" v-model="apartmentType" value="apartment"> Soba<br></div>
 			</td>
 			<td ><p style="color: red" >{{apartmentTypeError}}</p></td>	
 		</tr>
@@ -67,9 +71,19 @@ Vue.component("apartment", {
 		<tr>
 			<td>Status:</td>
 			<td>
-  				<div class="pol"><input type="radio" name="apartmentStatus" v-model="apartmentStatus" value="Aktivan"> Aktivan<br></div>
-  				<div class="pol"><input type="radio" name="apartmentStatus" v-model="apartmentStatus" value="Neaktivan" checked> Neaktivan<br></div>
+  				<div class="pol"><input type="radio" name="apartmentStatus" v-model="apartmentStatus" value="active"> Aktivan<br></div>
+  				<div class="pol"><input type="radio" name="apartmentStatus" v-model="apartmentStatus" value="inactive" checked> Neaktivan<br></div>
 			</td>
+		</tr>
+		<tr>
+			<td>Datum od:</td>
+			<td><input class="input" placeholder="Unesite pocetni datum" type="date" v-model="dateFrom" name="dateFrom"></td>
+			<td ><p style="color: red" >{{dateFromError}}</p></td>	
+		</tr>
+		<tr>
+			<td>Datum do:</td>
+			<td><input class="input" placeholder="Unestice krajnji datum" type="date" v-model="dateTo" name="dateTo"></td>
+			<td ><p style="color: red" >{{dateToError}}</p></td>	
 		</tr>
 		<tr>
 			<td colspan="3" align="center"><input type="submit"  value="Unesi apartman"/></td>
@@ -80,27 +94,23 @@ Vue.component("apartment", {
 	
 	<table class="tableAmenities">
 		<tr v-for="(amenity, index) in amenities">
-			<input type="checkbox" v-bind:value="amenity" value={{amenity}} v-model="selectedAmenities" :value="amenity"/>
+			<input type="checkbox" v-bind:value="amenity" v-model="selectedAmenities" :value="amenity"/>
           {{amenity.name}}
           </br>
         </tr>
 	</table>
 	
-	<b>Sadrzaj</b>
 	</br>
-	
-	<div class="channel">
-        <label v-for="(amenity, index) in amenities">
-          <input type="checkbox" v-bind:value="amenity" value={{amenity}} v-model="selectedAmenities" :value="amenity"/>
-          {{amenity.name}}
-          </br>
-        </label>
-      </div>
      <p>User's selected roels</p>
 		{{selectedAmenities}}	
-
-</div>
+	</br>
+	</br>
 </form>
+
+
+	
+
+  </div>
 </div>
 `
 	,
@@ -109,7 +119,7 @@ Vue.component("apartment", {
         .get('/amenities')
         .then(response => (this.amenities = response.data))
 	}, 
-	methods : {
+	methods : {	
 		checkFormValid : function() {
 			
 			this.apartmentTypeError='';
@@ -130,13 +140,42 @@ Vue.component("apartment", {
 				this.checkInTimeError =  'Vreme za prijavu gostiju je obavezno polje!';
 			else if(this.checkOutTime == "")
 				this.checkOutTimeError =  'Vreme za prijavu gostiju je obavezno polje!';
+			else if(this.dateFrom == "")
+				this.dateFromError =  'Pocetno vreme za rezervaciju je obavezno polje';
+			else if(this.dateTo == "")
+				this.dateToError =  'Krajnje vreme za rezervaciju je obavezno polje!';
 			else
 				{
-				 	alert("uspesno");
 				
+
+
+					//let period= { dateFrom:dateFrom, dateTo:dateTo }
+					let period = [ { dateFrom: new Date(this.dateFrom) , dateTo: new Date(this.To)} ];
+					
+					alert(this.dateFrom)
+
+					//period,
+					//checkin 
+					//checkout
+					//location
+					//period
+				 	let apartment = {id: 0,type:this.apartmentType, numberOfRoom: this.numberOfRooms,numberOfGuest: this.numberOfGuests,location:null,dateForRenting:period,freeDateForRenting:null,host:null,comments:null,pictures:null,priceForNight:this.price,checkInTime:null,checkOutTime:null,amenities:this.selectedAmenities,status:this.apartmentStatus,reservations:null};
+				 	
+	        		axios
+			        .post('http://localhost:8080/apartment/add', JSON.stringify(apartment))
+			        .then(response => {
+			        	  toast('Sadrzaj ' + this.amenitiename + ' uspesno dodat!');
+			        	  
+			        	  if(!this.amenities)
+			        		  this.amenities = [response.data];
+			        	  
+			          });
 				
 				}
 		},
+    	backEndDateFormat: function(date) {
+    		return moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD');
+    	}
 	},
     
 });

@@ -7,8 +7,10 @@ import java.io.File;
 import java.io.IOException;
 
 import controllers.AmenityController;
+import controllers.ApartmentController;
 import controllers.UserController;
 import services.AmenityService;
+import services.ApartmentService;
 import services.UserService;
 
 public class Application {
@@ -20,6 +22,8 @@ public class Application {
 
 		new UserController(new UserService());
 		new AmenityController(new AmenityService());
+		
+		new ApartmentController(new ApartmentService());
 
 	}
 
