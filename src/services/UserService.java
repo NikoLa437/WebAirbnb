@@ -3,19 +3,31 @@ package services;
 import java.io.IOException;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
 import UtilData.LoginData;
+import beans.Administrator;
+import beans.Guest;
+import beans.Host;
 import beans.User;
 import dao.UserDAO;
+import dao.adapter.RuntimeTypeAdapterFactory;
 
 public class UserService {
 
-	private static Gson g = new Gson();
+	private static Gson g;
 	private UserDAO userDao;
 	
 	public UserService() {
 		this.userDao = new UserDAO();
+		RuntimeTypeAdapterFactory<User> userAdapterFactory = RuntimeTypeAdapterFactory.of(User.class)
+		        .registerSubtype(Guest.class)
+		        .registerSubtype(Administrator.class)
+		        .registerSubtype(Host.class);
+		g = new GsonBuilder()
+		     .registerTypeAdapterFactory(userAdapterFactory)
+	         .create();
 	}
 
 	public String Register(User user) throws JsonSyntaxException, IOException {
@@ -57,14 +69,22 @@ public class UserService {
 		return null;
 	}
 	
-	public String Login(LoginData data) {		
+	public User Login(LoginData data) {		
 		try {
-			return g.toJson(userDao.Login(data.getUsername(),data.getPassword()));
+			return userDao.Login(data.getUsername(),data.getPassword());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 
 	}
-	
+
+	public String searchUsers(String username, String name, String surname, String userType) {
+		try {
+			return g.toJson(userDao.searchUsers(username, name, surname, userType));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

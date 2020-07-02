@@ -7,7 +7,13 @@ public class Administrator extends User {
 	}
 	
 	public Administrator(String username, String password, String name, String surname, Gender gender) {
-		super(username, password, name, surname, gender);
+		setGender(gender);
+		setSurname(surname);
+		setName(name);
+		setPassword(password);
+		setUsername(username);
+		setUserType(UserType.Administrator);
+
 		// TODO Auto-generated constructor stub
 	}
 	

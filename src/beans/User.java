@@ -1,22 +1,20 @@
 package beans;
 
-public class User {
+public abstract class User {
 
 	private String username;
 	private String password;
 	private String name;
 	private String surname;
 	private Gender gender;
+	private UserType userType;
 	
-	public User() {}
-	
-	public User(String username, String password, String name, String surname, Gender gender) {
-		super();
-		this.username = username;
-		this.password = password;
-		this.name = name;
-		this.surname = surname;
-		this.gender = gender;
+	public UserType getUserType() {
+		return userType;
+	}
+
+	public void setUserType(UserType userType) {
+		this.userType = userType;
 	}
 
 	public String getUsername() {
