@@ -17,6 +17,7 @@
 	<script src="scripts/jquery.min.js"></script>
 </head>
 <body>
+<div id="initialSearch">
 
 <div class="header" id="header">
 	<div class="container">
@@ -57,7 +58,7 @@
 						    </button>
 						    <div class="dropdown-content">
 						      <a href="#/account">Profil</a>
-						      <a href="" v-on:click="odjavaEvents">Odjava</a>
+						      <a href="#/login" v-on:click="odjavaEvents">Odjava</a>
 						    </div>
 					  </div> 
 					</li>
@@ -67,12 +68,10 @@
             </div>
      </div>
 </div>
-<div id="initialSearch">
 	  <router-view></router-view>
 
 
 </div>
-
 	<script src="scripts/vue.js"></script>
 	<script src="scripts/vue-router.js"></script>
 	<script src="scripts/axios.js"></script>

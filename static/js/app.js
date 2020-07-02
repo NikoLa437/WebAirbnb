@@ -22,8 +22,9 @@ const router = new VueRouter({
 	  ]
 });
 
-var a = new Vue({
-	el: '#header',
+var app = new Vue({
+	router,
+	el: '#initialSearch',
 	data: {
         mod: "PROBA"
 	},
@@ -48,14 +49,15 @@ var a = new Vue({
 			axios
 	          .get('/users/log/logout')
 	          .then(response => {
-				  window.location.href = "http://localhost:8080/#/login";
-	          });
+	        		this.mod='USER';
+
+	        });
+			
 		}
 	}
 });
 
-var app = new Vue({
-	router,
-	el: '#initialSearch'
-});
+
+
+
 
