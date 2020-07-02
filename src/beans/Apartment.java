@@ -5,11 +5,12 @@ import java.util.List;
 
 public class Apartment {
 	
+	private int id;
 	private ApartmentType type;
 	private int numberOfRoom;
 	private int numberOfGuest;
 	private Location location;
-	private List<Date> dateForRenting;
+	private List<Period> dateForRenting;
 	private List<Date> freeDateForRenting;
 	private Host host;
 	private List<Comment> comments;
@@ -27,11 +28,12 @@ public class Apartment {
 	}
 
 
-	public Apartment(ApartmentType type, int numberOfRoom, int numberOfGuest, Location location,
-			List<Date> dateForRenting, List<Date> freeDateForRenting, Host host, List<Comment> comments,
+	public Apartment(int id,ApartmentType type, int numberOfRoom, int numberOfGuest, Location location,
+			List<Period> dateForRenting, List<Date> freeDateForRenting, Host host, List<Comment> comments,
 			List<String> pictures, double priceForNight, long checkInTime, long checkOutTime, ApartmentStatus status,
 			List<Amenity> amenities, List<Reservation> reservations) {
 		super();
+		this.id=id;
 		this.type = type;
 		this.numberOfRoom = numberOfRoom;
 		this.numberOfGuest = numberOfGuest;
@@ -50,6 +52,15 @@ public class Apartment {
 	}
 
 
+	public int getId() {
+		return id;
+	}
+
+
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	public ApartmentType getType() {
 		return type;
 	}
@@ -90,12 +101,12 @@ public class Apartment {
 	}
 
 
-	public List<Date> getDateForRenting() {
+	public List<Period> getDateForRenting() {
 		return dateForRenting;
 	}
 
 
-	public void setDateForRenting(List<Date> dateForRenting) {
+	public void setDateForRenting(List<Period> dateForRenting) {
 		this.dateForRenting = dateForRenting;
 	}
 
