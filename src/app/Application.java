@@ -20,7 +20,7 @@ import services.UserService;
 public class Application {
 	
 	public static void main(String[] args) throws IOException {
-		port(8080);
+		port(80);
 		
 		/*
 		 * User a = new Administrator("admin", "admin", "Dusan", "Petrovic",
@@ -40,5 +40,5 @@ public class Application {
 		new ApartmentController(new ApartmentService());
 
 	}
-
+	
 }

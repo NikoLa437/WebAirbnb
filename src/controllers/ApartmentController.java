@@ -1,5 +1,6 @@
 package controllers;
 
+import static spark.Spark.get;
 import static spark.Spark.post;
 
 import com.google.gson.Gson;
@@ -14,6 +15,8 @@ public class ApartmentController {
 		
 		post("/apartment/add", (req, res) -> 
 			apartmentService.Create(g.fromJson(req.body(), Apartment.class)));
+		
+		get("/apartments", (req,res) -> apartmentService.GetAll());
 
 	}
 }
