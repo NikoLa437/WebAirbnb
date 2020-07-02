@@ -2,7 +2,7 @@ Vue.component("home-page", {
 	data: function () {
 	    return {
 	        apartments: null,
-	        width:'30%'
+	        width:'50%'
 	    }
 },
 template: ` 
@@ -27,28 +27,31 @@ template: `
 			<td><button class="button">Pretrazi</button></td>		
 		</tr>
 </table>
-	<div v-bind:style="{ width: computedWidth }" style="background-color: PapayaWhip; border-style: solid;" v-for="(apartment, index) in apartments">
+	<div   v-bind:style="{ width: computedWidth }" style="background-color: lightBlue; display: block;
+  margin-bottom: 25px;
+  margin-left: auto;
+  margin-right: auto;" v-for="(apartment, index) in apartments">
           <table>
-          		<tr v-bind:style="{ width: computedWidth }">
+          		<tr>
           			<td colspan="2">
-          				<img src="slika1.jpg" alt="Detalji" height="200">
+          				<img src="slika1.jpg" alt="Detalji" height="250" width= 745>
           			</td>
           		</tr>
+          		
+          		
           		<tr>
-          			<td><label>Tip:</label></td>
-          			<td><label>{{apartment.type}}</label></td>
+          			<td><label v-if="apartment.type === 'room'">Soba</label>
+          			<label v-else>Ceo apartman</label></td>
+          			<td>
+          			<label style="margin-left:50px;">{{apartment.location.adress.city}} - {{apartment.location.adress.street}} {{apartment.location.adress.streetNumber}}</label></td>
           		</tr>
           		<tr>
-          			<td><label>Broj gostiju:</label></td>
-          			<td><label>{{apartment.numberOfGuest}}</label></td>
+          			<td><label>Broj gostiju: </label>
+          			<label style="margin-left:50px;">{{apartment.numberOfGuest}}</label></td>
           		</tr>
           		<tr>
-          			<td><label>Grad:</label></td>
-          			<td><label>{{apartment.location.adress.city}}</label></td>
-          		</tr>
-          		<tr>
-          			<td><label>Cena:</label></td>
-          			<td><label>{{apartment.priceForNight}}</label></td>
+          			<td><label>Cena:</label>
+          			<label style="margin-left:50px;">{{apartment.priceForNight}} din po nocenju</label></td>
           		</tr>
           
           </table>
