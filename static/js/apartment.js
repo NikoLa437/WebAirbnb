@@ -26,7 +26,15 @@ Vue.component("apartment", {
 		        dateFrom: '',
 		        dateFromError: '',
 		        dateTo: '',
-		        dateToError: ''
+		        dateToError: '',
+		        city: '',
+		        cityError: '',
+		        postNumber:'',
+		        postNumberError:'',
+		        street:'',
+		        streetError:'',
+		        streetNumber:'',
+		        streetNumberError:''
 		    }
 	},
 	template: ` 
@@ -105,6 +113,32 @@ Vue.component("apartment", {
 		{{selectedAmenities}}	
 	</br>
 	</br>
+	
+	<h1>Lokacija</h1>
+	
+	<table class="tableLocation">
+		<tr>
+			<td>Grad:</td>
+			<td><input class="input" placeholder="Unesite grad" type="text" v-model="city" name="city"/></td>
+			<td ><p style="color: red" >{{cityError}}</p></td>	
+		</tr>
+		<tr>
+			<td>Postanski broj: </td>
+			<td><input class="input" placeholder="Unesite postanski broj" type="number" min="0" v-model="postNumber" name="postNumber"/></td>
+			<td ><p style="color: red" >{{postNumberError}}</p></td>	
+		</tr>
+		<tr>
+			<td>Ulica:</td>
+			<td><input class="input" placeholder="Unesite grad" type="text" v-model="street" name="street"/></td>
+			<td ><p style="color: red" >{{streetError}}</p></td>	
+		</tr>
+		<tr>
+			<td>Ulica:</td>
+			<td><input class="input" placeholder="Unesite broj" type="number" v-model="streetNumber" name="streetNumber"/></td>
+			<td ><p style="color: red" >{{streetNumberError}}</p></td>	
+		</tr>
+	
+	</table>
 </form>
 
 
@@ -151,15 +185,31 @@ Vue.component("apartment", {
 
 					//let period= { dateFrom:dateFrom, dateTo:dateTo }
 					let period = [ { dateFrom: new Date(this.dateFrom) , dateTo: new Date(this.To)} ];
+					let adressLocation = { city:this.city,postNumber:this.postNumber, street:this.street, streetNumber:this.streetNumber }
 					
-					alert(this.dateFrom)
+					
+					let latitude;
+					let longitude;
+					
+					/*
+					var geocoder = new google.maps.Geocoder();
+					var address = document.getElementById("city").value;
+					geocoder.geocode( { 'address': address}, function(results, status) {
+					  if (status == google.maps.GeocoderStatus.OK)
+					  {
+					      // do something with the geocoded result
+					      //
+					      latitude=  results[0].geometry.location.latitude
+					      longitude=  results[0].geometry.location.longitude
+					  }
+					});*/
+					
+					let location = { adress:adressLocation , latitude:0,longitude:0}
 
 					//period,
 					//checkin 
 					//checkout
-					//location
-					//period
-				 	let apartment = {id: 0,type:this.apartmentType, numberOfRoom: this.numberOfRooms,numberOfGuest: this.numberOfGuests,location:null,dateForRenting:period,freeDateForRenting:null,host:null,comments:null,pictures:null,priceForNight:this.price,checkInTime:null,checkOutTime:null,amenities:this.selectedAmenities,status:this.apartmentStatus,reservations:null};
+				 	let apartment = {id: 0,type:this.apartmentType, numberOfRoom: this.numberOfRooms,numberOfGuest: this.numberOfGuests,location:location,dateForRenting:null,freeDateForRenting:null,host:null,comments:null,pictures:null,priceForNight:this.price,checkInTime:null,checkOutTime:null,amenities:this.selectedAmenities,status:this.apartmentStatus,reservations:null};
 				 	
 	        		axios
 			        .post('http://localhost:8080/apartment/add', JSON.stringify(apartment))

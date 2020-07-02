@@ -30,6 +30,14 @@ public class ApartmentService {
 			for(Amenity item : apartment.getAmenities()) {
 				System.out.println(item.getName());
 			}
+			System.out.println(apartment.getLocation().getAdress().getCity());
+			System.out.println(apartment.getLocation().getAdress().getPostNumber());
+
+			System.out.println(apartment.getLocation().getAdress().getStreet());
+			System.out.println(apartment.getLocation().getAdress().getStreetNumber());
+			System.out.println(apartment.getLocation().getLatitude());
+			System.out.println(apartment.getLocation().getLongitude());
+
 
 
 
