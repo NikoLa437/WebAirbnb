@@ -19,6 +19,8 @@ import beans.Administrator;
 import beans.Apartment;
 import beans.Guest;
 import beans.Host;
+import beans.Reservation;
+import beans.ReservationStatus;
 import beans.User;
 import beans.UserType;
 import dao.adapter.RuntimeTypeAdapterFactory;
@@ -121,6 +123,26 @@ public class UserDAO {
 		}		
 		return retVal;
 
+	}
+	
+	public void changeReservationStatus(String id, ReservationStatus status) throws JsonIOException, IOException {
+		ArrayList<User> users = (ArrayList<User>) GetAll();
+		boolean changed = false;
+
+		for(User u : users) {
+			if(u.getUserType() == UserType.Guest) {
+				for(Reservation r : ((Guest)u).getReservations()) {
+					if(r.getId() == Integer.parseInt(id)) {
+						r.setStatus(status);
+						changed = true;
+						break;
+					}
+				}
+			}
+			if(changed)
+				break;
+		}
+		SaveAll(users);
 	}
 
 }

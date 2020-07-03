@@ -32,7 +32,7 @@ Vue.component("reservation", {
  </div>
  <div v-bind:hidden="available!='AVAILABLE'">
 	<h4>Slobodan termin pronadjen!</h4>
-	<table>
+	<table style="width=50%">
 		<tr>
 			<td>Datum od:</td>
 			<td>{{selectedDate | dateFormat('DD.MM.YYYY')}}</td>
@@ -43,10 +43,10 @@ Vue.component("reservation", {
 		</tr>
 		<tr>
 			<td>Cena:</td>
-			<td>{{apartment.priceForNight * parseInt(this.numberOfDays)}}</td>
+			<td>{{apartment.priceForNight * parseInt(this.numberOfDays)}} dinara</td>
 		</tr>
 		<tr>
-			<td colspan="2"><textarea class="inputComment"  name="note" placeholder="Unesite poruku za domacina" rows="10" v-model="note"></textarea></td>
+			<td colspan="2"><textarea class="inputComment"  name="note" placeholder="Unesite poruku za domacina"  cols="70" rows="10" v-model="note"></textarea></td>
 		</tr>
 		<tr>
 			<td colspan="2"><button class="buttonSave" v-on:click="reserve">Rezervisi</button><br/></td>

@@ -9,6 +9,8 @@ import java.io.IOException;
 import controllers.AmenityController;
 import controllers.ApartmentController;
 import controllers.UserController;
+import dao.ApartmentDAO;
+import dao.UserDAO;
 import services.AmenityService;
 import services.ApartmentService;
 import services.UserService;
@@ -30,10 +32,12 @@ public class Application {
 		
 		staticFiles.externalLocation(new File("./static").getCanonicalPath());
 
-		new UserController(new UserService());
+		UserDAO userDAO = new UserDAO();
+		ApartmentDAO apartmentDAO = new ApartmentDAO(userDAO);
+		new UserController(new UserService(userDAO));
 		new AmenityController(new AmenityService());
 		
-		new ApartmentController(new ApartmentService());
+		new ApartmentController(new ApartmentService(apartmentDAO));
 
 	}
 
