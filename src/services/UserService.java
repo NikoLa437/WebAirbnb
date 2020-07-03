@@ -69,6 +69,10 @@ public class UserService {
 		return null;
 	}
 	
+	public boolean canUserComment(Guest user, String appartmentId) {
+		return userDao.canUserComment(user, appartmentId);
+	}
+	
 	public User Login(LoginData data) {		
 		try {
 			return userDao.Login(data.getUsername(),data.getPassword());

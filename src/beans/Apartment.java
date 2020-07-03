@@ -11,7 +11,7 @@ public class Apartment {
 	private int numberOfGuest;
 	private Location location;
 	private List<Period> dateForRenting;
-	private List<Date> freeDateForRenting;
+	private List<Long> freeDateForRenting;
 	private Host host;
 	private List<Comment> comments;
 	private List<String> pictures;
@@ -29,7 +29,7 @@ public class Apartment {
 
 
 	public Apartment(int id,ApartmentType type, int numberOfRoom, int numberOfGuest, Location location,
-			List<Period> dateForRenting, List<Date> freeDateForRenting, Host host, List<Comment> comments,
+			List<Period> dateForRenting, List<Long> freeDateForRenting, Host host, List<Comment> comments,
 			List<String> pictures, double priceForNight, long checkInTime, long checkOutTime, ApartmentStatus status,
 			List<Amenity> amenities, List<Reservation> reservations) {
 		super();
@@ -111,12 +111,12 @@ public class Apartment {
 	}
 
 
-	public List<Date> getFreeDateForRenting() {
+	public List<Long> getFreeDateForRenting() {
 		return freeDateForRenting;
 	}
 
 
-	public void setFreeDateForRenting(List<Date> freeDateForRenting) {
+	public void setFreeDateForRenting(List<Long> freeDateForRenting) {
 		this.freeDateForRenting = freeDateForRenting;
 	}
 

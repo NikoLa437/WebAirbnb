@@ -123,16 +123,21 @@ Vue.component("registration", {
 		        		  if(this.userType ==='USER'){
 			        		  let user = {username: this.username, name : this.name, surname : this.surname, gender : this.gender, password : this.password, userType : 'Guest' ,rentedAppartments: [], reservations : [] };
 			        		  axios
-					          .post('http://localhost:8080/users/addGuest', JSON.stringify(user))
-					          .then(response => toast('Korisnik ' + this.username + ' uspesno dodat!'));
+					          .post('/users/addGuest', JSON.stringify(user))
+					          .then(response => {
+					        	 // toast('Korisnik ' + this.username + ' uspesno dodat!');
+					        	  axios
+					        	  .post('/users/login', JSON.stringify({username: this.username, password : this.password}))
+					        	  .then(response => (window.location.href = "http://localhost:8080/"));
+					          });
 							 
 		        		  }else{
 		        			  let user = {username: this.username, name : this.name, surname : this.surname, gender : this.gender, password : this.password, userType : 'Host', appartments: []};
 			        		  axios
-					          .post('http://localhost:8080/users/addHost', JSON.stringify(user))
-					          .then(response => toast('Korisnik ' + this.username + ' uspesno dodat!'));
+					          .post('/users/addHost', JSON.stringify(user))
+					          .then(response => (window.location.href = "http://localhost:8080/"));
 		        		  }
-		        		  window.location.href = "http://localhost:8080/";
+		        		  //window.location.href = "http://localhost:8080/";
 						}
 		          
 		          });

@@ -1,9 +1,9 @@
 package beans;
 
 public enum Grade {
-	V,
-	IV,
-	III,
+	I,
 	II,
-	I
+	III,
+	IV,
+	V
 }

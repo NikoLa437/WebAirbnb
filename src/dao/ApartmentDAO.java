@@ -7,7 +7,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -16,8 +18,8 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import beans.Apartment;
-import beans.User;
-import beans.UserType;
+import beans.Period;
+import beans.Reservation;
 
 
 public class ApartmentDAO {
@@ -43,6 +45,83 @@ public class ApartmentDAO {
 		return apartment;
 	}
 	
+	public Apartment get(String id) throws JsonSyntaxException, IOException {
+		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
+		if(apartments != null) {
+			for(Apartment a : apartments) {
+				if(a.getId() == Integer.parseInt(id)) {
+					return a;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public List<Long> getOccupiedDates(String id) throws JsonSyntaxException, IOException{
+		Apartment apartment = get(id);
+		List<Long> retVal = new ArrayList<Long>();
+		for(Period p : apartment.getDateForRenting()) {
+			Date temp = new Date(p.getDateFrom());
+			Date dateTo = new Date(p.getDateTo());
+			Calendar c = Calendar.getInstance(); 
+			while(temp.compareTo(dateTo) <= 0) {
+				if(!apartment.getFreeDateForRenting().contains(temp.getTime())) {
+					retVal.add(temp.getTime());
+				}
+				c.setTime(temp); 
+				c.add(Calendar.DAY_OF_YEAR, 1);
+				temp = c.getTime();
+			}
+		}
+		return retVal;
+	}
+	
+	public boolean reserve(Reservation reservation) throws JsonSyntaxException, IOException {
+		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
+		boolean retVal = false;
+		for(Apartment a : apartments) {
+			if(a.getId() == reservation.getAppartment().getId()) {
+				List<Reservation> temp = a.getReservations();
+				if(temp == null)
+					temp = new ArrayList<Reservation>();
+				reservation.setAppartment(null);
+				temp.add(reservation);
+				a.setReservations(temp);
+				a.setFreeDateForRenting(setFreeDaysForRenting(a.getFreeDateForRenting(),reservation));
+				retVal = true;
+				break;
+			}
+		}
+		SaveAll(apartments);
+		return retVal;
+	}
+	
+	private List<Long> setFreeDaysForRenting(List<Long> freeDateForRenting, Reservation reservation) {
+		
+		List<Long> retVal = new ArrayList<Long>();
+		List<Long> reservationDates = new ArrayList<Long>();
+		Date temp = new Date(reservation.getStartDate());
+		Date endDate = new Date(reservation.getStartDate() + reservation.getDaysForStay()*24*60*60*1000);
+		
+		Calendar c = Calendar.getInstance(); 
+		endDate = c.getTime();
+
+		while(temp.compareTo(endDate) <= 0) {
+			reservationDates.add(temp.getTime());
+			c.setTime(temp); 
+			c.add(Calendar.DAY_OF_YEAR, 1);
+			temp = c.getTime();
+
+		}
+		
+		for(long date : freeDateForRenting) {
+			if(!reservationDates.contains(date))
+				retVal.add(date);
+		}
+		
+		return retVal;
+	}
+
 	private int GetMaxID() throws JsonSyntaxException, IOException {
 		int maxId = 0;
 		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
@@ -59,19 +138,6 @@ public class ApartmentDAO {
 	    Writer writer = new FileWriter(path);
 		g.toJson(apartments, writer);
 	    writer.close();
-	}
-	
-	public List<Apartment> searchApartments(String location, String datFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice) throws JsonSyntaxException, IOException{
-		
-		ArrayList<Apartment> list = (ArrayList<Apartment>) GetAll();
-		List<Apartment> retVal = new ArrayList<Apartment>();
-
-		for(Apartment item : list) {
-			if(!location.isEmpty() ? item.getLocation().getAdress().getCity().equals(location) : true)
-				retVal.add(item);
-		}		
-		return retVal;
-
 	}
 	
 	

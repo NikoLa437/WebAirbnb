@@ -220,7 +220,7 @@ Vue.component("apartment", {
 					//checkin 
 					//checkout
 				 	let apartment = {id: 0,type:this.apartmentType, numberOfRoom: this.numberOfRooms,numberOfGuest: this.numberOfGuests,location:location,dateForRenting:null,freeDateForRenting:null
-							,host:null,comments:null,pictures:this.images,priceForNight:this.price,checkInTime:null,checkOutTime:null,amenities:this.selectedAmenities,status:this.apartmentStatus,reservations:null};
+							,host:null,comments:null,pictures:this.images,priceForNight:this.price,checkInTime:null,checkOutTime:null,amenities:this.selectedAmenities,status:this.apartmentStatus,reservations:[]};
 				 	
 	        		axios
 			        .post('http://localhost:8080/apartment/add', JSON.stringify(apartment))

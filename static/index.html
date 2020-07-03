@@ -10,6 +10,7 @@
 <link href="css/dropdown.css" rel="stylesheet" type="text/css"/>
 <link href="css/amenity.css" rel="stylesheet" type="text/css"/>
 <link href="css/account.css" rel="stylesheet" type="text/css"/>
+<link href="css/gallery.css" rel="stylesheet" type="text/css"/>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link href="css/toast.css" rel="stylesheet" />
@@ -17,6 +18,7 @@
 	<script src="scripts/jquery.min.js"></script>
 </head>
 <body>
+<div id="initialSearch">
 
 <div class="header" id="header">
 	<div class="container">
@@ -37,6 +39,7 @@
 						    </div>
 					  </div> 
 					</li>
+					<li><a href="#/apartmentDetails">PROBICA</a></li>
 					<li>
 						<div class="dropdown">
 						    <button class="dropbtn">Apartmani 
@@ -57,7 +60,7 @@
 						    </button>
 						    <div class="dropdown-content">
 						      <a href="#/account">Profil</a>
-						      <a href="" v-on:click="odjavaEvents">Odjava</a>
+						      <a href="#/login" v-on:click="odjavaEvents">Odjava</a>
 						    </div>
 					  </div> 
 					</li>
@@ -67,14 +70,13 @@
             </div>
      </div>
 </div>
-<div id="initialSearch">
-	  <router-view></router-view>
+<router-view></router-view>
 
 
 </div>
-
 	<script src="scripts/vue.js"></script>
 	<script src="scripts/vue-router.js"></script>
+	<script src="scripts/vuejs-datepicker.min.js"></script>
 	<script src="scripts/axios.js"></script>
 	<script src="scripts/moment.min.js"></script>
 	<script src="js/homepage.js"></script>
@@ -84,6 +86,8 @@
 	<script src="js/account.js"></script>
 	<script src="js/login.js"></script>
 	<script src="js/apartment.js"></script>
+	<script src="js/apartmentDetail.js"></script>
+	<script src="js/reservation.js"></script>
 	<script src="js/app.js"></script>
 
 </body>

@@ -9,6 +9,8 @@ body {
   color: white;
   top: 0;
   position: fixed;
+      z-index: 99;
+
 }
 
 .container{
@@ -53,6 +55,7 @@ tr{margin:0px 20px 0px 20px;}
 .nav {
 	float:right;
 }
+
 
 .button{
 	background-color:rgb(152, 0, 0);

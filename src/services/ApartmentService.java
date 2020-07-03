@@ -7,7 +7,7 @@ import com.google.gson.JsonSyntaxException;
 
 import beans.Amenity;
 import beans.Apartment;
-import dao.AmenityDAO;
+import beans.Reservation;
 import dao.ApartmentDAO;
 
 public class ApartmentService {
@@ -75,13 +75,33 @@ public class ApartmentService {
 		return null;
 	}
 	
-	public String searchApartments(String location, String datFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice) {
+	public boolean reserve(Reservation reservation) {
 		try {
-			return g.toJson(apartmentDao.searchApartments(location, datFrom, dateTo, numberOfGuest, minRoom, maxRoom, minPrice, maxPrice));
+			return apartmentDao.reserve(reservation);
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public String getOccupiedDates(String id) {
+		try {
+			return g.toJson(apartmentDao.getOccupiedDates(id));
+		} catch(Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public String getApartment(String id) {
+		try {
+			return g.toJson(apartmentDao.get(id));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return g.toJson(null);
 	}
 	
 	
