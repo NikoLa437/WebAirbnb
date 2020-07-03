@@ -16,6 +16,8 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import beans.Apartment;
+import beans.User;
+import beans.UserType;
 
 
 public class ApartmentDAO {
@@ -57,6 +59,19 @@ public class ApartmentDAO {
 	    Writer writer = new FileWriter(path);
 		g.toJson(apartments, writer);
 	    writer.close();
+	}
+	
+	public List<Apartment> searchApartments(String location, String datFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice) throws JsonSyntaxException, IOException{
+		
+		ArrayList<Apartment> list = (ArrayList<Apartment>) GetAll();
+		List<Apartment> retVal = new ArrayList<Apartment>();
+
+		for(Apartment item : list) {
+			if(!location.isEmpty() ? item.getLocation().getAdress().getCity().equals(location) : true)
+				retVal.add(item);
+		}		
+		return retVal;
+
 	}
 	
 	
