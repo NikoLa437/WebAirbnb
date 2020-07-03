@@ -5,7 +5,8 @@ Vue.component("reservation", {
 	    	disabledDates : {
 	    	},
 	    	apartment:null,
-	    	numberOfDays:0,
+	    	numberOfDays:1,
+	    	note:'',
 	    	available:'UNDEFINED',
 	    	selectedDate: new Date(Date.now() + 24*60*60*1000)
 	    }
@@ -43,6 +44,9 @@ Vue.component("reservation", {
 		<tr>
 			<td>Cena:</td>
 			<td>{{apartment.priceForNight * parseInt(this.numberOfDays)}}</td>
+		</tr>
+		<tr>
+			<td colspan="2"><textarea class="inputComment"  name="note" placeholder="Unesite poruku za domacina" rows="10" v-model="note"></textarea></td>
 		</tr>
 		<tr>
 			<td colspan="2"><button class="buttonSave" v-on:click="reserve">Rezervisi</button><br/></td>
@@ -88,7 +92,14 @@ Vue.component("reservation", {
 			this.available = 'AVAILABLE';
 		},
 		reserve : function(){
+
+			let seldates = (new Date(this.selectedDate.getFullYear(),this.selectedDate.getMonth() , this.selectedDate.getDate())).getTime();
+			let reservation = { appartment : this.apartment, startDate : seldates, daysForStay : parseInt(this.numberOfDays), price : this.apartment.priceForNight * parseInt(this.numberOfDays)
+								, message : this.note, guest : null, status : 'created'};
 			
+			axios
+			.post('/apartment/reserve', JSON.stringify(reservation))
+			.then(response => (toast('Uspesno ste rezervisali apartman!')));
 		}
 	},
     filters: {

@@ -4,33 +4,33 @@ import java.util.Date;
 
 public class Period {
 
-	private Date dateFrom;
-	private Date dateTo;
+	private long dateFrom;
+	private long dateTo;
 	
 	public Period() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Period(Date dateFrom, Date dateTo) {
+	public Period(long dateFrom, long dateTo) {
 		super();
 		this.dateFrom = dateFrom;
 		this.dateTo = dateTo;
 	}
 
-	public Date getDateFrom() {
+	public long getDateFrom() {
 		return dateFrom;
 	}
 
-	public void setDateFrom(Date dateFrom) {
+	public void setDateFrom(long dateFrom) {
 		this.dateFrom = dateFrom;
 	}
 
-	public Date getDateTo() {
+	public long getDateTo() {
 		return dateTo;
 	}
 
-	public void setDateTo(Date dateTo) {
+	public void setDateTo(long dateTo) {
 		this.dateTo = dateTo;
 	}
 }

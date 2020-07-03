@@ -7,7 +7,7 @@ import com.google.gson.JsonSyntaxException;
 
 import beans.Amenity;
 import beans.Apartment;
-import dao.AmenityDAO;
+import beans.Reservation;
 import dao.ApartmentDAO;
 
 public class ApartmentService {
@@ -73,6 +73,16 @@ public class ApartmentService {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public boolean reserve(Reservation reservation) {
+		try {
+			return apartmentDao.reserve(reservation);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	public String getOccupiedDates(String id) {
