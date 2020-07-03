@@ -60,6 +60,8 @@ public class ApartmentController {
 			
 			return apartmentService.reserve(r);
 		});
+		
+		get("/apartments/search/parameters", (req,res) -> apartmentService.searchApartments(req.queryParams("location"), req.queryParams("dateFrom"), req.queryParams("dateTo"), req.queryParams("numberOfGuest"), req.queryParams("minRoom"), req.queryParams("maxRoom"), req.queryParams("minPrice"), req.queryParams("maxPrice")));
 
 	}
 }

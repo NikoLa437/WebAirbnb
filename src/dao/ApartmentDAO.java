@@ -140,6 +140,20 @@ public class ApartmentDAO {
 	    writer.close();
 	}
 	
+	public List<Apartment> searchApartments(String location, String datFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice) throws JsonSyntaxException, IOException{
+		
+		ArrayList<Apartment> list = (ArrayList<Apartment>) GetAll();
+		List<Apartment> retVal = new ArrayList<Apartment>();
+
+		for(Apartment item : list) {
+			if(!location.isEmpty() ? item.getLocation().getAdress().getCity().equals(location) : true)
+				retVal.add(item);
+		}		
+		return retVal;
+
+	}
+
+	
 	
 
 
