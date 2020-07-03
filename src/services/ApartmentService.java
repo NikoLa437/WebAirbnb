@@ -8,14 +8,15 @@ import com.google.gson.JsonSyntaxException;
 import beans.Amenity;
 import beans.Apartment;
 import beans.Reservation;
+import beans.ReservationStatus;
 import dao.ApartmentDAO;
 
 public class ApartmentService {
 	private static Gson g = new Gson();
 	private static ApartmentDAO apartmentDao;
 	
-	public ApartmentService() {
-		this.apartmentDao = new ApartmentDAO();
+	public ApartmentService(ApartmentDAO apartmentDao) {
+		this.apartmentDao = apartmentDao;
 	}
 	
 	public String Create(Apartment apartment) throws JsonSyntaxException, IOException {
@@ -112,7 +113,26 @@ public class ApartmentService {
 		}
 		return null;
 	}
-
+	
+	public boolean changeReservationStatus(String id, ReservationStatus status) {
+		try {
+			return apartmentDao.changeReservationStatus(id, status);
+		}catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public String getAllReservations(int whatToGet, String username) {
+		try {
+			return g.toJson(apartmentDao.getAllReservations(whatToGet,username));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return g.toJson(null);
+	}
 	
 	
 }

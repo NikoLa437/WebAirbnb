@@ -20,16 +20,19 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import beans.Apartment;
+import beans.Guest;
 import beans.Period;
 import beans.Reservation;
+import beans.ReservationStatus;
 
 
 public class ApartmentDAO {
 	private final String path = "./files/apartment.json";
 	private static Gson g = new Gson();
-
-	public ApartmentDAO() {
-		
+	private UserDAO userDao;
+	
+	public ApartmentDAO(UserDAO userDao) {
+		this.userDao = userDao;
 	}
 	
 	public List<Apartment> GetAll() throws JsonSyntaxException, IOException{		
@@ -78,14 +81,50 @@ public class ApartmentDAO {
 		return retVal;
 	}
 	
+	public List<Reservation> getAllReservations(int whatToGet, String username) throws JsonSyntaxException, IOException{
+		List<Reservation> retVal = new ArrayList<Reservation>();
+		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
+		
+		for(Apartment a : apartments) {
+			for(Reservation r : a.getReservations()) {
+				if(whatToGet == 0) {
+					if(r.getGuest().getUsername().equals(username)) {
+						r.setAppartment(new Apartment(a.getId(),a.getType(),a.getNumberOfRoom(),a.getNumberOfGuest(),a.getLocation(), null, null, null, null, null,0, 0, 0, null, null, null));
+						retVal.add(r);
+					}
+				}else if(whatToGet == 1) {
+					if(a.getHost().getUsername().equals(username)) {
+						r.setAppartment(new Apartment(a.getId(),a.getType(),a.getNumberOfRoom(),a.getNumberOfGuest(),a.getLocation(), null, null, null, null, null,0, 0, 0, null, null, null));
+						retVal.add(r);
+					}
+				}
+				else {
+					r.setAppartment(new Apartment(a.getId(),a.getType(),a.getNumberOfRoom(),a.getNumberOfGuest(),a.getLocation(), null, null, null, null, null,0, 0, 0, null, null, null));
+					retVal.add(r);
+				}
+			}
+		}
+			
+		return retVal;
+	}
+	
 	public boolean reserve(Reservation reservation) throws JsonSyntaxException, IOException {
 		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
 		boolean retVal = false;
+		Guest g = (Guest) userDao.get(reservation.getGuest().getUsername());
+		
+		
+		List<Reservation> guestReservations = g.getReservations();
+		Apartment ap = null;
 		for(Apartment a : apartments) {
 			if(a.getId() == reservation.getAppartment().getId()) {
 				List<Reservation> temp = a.getReservations();
+				
+				ap = a;
 				if(temp == null)
 					temp = new ArrayList<Reservation>();
+				
+				reservation.setId(temp.size() + 1);				
 				reservation.setAppartment(null);
 				temp.add(reservation);
 				a.setReservations(temp);
@@ -95,6 +134,15 @@ public class ApartmentDAO {
 			}
 		}
 		SaveAll(apartments);
+		
+		ap.setReservations(null);
+		
+		reservation.setAppartment(ap);
+		reservation.setGuest(null);
+		guestReservations.add(reservation);
+		
+		userDao.Update(g);
+		
 		return retVal;
 	}
 	
@@ -177,7 +225,24 @@ public class ApartmentDAO {
 	}
 
 	
-	
+	public boolean changeReservationStatus(String id, ReservationStatus status) throws JsonSyntaxException, IOException {
+		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
+		boolean changed = false;
+		for(Apartment a : apartments) {
+			for(Reservation r : a.getReservations()) {
+				if(r.getId() == Integer.parseInt(id)) {
+					r.setStatus(status);
+					changed = true;
+					break;
+				}
+			}
+			if(changed)
+				break;
+		}
+		SaveAll(apartments);
+		userDao.changeReservationStatus(id, status);
+		return changed;
+	}
 
 
 }
