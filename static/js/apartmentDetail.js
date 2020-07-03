@@ -87,7 +87,7 @@ Vue.component("apartment-details", {
 `,
 	mounted () {
 		axios
-		.get('/apartment/' + this.id)
+		.get('/apartment/' + this.$route.query.id)
 		.then(response => {this.apartment = response.data; this.picture = this.apartment.pictures[0];});
 		
 		axios

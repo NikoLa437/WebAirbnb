@@ -3,7 +3,9 @@ Vue.component("login", {
 		    return {
 		    	logged : null,
 		    	username: '',
-			    password:''
+		    	usernameError:'',
+			    password:'',
+			    passwordError:''
 		    }
 	},
 	template: ` 
@@ -14,13 +16,15 @@ Vue.component("login", {
 		<tr>
 			<td>Korisnicko ime:</td>
 			<td><input class="input" placeholder="Unesite korisnicko ime" type="text" v-model="username" name="username"/></td>	
+			<td ><p style="color: red" >{{usernameError}}</p></td>	
 		</tr>
 		<tr>
 			<td>Lozinka:</td>
 			<td><input class="input" placeholder="Unesite lozinku" v-model="password" type="password" name="password"/></td>	
+			<td ><p style="color: red" >{{passwordError}}</p></td>	
 		</tr>
 		<tr>
-			<td colspan="2" align="center"><input type="submit"  value="Uloguj se"/></td>
+			<td colspan="2" align="center"><input type="submit"  value="Uloguj se"/></td>	
 		</tr>
 	</table>
 	<p v-bind:hidden="!logged">Kosirnik je vec ulogovan!</p>
@@ -42,10 +46,14 @@ Vue.component("login", {
     },
 	methods : {
 		checkFormValid : function() {
+			
+			this.usernameError='';
+			this.passwordError='';
+			
 			if(this.username == "")
-				toast('Korisnicko ime je obavezno polje!');
+				this.usernameError =  'Korisnicko ime je obavezno polje!';
 			else if(this.password == "")
-				toast('Sifra je obavezno polje!');
+				this.passwordError = 'Sifra je obavezno polje!';
 			else
 				{
 				let loginData = {username: this.username, password : this.password};

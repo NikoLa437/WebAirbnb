@@ -40,5 +40,5 @@ public class Application {
 		new ApartmentController(new ApartmentService(apartmentDAO));
 
 	}
-
+	
 }

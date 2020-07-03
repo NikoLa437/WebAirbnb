@@ -1,15 +1,226 @@
 Vue.component("home-page", {
-	template: ` 
+	data: function () {
+	    return {
+	        apartments: null,
+	        width:'50%',
+	        location:'',
+	        dateFrom:'',
+	        dateTo:'',
+	        numberOfGuest:'',
+	        minRoom:'',
+	        maxRoom:'',
+	        minPrice:'',
+	        maxPrice:'',
+	        searchedApartments: null,
+	        showSearched:false,
+	        selectedAmenities: [],
+	        sortValue:'',
+	        visibleSearchBar: false,
+	        amenities: null,
+	        type: '',
+	        apartmentStatus: '',
+	        mod: 'default'
+	    }
+},
+template: ` 
 <div>
-		<table class="searchtable">
-		<tr>
-			<td><input class="searchInput" placeholder="Unesite lokaciju" type="text"/></td>
-			<td><input class="searchInput" type="date"/></td>
-			<td><input class="searchInput" placeholder="Unesite broj gostiju"  type="number"/></td>
-			<td><button class="button">Pretrazi</button></td>		
+	<table class="searchtable">
+		<tr v-bind:hidden="visibleSearchBar">
+			<td><button class="button" v-on:click="openSearch">Otvori pretragu</button></td>	
+		</tr>
+		<tr v-bind:hidden="!visibleSearchBar" >
+			<td><input class="searchInput" placeholder="Lokacija" type="text"  v-model="location" name="location"/></td>
+			<td><vuejs-datepicker v-model="dateFrom"></vuejs-datepicker></td>
+			<td><vuejs-datepicker v-model="dateTo"></vuejs-datepicker></td>
+			<td><input class="searchInput" placeholder="Broj gostiju" min=0 type="number"/></td>
+		</tr>
+		<tr v-bind:hidden="!visibleSearchBar">
+			<td><input class="searchInput" placeholder="Minimalno soba" min=0 type="number"/></td>
+			<td><input class="searchInput" placeholder="Maksimalno soba" min=0 type="number"/></td>
+			<td><input class="searchInput" placeholder="Minimalna cena" min=0 type="number"/></td>
+			<td><input class="searchInput" placeholder="Maksimalna cena" min=0 type="number"/></td
+		</tr>
+		<tr v-bind:hidden="!visibleSearchBar"><label>SADRZAJ</label></tr>
+		<tr v-bind:hidden="!visibleSearchBar" v-for="(amenity, index) in amenities">
+			<input type="checkbox" v-bind:value="amenity" v-model="selectedAmenities" :value="amenity"/>
+          {{amenity.name}}
+          </br>
+        </tr>
+		<tr v-bind:hidden="!visibleSearchBar">
+			<td colspan="2">
+				<select class="select" name="apartmentType" v-model="type">
+				   <option class="option" value="soba">Soba</option>
+				   <option class="option" value="apartman">Apartman</option>
+				</select>
+				<select class="select" @change="onChange($event)" name="sort" v-model="sortValue">
+				   <option class="option" value="rastuca">Cena rastuca</option>
+				   <option class="option" value="opadajuca">Cena opadajuca</option>
+				</select>
+				<select v-bind:hidden="mod!='ADMIN'" class="select" name="apartmentStatus" v-model="apartmentStatus">
+				   <option class="option" value="aktivan">Aktivan</option>
+				   <option class="option" value="neaktivan">Neaktivan</option>
+				</select>
+			</td>
+			<td><button class="button" v-on:click="ponistipretragu">Ponisti pretragu</button></td>		
+			<td><button class="button" v-on:click="search">Pretrazi</button></td>		
 		</tr>
 </table>
+	<div v-bind:style="{ width: computedWidth }" v-on:click="selectApartment(apartment.id)" style="background-color: lightBlue; display: block;
+  margin-bottom: 25px;
+  margin-left: auto;
+  margin-right: auto;" v-for="(apartment, index) in apartments">
+          <table v-bind:hidden="showSearched">
+          		<tr>
+          			<td colspan="2">
+          				<img src="slika1.jpg" alt="Detalji" height="250" width= 745>
+          			</td>
+          		</tr>
+          		
+          		
+          		<tr>
+          			<td><label v-if="apartment.type === 'room'">Soba</label>
+          			<label v-else>Ceo apartman</label></td>
+          			<td>
+          			<label style="margin-left:50px;">{{apartment.location.adress.city}} - {{apartment.location.adress.street}} {{apartment.location.adress.streetNumber}}</label></td>
+          		</tr>
+          		<tr>
+          			<td><label>Broj gostiju: </label>
+          			<label style="margin-left:50px;">{{apartment.numberOfGuest}}</label></td>
+          		</tr>
+          		<tr>
+          			<td><label>Cena:</label>
+          			<label style="margin-left:50px;">{{apartment.priceForNight}} din po nocenju</label></td>
+          		</tr>
+          
+          </table>
+	</div>
 	
+	<div v-bind:hidden="!showSearched" 	v-on:click="selectApartment(apartment.id)" v-bind:style="{ width: computedWidth }" style="background-color: lightBlue; display: block;
+  margin-bottom: 25px;
+  margin-left: auto;
+  margin-right: auto;" v-for="(apartment, index) in searchedApartments">
+          <table>
+          		<tr>
+          			<td colspan="2">
+          				<img src="slika1.jpg" alt="Detalji" height="250" width= 745>
+          			</td>
+          		</tr>
+          		
+          		<tr>
+          			<td><label v-if="apartment.type === 'room'">Soba</label>
+          			<label v-else>Ceo apartman</label></td>
+          			<td>
+          			<label style="margin-left:50px;">{{apartment.location.adress.city}} - {{apartment.location.adress.street}} {{apartment.location.adress.streetNumber}}</label></td>
+          		</tr>
+          		<tr>
+          			<td><label>Broj gostiju: </label>
+          			<label style="margin-left:50px;">{{apartment.numberOfGuest}}</label></td>
+          		</tr>
+          		<tr>
+          			<td><label>Cena:</label>
+          			<label style="margin-left:50px;">{{apartment.priceForNight}} din po nocenju</label></td>
+          		</tr>
+          
+          </table>
+	</div>
 </div>		  
-`
+`, components : { 
+		vuejsDatepicker
+	},
+	mounted () {
+	    axios
+	      .get('/apartments')
+	      .then(response => (this.apartments = response.data))
+	      
+	   axios
+	     .get('/amenities')
+	     .then(response => (this.amenities = response.data))
+	     
+	    axios
+        .get('/users/log/test')
+        .then(response => {
+        	if(response.data == null)
+        		this.mod='USER';
+        	else 
+        		if(response.data.userType == "Guest")
+        			this.mod='GUEST';
+        		else if(response.data.userType == "Host")
+        			this.mod='HOST';
+        		else 
+        			this.mod = 'ADMIN';
+        })
+	},
+	computed: {
+	    computedWidth: function () {
+	      return this.width;
+	    }
+	  },
+	  methods : {
+			  openSearch : function(){
+				  this.visibleSearchBar=true;
+			  },
+			search : function(){
+				if(this.location != '' || this.dateFrom != '' || this.dateTo != '' || this.numberOfGuest != '' || this.minRoom != '' || this.maxRoom != '' || this.minPrice != '' || this.maxPrice != ''|| this.sortValue != ''){
+					axios
+					.get('/apartments/search/parameters', {
+					    params: {
+					        location: this.location,
+					        dateFrom : this.dateFrom,
+					        dateTo : this.dateTo,
+					        numberOfGuest : this.numberOfGuest,
+					        minRoom: this.minRoom,
+					        maxRoom : this.maxRoom,
+					        minPrice : this.minPrice,
+					        maxPrice : this.maxPrice,
+					        sortValue: this.sortValue,
+					        type: this.type,
+					        apartmentStatus: this.apartmentStatus
+					      }
+					    })
+					.then(response => {
+						this.searchedApartments = response.data;
+						this.showSearched = true;
+						this.visibleSearchBar=false;
+					});
+				}else{
+					this.showSearched = false;
+					this.visibleSearchBar=false;
+				}
+			},
+			ponistipretragu: function(){
+				this.searchedApartments = null;
+				this.showSearched = false;
+				this.visibleSearchBar=false;
+				
+			},
+			onChange(event) {
+				if(this.location != '' || this.dateFrom != '' || this.dateTo != '' || this.numberOfGuest != '' || this.minRoom != '' || this.maxRoom != '' || this.minPrice != '' || this.maxPrice != '' || this.sortValue != ''){
+					axios
+					.get('/apartments/search/parameters', {
+					    params: {
+					    	location: this.location,
+					        dateFrom : this.dateFrom,
+					        dateTo : this.dateTo,
+					        numberOfGuest : this.numberOfGuest,
+					        minRoom: this.minRoom,
+					        maxRoom : this.maxRoom,
+					        minPrice : this.minPrice,
+					        maxPrice : this.maxPrice,
+					        sortValue: this.sortValue,
+					        type: this.type,
+					        apartmentStatus: this.apartmentStatus
+					      }
+					    })
+					.then(response => {
+						this.searchedApartments = response.data;
+						this.showSearched = true;
+					});
+				}else{
+					this.showSearched = false;
+				}
+	        },
+	        selectApartment : function(id) {
+	        	window.location.href = "http://localhost:8080/#/apartmentDetails?id=" + id;
+	    	}
+		}
 });

@@ -141,6 +141,11 @@ Vue.component("apartment", {
 			<td><input class="input" placeholder="Unesite broj" type="number" v-model="streetNumber" name="streetNumber"/></td>
 			<td ><p style="color: red" >{{streetNumberError}}</p></td>	
 		</tr>
+		
+		<div id="pac-container">
+        <input id="pac-input" type="text"
+            placeholder="Enter a location">
+      </div>
 	
 	</table>
 </form>	
@@ -185,9 +190,6 @@ Vue.component("apartment", {
 				this.dateToError =  'Krajnje vreme za rezervaciju je obavezno polje!';
 			else
 				{
-				
-
-
 					//let period= { dateFrom:dateFrom, dateTo:dateTo }
 					let adressLocation = { city:this.city,postNumber:this.postNumber, street:this.street, streetNumber:this.streetNumber }
 					

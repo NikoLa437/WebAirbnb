@@ -8,15 +8,14 @@ import com.google.gson.JsonSyntaxException;
 import beans.Amenity;
 import beans.Apartment;
 import beans.Reservation;
-import beans.ReservationStatus;
 import dao.ApartmentDAO;
 
 public class ApartmentService {
 	private static Gson g = new Gson();
 	private static ApartmentDAO apartmentDao;
 	
-	public ApartmentService(ApartmentDAO apartmentDao) {
-		this.apartmentDao = apartmentDao;
+	public ApartmentService() {
+		this.apartmentDao = new ApartmentDAO();
 	}
 	
 	public String Create(Apartment apartment) throws JsonSyntaxException, IOException {
@@ -93,7 +92,7 @@ public class ApartmentService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return g.toJson(null);
+		return null;
 	}
 	
 	public String getApartment(String id) {
@@ -105,24 +104,15 @@ public class ApartmentService {
 		return g.toJson(null);
 	}
 	
-	public boolean changeReservationStatus(String id, ReservationStatus status) {
+	public String searchApartments(String location, String datFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice, String sortValue, String type, String apartmentStatus) {
 		try {
-			return apartmentDao.changeReservationStatus(id, status);
-		}catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
-	}
-	
-	public String getAllReservations(int whatToGet, String username) {
-		try {
-			return g.toJson(apartmentDao.getAllReservations(whatToGet,username));
+			return g.toJson(apartmentDao.searchApartments(location, datFrom, dateTo, numberOfGuest, minRoom, maxRoom, minPrice, maxPrice,sortValue,type,apartmentStatus));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return g.toJson(null);
+		return null;
 	}
+
+	
 	
 }
