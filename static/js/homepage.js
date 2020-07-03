@@ -13,33 +13,48 @@ Vue.component("home-page", {
 	        maxPrice:'',
 	        searchedApartments: null,
 	        showSearched:false,
-	        sortValue:''
+	        sortValue:'',
+	        prikaz: "DEFAULT",
+	        amenities: null,
+	        type: ''
 	    }
 },
 template: ` 
 <div>
 	<table class="searchtable">
-		<tr>
+		<tr v-bind:hidden="prikaz!='DEFAULT'">
+			<td><button class="button" v-on:click="openSearch">Otvori pretragu</button></td>	
+		</tr>
+		<tr v-bind:hidden="prikaz=='DEFAULT'" >
 			<td><input class="searchInput" placeholder="Lokacija" type="text"  v-model="location" name="location"/></td>
 			<td><input class="searchInput" placeholder="Datum od" type="date"/></td>
 			<td><input class="searchInput" placeholder="Datum do" type="date"/></td>
 			<td><input class="searchInput" placeholder="Broj gostiju" min=0 type="number"/></td>
 		</tr>
-		<tr>
+		<tr v-bind:hidden="prikaz=='DEFAULT'">
 			<td><input class="searchInput" placeholder="Minimalno soba" min=0 type="number"/></td>
 			<td><input class="searchInput" placeholder="Maksimalno soba" min=0 type="number"/></td>
 			<td><input class="searchInput" placeholder="Minimalna cena" min=0 type="number"/></td>
 			<td><input class="searchInput" placeholder="Maksimalna cena" min=0 type="number"/></td
 		</tr>
-		<tr>
-			<td></td>
-			<td></td>
+		<tr v-bind:hidden="prikaz=='DEFAULT'" v-for="(amenity, index) in amenities">
+			<input type="checkbox" v-bind:value="amenity" v-model="selectedAmenities" :value="amenity"/>
+          {{amenity.name}}
+          </br>
+        </tr>
+		<tr v-bind:hidden="prikaz=='DEFAULT'">
+			<td>
+				<select class="select" name="apartmentType" v-model="type">
+				   <option class="option" value="soba">Soba</option>
+				   <option class="option" value="apartman">Apartman</option>
+				</select></td>
+			</td>
 			<td>
 				<select class="select" @change="onChange($event)" name="sort" v-model="sortValue">
-				   <option></option>
-				   <option value="rastuca">Cena rastuca</option>
-				   <option value="opadajuca">Cena opadajuca</option>
+				   <option class="option" value="rastuca">Cena rastuca</option>
+				   <option class="option" value="opadajuca">Cena opadajuca</option>
 				</select></td>
+			<td><button class="button" v-on:click="ponistipretragu">Ponisti pretragu</button></td>		
 			<td><button class="button" v-on:click="search">Pretrazi</button></td>		
 		</tr>
 </table>
@@ -107,6 +122,10 @@ template: `
 	    axios
 	      .get('/apartments')
 	      .then(response => (this.apartments = response.data))
+	      
+	   axios
+	     .get('/amenities')
+	     .then(response => (this.amenities = response.data))
 	},
 	computed: {
 	    computedWidth: function () {
@@ -114,8 +133,10 @@ template: `
 	    }
 	  },
 	  methods : {
+		  openSearch : function(){
+			  this.prikaz="PRETRAGA";
+		  },
 			search : function(){
-				alert(this.location);
 				if(this.location != '' || this.dateFrom != '' || this.dateTo != '' || this.numberOfGuest != '' || this.minRoom != '' || this.maxRoom != '' || this.minPrice != '' || this.maxPrice != ''|| this.sortValue != ''){
 					axios
 					.get('/apartments/search/parameters', {
@@ -134,10 +155,18 @@ template: `
 					.then(response => {
 						this.searchedApartments = response.data;
 						this.showSearched = true;
+						this.prikaz="DEFAULT";
 					});
 				}else{
 					this.showSearched = false;
+					this.prikaz="DEFATULT";
 				}
+			},
+			ponistipretragu: function(){
+				this.searchedApartments = null;
+				this.showSearched = false;
+				this.prikaz="DEFATULT";
+				
 			},
 			onChange(event) {
 				if(this.location != '' || this.dateFrom != '' || this.dateTo != '' || this.numberOfGuest != '' || this.minRoom != '' || this.maxRoom != '' || this.minPrice != '' || this.maxPrice != '' || this.sortValue != ''){
