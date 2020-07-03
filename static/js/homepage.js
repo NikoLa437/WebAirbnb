@@ -12,7 +12,8 @@ Vue.component("home-page", {
 	        minPrice:'',
 	        maxPrice:'',
 	        searchedApartments: null,
-	        showSearched:false
+	        showSearched:false,
+	        sortValue:''
 	    }
 },
 template: ` 
@@ -33,7 +34,12 @@ template: `
 		<tr>
 			<td></td>
 			<td></td>
-			<td></td>
+			<td>
+				<select class="select" @change="onChange($event)" name="sort" v-model="sortValue">
+				   <option></option>
+				   <option value="rastuca">Cena rastuca</option>
+				   <option value="opadajuca">Cena opadajuca</option>
+				</select></td>
 			<td><button class="button" v-on:click="search">Pretrazi</button></td>		
 		</tr>
 </table>
@@ -78,7 +84,6 @@ template: `
           			</td>
           		</tr>
           		
-          		
           		<tr>
           			<td><label v-if="apartment.type === 'room'">Soba</label>
           			<label v-else>Ceo apartman</label></td>
@@ -111,7 +116,7 @@ template: `
 	  methods : {
 			search : function(){
 				alert(this.location);
-				if(this.location != '' || this.dateFrom != '' || this.dateTo != '' || this.numberOfGuest != '' || this.minRoom != '' || this.maxRoom != '' || this.minPrice != '' || this.maxPrice != ''){
+				if(this.location != '' || this.dateFrom != '' || this.dateTo != '' || this.numberOfGuest != '' || this.minRoom != '' || this.maxRoom != '' || this.minPrice != '' || this.maxPrice != ''|| this.sortValue != ''){
 					axios
 					.get('/apartments/search/parameters', {
 					    params: {
@@ -122,7 +127,8 @@ template: `
 					        minRoom: this.minRoom,
 					        maxRoom : this.maxRoom,
 					        minPrice : this.minPrice,
-					        maxPrice : this.maxPrice
+					        maxPrice : this.maxPrice,
+					        sortValue: this.sortValue
 					      }
 					    })
 					.then(response => {
@@ -132,6 +138,32 @@ template: `
 				}else{
 					this.showSearched = false;
 				}
-			}
+			},
+			onChange(event) {
+				if(this.location != '' || this.dateFrom != '' || this.dateTo != '' || this.numberOfGuest != '' || this.minRoom != '' || this.maxRoom != '' || this.minPrice != '' || this.maxPrice != '' || this.sortValue != ''){
+					axios
+					.get('/apartments/search/parameters', {
+					    params: {
+					        location: this.location,
+					        dateFrom : this.dateFrom,
+					        dateTo : this.dateTo,
+					        numberOfGuest : this.numberOfGuest,
+					        minRoom: this.minRoom,
+					        maxRoom : this.maxRoom,
+					        minPrice : this.minPrice,
+					        maxPrice : this.maxPrice,
+					        sortValue: this.sortValue
+					      }
+					    })
+					.then(response => {
+						this.searchedApartments = response.data;
+						this.showSearched = true;
+					});
+				}else{
+					this.showSearched = false;
+				}
+	        }
+	 
+			
 		}
 });

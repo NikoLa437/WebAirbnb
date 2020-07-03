@@ -94,7 +94,26 @@ Vue.component("users", {
 			}else{
 				this.showSearched = false;
 			}
-		}
+		},
+		onChange(event) {
+			if(this.searchName != '' || this.searchUsername != '' || this.userType != '' || this.searchSurname != ''){
+				axios
+				.get('/users/search/parameters', {
+				    params: {
+				        username: this.searchUsername,
+				        name : this.searchName,
+				        surname : this.searchSurname,
+				        userType : this.userType
+				      }
+				    })
+				.then(response => {
+					this.searchedUsers = response.data;
+					this.showSearched = true;
+				});
+			}else{
+				this.showSearched = false;
+			}
+        }
 	}
 	
 });

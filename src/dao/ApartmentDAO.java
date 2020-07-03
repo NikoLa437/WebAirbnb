@@ -9,6 +9,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -140,7 +142,7 @@ public class ApartmentDAO {
 	    writer.close();
 	}
 	
-	public List<Apartment> searchApartments(String location, String datFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice) throws JsonSyntaxException, IOException{
+	public List<Apartment> searchApartments(String location, String datFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice, String sortValue) throws JsonSyntaxException, IOException{
 		
 		ArrayList<Apartment> list = (ArrayList<Apartment>) GetAll();
 		List<Apartment> retVal = new ArrayList<Apartment>();
@@ -149,6 +151,27 @@ public class ApartmentDAO {
 			if(!location.isEmpty() ? item.getLocation().getAdress().getCity().equals(location) : true)
 				retVal.add(item);
 		}		
+		
+		System.out.println(sortValue);
+		
+		if(sortValue.equals("rastuca")) {
+			Collections.sort(retVal, new Comparator<Apartment>() {
+				@Override
+				public int compare(Apartment o1, Apartment o2) {
+					// TODO Auto-generated method stub
+					return (int)(o1.getPriceForNight() - o2.getPriceForNight());
+				}
+			});	
+		}else if(sortValue.equals("opadajuca")) {
+			Collections.sort(retVal, new Comparator<Apartment>() {
+				@Override
+				public int compare(Apartment o1, Apartment o2) {
+					// TODO Auto-generated method stub
+					return (int)(o2.getPriceForNight() - o1.getPriceForNight());
+				}
+			});	
+		}
+		
 		return retVal;
 
 	}
