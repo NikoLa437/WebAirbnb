@@ -43,7 +43,7 @@ template: `
 			<td><button class="button" v-on:click="search">Pretrazi</button></td>		
 		</tr>
 </table>
-	<div v-bind:style="{ width: computedWidth }" style="background-color: lightBlue; display: block;
+	<div v-bind:style="{ width: computedWidth }" v-on:click="selectApartment(apartment.id)" style="background-color: lightBlue; display: block;
   margin-bottom: 25px;
   margin-left: auto;
   margin-right: auto;" v-for="(apartment, index) in apartments">
@@ -162,7 +162,10 @@ template: `
 				}else{
 					this.showSearched = false;
 				}
-	        }
+	        },
+	        selectApartment : function(id) {
+	        	window.location.href = "http://localhost:8080/#/apartmentDetails?id=" + id;
+	    	}
 	 
 			
 		}
