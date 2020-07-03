@@ -5,8 +5,8 @@ const users = { template: '<users></users>' }
 const amenities = { template: '<amenities></amenities>' }
 const login = { template: '<login></login>' }
 const apartment = { template: '<apartment></apartment>' }
-const apartmentDetails = { template: '<apartment-details :id="1"></apartment-details>' }
-
+const apartmentDetails = { template: '<apartment-details :id="2"></apartment-details>' }
+const reservation = { template: '<reservation :id="2"></reservation>' }
 
 
 const router = new VueRouter({
@@ -19,7 +19,8 @@ const router = new VueRouter({
 	    { path: '/amenities', component: amenities },
 	    { path: '/login', component: login },
 	    { path: '/apartment', component: apartment },
-	    { path: '/apartmentDetails', component: apartmentDetails }
+	    { path: '/apartmentDetails', component: apartmentDetails },
+	    { path: '/reservation', component: reservation}
 	  ]
 });
 
@@ -55,10 +56,8 @@ var app = new Vue({
 	        });
 			
 		}
-	}
+	},components : { vuejsDatepicker }
 });
-
-
 
 
 

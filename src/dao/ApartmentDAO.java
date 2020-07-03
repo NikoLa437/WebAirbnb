@@ -7,7 +7,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -16,7 +18,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import beans.Apartment;
-import beans.User;
+import beans.Period;
 
 
 public class ApartmentDAO {
@@ -52,6 +54,24 @@ public class ApartmentDAO {
 			}
 		}
 		return null;
+	}
+	
+	public List<Long> getOccupiedDates(String id) throws JsonSyntaxException, IOException{
+		Apartment apartment = get(id);
+		List<Long> retVal = new ArrayList<Long>();
+		for(Period p : apartment.getDateForRenting()) {
+			Date temp = p.getDateFrom();
+			Calendar c = Calendar.getInstance(); 
+			while(temp.compareTo(p.getDateTo()) <= 0) {
+				if(!apartment.getFreeDateForRenting().contains(temp)) {
+					retVal.add(temp.getTime());
+				}
+				c.setTime(temp); 
+				c.add(Calendar.DAY_OF_YEAR, 1);
+				temp = c.getTime();
+			}
+		}
+		return retVal;
 	}
 	
 	private int GetMaxID() throws JsonSyntaxException, IOException {

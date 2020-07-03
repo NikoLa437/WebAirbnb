@@ -16,6 +16,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import beans.Administrator;
+import beans.Apartment;
 import beans.Guest;
 import beans.Host;
 import beans.User;
@@ -68,6 +69,14 @@ public class UserDAO {
 		}
 		SaveAll(users);
 		return user;
+	}
+	
+	public boolean canUserComment(Guest user, String appartmentId) {
+		for (Apartment a : user.getRentedAppartments()) {
+			if(a.getId() == Integer.parseInt(appartmentId))
+				return true;
+		}
+		return false;
 	}
 	
 	public User get(String username) throws JsonSyntaxException, IOException {

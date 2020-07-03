@@ -75,6 +75,16 @@ public class ApartmentService {
 		return null;
 	}
 	
+	public String getOccupiedDates(String id) {
+		try {
+			return g.toJson(apartmentDao.getOccupiedDates(id));
+		} catch(Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public String getApartment(String id) {
 		try {
 			return g.toJson(apartmentDao.get(id));

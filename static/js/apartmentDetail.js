@@ -3,7 +3,9 @@ Vue.component("apartment-details", {
 	data: function () {
 	    return {
 	        apartment:null,
-	        picture:''
+	        picture:'',
+	        comment:'',
+	        canUserComment:null
 	    }
 	},
 	template: ` 
@@ -45,6 +47,9 @@ Vue.component("apartment-details", {
 					<td>Cena za jednu noc: </td>
 					<td class="infotext">{{apartment.priceForNight + ' dinara'}}</td>
 				</tr>
+				<tr>
+					<td colspan="2"><button id="buttonBrisanje" v-on:click="rezervisiClick">Rezervisi</button><br/></td>
+				</tr>
 			</table>
 		</td>	
 </tr>
@@ -55,13 +60,44 @@ Vue.component("apartment-details", {
 			<td>{{a.name}}</td>
 		</tr>
 </table>
-	
+
+<h3>Komentari: </h3>
+<table class="komentari">
+		<tr v-for="c in apartment.comments">
+			<td>
+				<table>
+					<tr><td>{{"Ocena: " + c.grade}}</td></tr>
+					<tr><td>{{"Ocenio: " + c.guest.name + ' ' + c.guest.surname}}</td></tr>
+					<tr><td>{{c.text}}</td></tr>
+				</table>
+			</td>
+		</tr>
+</table>
+
+<table class="komentari" v-bind:hidden="!canUserComment">
+		<tr>
+			<td><textarea class="inputComment"  name="comment" placeholder="Unesite komentar" cols="70" rows="10" v-model="comment"></textarea></td>
+		</tr>
+		<tr>
+			<td><button id="buttonBrisanje">Dodaj komentar</button><br/></td>
+		</tr>
+</table>
+
 </div>		  
 `,
 	mounted () {
 		axios
 		.get('/apartment/' + this.id)
 		.then(response => {this.apartment = response.data; this.picture = this.apartment.pictures[0];});
+		
+		axios
+		.get('/users/apartment/cancoment/' + this.id)
+		.then(response => {
+			if(response.data === true)
+				this.canUserComment = true;
+			else
+				this.canUserComment = false;
+		});
 	},
 	methods : {
 		myFunction : function(imgs) {
@@ -70,6 +106,9 @@ Vue.component("apartment-details", {
 		},
 		clickSpan : function(){
 			this.$refs.container.style.display='none';
+		},
+		rezervisiClick : function(){
+			window.location.href = "#/reservation";
 		}
 	}
 });

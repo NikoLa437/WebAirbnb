@@ -40,6 +40,21 @@
 	font-size:30;
 }
 
+.komentari{
+	margin: auto;
+}
+
+#inputComment{
+		width:60%;
+	border-radius: 10px;
+	font-size:18;
+	outline: none;
+	border: 1px solid black;
+		margin: auto;
+
+	
+}
+
 .infotext{
 	color:rgb(152, 0, 0);
 }
