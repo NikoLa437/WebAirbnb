@@ -20,8 +20,11 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import beans.Apartment;
+import beans.ApartmentStatus;
+import beans.ApartmentType;
 import beans.Period;
 import beans.Reservation;
+import beans.UserType;
 
 
 public class ApartmentDAO {
@@ -142,14 +145,41 @@ public class ApartmentDAO {
 	    writer.close();
 	}
 	
-	public List<Apartment> searchApartments(String location, String datFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice, String sortValue, String type, String apartmentStatus) throws JsonSyntaxException, IOException{
+	public List<Apartment> searchApartments(String location, String dateFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice, String sortValue, String type, String apartmentStatus) throws JsonSyntaxException, IOException{
 		
 		ArrayList<Apartment> list = (ArrayList<Apartment>) GetAll();
 		List<Apartment> retVal = new ArrayList<Apartment>();
+		
+		System.out.println(type);
+		
+		ApartmentType tip;
+		if(type.equals("soba"))
+			tip = ApartmentType.room;
+		else
+			tip = ApartmentType.apartment;
+		
+		ApartmentStatus status;
+		if(apartmentStatus.equals("aktivan"))
+			status = ApartmentStatus.active;
+		else
+			status = ApartmentStatus.inactive;
+		
 
+
+
+		//datefrom//dateto
 		for(Apartment item : list) {
-			if(!location.isEmpty() ? item.getLocation().getAdress().getCity().equals(location) : true)
+			if((!location.isEmpty() ? item.getLocation().getAdress().getCity().equals(location) : true) 
+					&& (!numberOfGuest.isEmpty()? item.getNumberOfGuest()==Integer.parseInt(numberOfGuest):true)
+					&& ((!minRoom.isEmpty())? (item.getNumberOfRoom()>=Integer.parseInt(minRoom)) :true)
+					&&((!maxRoom.isEmpty())? (item.getNumberOfRoom()<=Integer.parseInt(maxRoom)): true)
+					&& ((!minPrice.isEmpty())? (item.getPriceForNight()>=Integer.parseInt(minPrice)) :true)
+					&&((!maxPrice.isEmpty())? (item.getPriceForNight()<=Integer.parseInt(maxPrice)): true)
+					&&((!apartmentStatus.isEmpty())? (item.getStatus()==status): true)
+					&&((!type.isEmpty())? (item.getType()==tip): true))
 				retVal.add(item);
+				
+
 		}		
 		
 		System.out.println(sortValue);

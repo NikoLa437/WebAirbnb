@@ -32,13 +32,13 @@ template: `
 			<td><input class="searchInput" placeholder="Lokacija" type="text"  v-model="location" name="location"/></td>
 			<td><vuejs-datepicker v-model="dateFrom"></vuejs-datepicker></td>
 			<td><vuejs-datepicker v-model="dateTo"></vuejs-datepicker></td>
-			<td><input class="searchInput" placeholder="Broj gostiju" min=0 type="number"/></td>
+			<td><input class="searchInput" placeholder="Broj gostiju" min=0 type="number" v-model="numberOfGuest" name="numberOfGuest"/></td>
 		</tr>
 		<tr v-bind:hidden="!visibleSearchBar">
-			<td><input class="searchInput" placeholder="Minimalno soba" min=0 type="number"/></td>
-			<td><input class="searchInput" placeholder="Maksimalno soba" min=0 type="number"/></td>
-			<td><input class="searchInput" placeholder="Minimalna cena" min=0 type="number"/></td>
-			<td><input class="searchInput" placeholder="Maksimalna cena" min=0 type="number"/></td
+			<td><input class="searchInput" placeholder="Minimalno soba" min=0 type="number" v-model="minRoom" name="minRoom"/></td>
+			<td><input class="searchInput" placeholder="Maksimalno soba" min=0 type="number" v-model="maxRoom" name="maxRoom"/></td>
+			<td><input class="searchInput" placeholder="Minimalna cena" min=0 type="number" v-model="minPrice" name="minPrice"/></td>
+			<td><input class="searchInput" placeholder="Maksimalna cena" min=0 type="number" v-model="maxPrice" name="maxPrice"/></td
 		</tr>
 		<tr v-bind:hidden="!visibleSearchBar"><label>SADRZAJ</label></tr>
 		<tr v-bind:hidden="!visibleSearchBar" v-for="(amenity, index) in amenities">
@@ -160,7 +160,7 @@ template: `
 				  this.visibleSearchBar=true;
 			  },
 			search : function(){
-				if(this.location != '' || this.dateFrom != '' || this.dateTo != '' || this.numberOfGuest != '' || this.minRoom != '' || this.maxRoom != '' || this.minPrice != '' || this.maxPrice != ''|| this.sortValue != ''){
+				if(this.location != '' || this.dateFrom != '' || this.dateTo != '' || this.numberOfGuest != '' || this.minRoom != '' || this.maxRoom != '' || this.minPrice != '' || this.maxPrice != ''|| this.sortValue != '' || this.amenities !=null || this.apartmentStatus!='' || this.type!='' ){
 					axios
 					.get('/apartments/search/parameters', {
 					    params: {
@@ -184,6 +184,7 @@ template: `
 					});
 				}else{
 					this.showSearched = false;
+					this.searchedApartments = null;
 					this.visibleSearchBar=false;
 				}
 			},
