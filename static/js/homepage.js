@@ -13,47 +13,54 @@ Vue.component("home-page", {
 	        maxPrice:'',
 	        searchedApartments: null,
 	        showSearched:false,
+	        selectedAmenities: [],
 	        sortValue:'',
-	        prikaz: "DEFAULT",
+	        visibleSearchBar: false,
 	        amenities: null,
-	        type: ''
+	        type: '',
+	        apartmentStatus: '',
+	        mod: 'default'
 	    }
 },
 template: ` 
 <div>
 	<table class="searchtable">
-		<tr v-bind:hidden="prikaz!='DEFAULT'">
+		<tr v-bind:hidden="visibleSearchBar">
 			<td><button class="button" v-on:click="openSearch">Otvori pretragu</button></td>	
 		</tr>
-		<tr v-bind:hidden="prikaz=='DEFAULT'" >
+		<tr v-bind:hidden="!visibleSearchBar" >
 			<td><input class="searchInput" placeholder="Lokacija" type="text"  v-model="location" name="location"/></td>
-			<td><input class="searchInput" placeholder="Datum od" type="date"/></td>
-			<td><input class="searchInput" placeholder="Datum do" type="date"/></td>
+			<td><vuejs-datepicker v-model="dateFrom"></vuejs-datepicker></td>
+			<td><vuejs-datepicker v-model="dateTo"></vuejs-datepicker></td>
 			<td><input class="searchInput" placeholder="Broj gostiju" min=0 type="number"/></td>
 		</tr>
-		<tr v-bind:hidden="prikaz=='DEFAULT'">
+		<tr v-bind:hidden="!visibleSearchBar">
 			<td><input class="searchInput" placeholder="Minimalno soba" min=0 type="number"/></td>
 			<td><input class="searchInput" placeholder="Maksimalno soba" min=0 type="number"/></td>
 			<td><input class="searchInput" placeholder="Minimalna cena" min=0 type="number"/></td>
 			<td><input class="searchInput" placeholder="Maksimalna cena" min=0 type="number"/></td
 		</tr>
-		<tr v-bind:hidden="prikaz=='DEFAULT'" v-for="(amenity, index) in amenities">
+		<tr v-bind:hidden="!visibleSearchBar"><label>SADRZAJ</label></tr>
+		<tr v-bind:hidden="!visibleSearchBar" v-for="(amenity, index) in amenities">
 			<input type="checkbox" v-bind:value="amenity" v-model="selectedAmenities" :value="amenity"/>
           {{amenity.name}}
           </br>
         </tr>
-		<tr v-bind:hidden="prikaz=='DEFAULT'">
-			<td>
+		<tr v-bind:hidden="!visibleSearchBar">
+			<td colspan="2">
 				<select class="select" name="apartmentType" v-model="type">
 				   <option class="option" value="soba">Soba</option>
 				   <option class="option" value="apartman">Apartman</option>
-				</select></td>
-			</td>
-			<td>
+				</select>
 				<select class="select" @change="onChange($event)" name="sort" v-model="sortValue">
 				   <option class="option" value="rastuca">Cena rastuca</option>
 				   <option class="option" value="opadajuca">Cena opadajuca</option>
-				</select></td>
+				</select>
+				<select v-bind:hidden="mod!='ADMIN'" class="select" name="apartmentStatus" v-model="apartmentStatus">
+				   <option class="option" value="aktivan">Aktivan</option>
+				   <option class="option" value="neaktivan">Neaktivan</option>
+				</select>
+			</td>
 			<td><button class="button" v-on:click="ponistipretragu">Ponisti pretragu</button></td>		
 			<td><button class="button" v-on:click="search">Pretrazi</button></td>		
 		</tr>
@@ -88,7 +95,7 @@ template: `
           </table>
 	</div>
 	
-	<div v-bind:hidden="!showSearched" v-bind:style="{ width: computedWidth }" style="background-color: lightBlue; display: block;
+	<div v-bind:hidden="!showSearched" 	v-on:click="selectApartment(apartment.id)" v-bind:style="{ width: computedWidth }" style="background-color: lightBlue; display: block;
   margin-bottom: 25px;
   margin-left: auto;
   margin-right: auto;" v-for="(apartment, index) in searchedApartments">
@@ -117,7 +124,9 @@ template: `
           </table>
 	</div>
 </div>		  
-`, 
+`, components : { 
+		vuejsDatepicker
+	},
 	mounted () {
 	    axios
 	      .get('/apartments')
@@ -126,6 +135,20 @@ template: `
 	   axios
 	     .get('/amenities')
 	     .then(response => (this.amenities = response.data))
+	     
+	    axios
+        .get('/users/log/test')
+        .then(response => {
+        	if(response.data == null)
+        		this.mod='USER';
+        	else 
+        		if(response.data.userType == "Guest")
+        			this.mod='GUEST';
+        		else if(response.data.userType == "Host")
+        			this.mod='HOST';
+        		else 
+        			this.mod = 'ADMIN';
+        })
 	},
 	computed: {
 	    computedWidth: function () {
@@ -133,9 +156,9 @@ template: `
 	    }
 	  },
 	  methods : {
-		  openSearch : function(){
-			  this.prikaz="PRETRAGA";
-		  },
+			  openSearch : function(){
+				  this.visibleSearchBar=true;
+			  },
 			search : function(){
 				if(this.location != '' || this.dateFrom != '' || this.dateTo != '' || this.numberOfGuest != '' || this.minRoom != '' || this.maxRoom != '' || this.minPrice != '' || this.maxPrice != ''|| this.sortValue != ''){
 					axios
@@ -149,23 +172,25 @@ template: `
 					        maxRoom : this.maxRoom,
 					        minPrice : this.minPrice,
 					        maxPrice : this.maxPrice,
-					        sortValue: this.sortValue
+					        sortValue: this.sortValue,
+					        type: this.type,
+					        apartmentStatus: this.apartmentStatus
 					      }
 					    })
 					.then(response => {
 						this.searchedApartments = response.data;
 						this.showSearched = true;
-						this.prikaz="DEFAULT";
+						this.visibleSearchBar=false;
 					});
 				}else{
 					this.showSearched = false;
-					this.prikaz="DEFATULT";
+					this.visibleSearchBar=false;
 				}
 			},
 			ponistipretragu: function(){
 				this.searchedApartments = null;
 				this.showSearched = false;
-				this.prikaz="DEFATULT";
+				this.visibleSearchBar=false;
 				
 			},
 			onChange(event) {
@@ -173,7 +198,7 @@ template: `
 					axios
 					.get('/apartments/search/parameters', {
 					    params: {
-					        location: this.location,
+					    	location: this.location,
 					        dateFrom : this.dateFrom,
 					        dateTo : this.dateTo,
 					        numberOfGuest : this.numberOfGuest,
@@ -181,7 +206,9 @@ template: `
 					        maxRoom : this.maxRoom,
 					        minPrice : this.minPrice,
 					        maxPrice : this.maxPrice,
-					        sortValue: this.sortValue
+					        sortValue: this.sortValue,
+					        type: this.type,
+					        apartmentStatus: this.apartmentStatus
 					      }
 					    })
 					.then(response => {
@@ -195,7 +222,5 @@ template: `
 	        selectApartment : function(id) {
 	        	window.location.href = "http://localhost:8080/#/apartmentDetails?id=" + id;
 	    	}
-	 
-			
 		}
 });

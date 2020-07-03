@@ -142,7 +142,7 @@ public class ApartmentDAO {
 	    writer.close();
 	}
 	
-	public List<Apartment> searchApartments(String location, String datFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice, String sortValue) throws JsonSyntaxException, IOException{
+	public List<Apartment> searchApartments(String location, String datFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice, String sortValue, String type, String apartmentStatus) throws JsonSyntaxException, IOException{
 		
 		ArrayList<Apartment> list = (ArrayList<Apartment>) GetAll();
 		List<Apartment> retVal = new ArrayList<Apartment>();
