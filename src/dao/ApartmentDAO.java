@@ -46,6 +46,7 @@ public class ApartmentDAO {
 		List<Apartment> retVal = new ArrayList<Apartment>();
 		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
 		
+		
 		for(Apartment a : apartments) {
 				if(whatToGet == 0) {
 					if(a.getStatus()==ApartmentStatus.active) {
@@ -288,13 +289,13 @@ public class ApartmentDAO {
 	    writer.close();
 	}
 	
-	public List<Apartment> searchApartments(String location, String dateFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice, String sortValue, String type, String apartmentStatus,int whatToGet , String username) throws JsonSyntaxException, IOException{
+	public List<Apartment> searchApartments(String location, String dateFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice, String sortValue, String type, String apartmentStatus,List<Amenity> amenities,int whatToGet , String username) throws JsonSyntaxException, IOException{
 			
+		
+		
 			ArrayList<Apartment> list = (ArrayList<Apartment>) GetAllApartmentForUser(whatToGet, username);
 			List<Apartment> retVal = new ArrayList<Apartment>();
-			
-			System.out.println(type);
-			
+						
 			ApartmentType tip;
 			if(type.equals("soba"))
 				tip = ApartmentType.room;
@@ -316,11 +317,35 @@ public class ApartmentDAO {
 						&& ((!minPrice.isEmpty())? (item.getPriceForNight()>=Integer.parseInt(minPrice)) :true)
 						&&((!maxPrice.isEmpty())? (item.getPriceForNight()<=Integer.parseInt(maxPrice)): true)
 						&&((!apartmentStatus.isEmpty())? (item.getStatus()==status): true)
-						&&((!type.isEmpty())? (item.getType()==tip): true))
-					retVal.add(item);
+						&&((!type.isEmpty())? (item.getType()==tip): true)) {
 					
-	
-			}		
+					if(amenities.size()!=0) {
+						if(whatToGet==1) {
+							if(item.getStatus()==ApartmentStatus.active)
+								if(uporediListe(item.getAmenities(), amenities))
+									retVal.add(item);
+						}
+						else {
+							if(uporediListe(item.getAmenities(), amenities))
+								retVal.add(item);
+						}
+					}else {
+						if(whatToGet==1) {
+							if(item.getStatus()==ApartmentStatus.active)
+									retVal.add(item);
+						}else {
+							retVal.add(item);
+						}
+					}
+					
+					
+				}
+						
+
+			}	
+			
+			
+
 						
 			if(sortValue.equals("rastuca")) {
 				Collections.sort(retVal, new Comparator<Apartment>() {
@@ -343,6 +368,25 @@ public class ApartmentDAO {
 			return retVal;
 	
 		}
+	
+	private boolean uporediListe(List<Amenity> listaApartmana,List<Amenity> listaPretrage){
+		
+		
+		for(Amenity itemPretrage : listaPretrage) {
+			boolean postoji=false;
+			for(Amenity itemApartmana : listaApartmana) {
+				if(itemApartmana.getId()==itemPretrage.getId()) {
+					postoji=true;
+				}
+			}
+			if(!postoji) {
+				return false;
+			}
+			
+		}
+		
+		return true;
+	}
 	
 	public List<Reservation> searchReservation(String questUsername, String sortValue, String reservationStatus, int whatToGet , String username) throws JsonSyntaxException, IOException{
 		

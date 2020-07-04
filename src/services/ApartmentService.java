@@ -1,6 +1,7 @@
 package services;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -115,9 +116,9 @@ public class ApartmentService {
 		return g.toJson(null);
 	}
 	
-	public String searchApartments(String location, String datFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice, String sortValue, String type, String apartmentStatus, int whatToGet , String username) {
+	public String searchApartments(String location, String datFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice, String sortValue, String type, String apartmentStatus,List<Amenity> amenities, int whatToGet , String username) {
 		try {
-			return g.toJson(apartmentDao.searchApartments(location, datFrom, dateTo, numberOfGuest, minRoom, maxRoom, minPrice, maxPrice,sortValue,type,apartmentStatus,whatToGet,username));
+			return g.toJson(apartmentDao.searchApartments(location, datFrom, dateTo, numberOfGuest, minRoom, maxRoom, minPrice, maxPrice,sortValue,type,apartmentStatus,amenities,whatToGet,username));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
