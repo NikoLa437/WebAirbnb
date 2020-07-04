@@ -44,6 +44,7 @@ template: `
 		<tr v-bind:hidden="!visibleSearchBar" v-for="(amenity, index) in amenities">
 			<input type="checkbox" v-bind:value="amenity" v-model="selectedAmenities" :value="amenity"/>
           {{amenity.name}}
+          
           </br>
         </tr>
 		<tr v-bind:hidden="!visibleSearchBar">
@@ -64,7 +65,8 @@ template: `
 			<td><button class="button" v-on:click="ponistipretragu">Ponisti pretragu</button></td>		
 			<td><button class="button" v-on:click="search">Pretrazi</button></td>		
 		</tr>
-</table>
+	</table>
+	
 	<div v-bind:style="{ width: computedWidth }" v-on:click="selectApartment(apartment.id)" style="background-color: lightBlue; display: block;
   margin-bottom: 25px;
   margin-left: auto;
@@ -123,6 +125,7 @@ template: `
           
           </table>
 	</div>
+	
 </div>		  
 `, components : { 
 		vuejsDatepicker
@@ -174,7 +177,8 @@ template: `
 					        maxPrice : this.maxPrice,
 					        sortValue: this.sortValue,
 					        type: this.type,
-					        apartmentStatus: this.apartmentStatus
+					        apartmentStatus: this.apartmentStatus,
+					        amenities:JSON.stringify(this.selectedAmenities)
 					      }
 					    })
 					.then(response => {

@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import beans.Apartment;
 import beans.Guest;
@@ -17,6 +18,7 @@ import beans.Period;
 import beans.Reservation;
 import beans.ReservationStatus;
 import beans.User;
+import beans.Amenity;
 import services.ApartmentService;
 import spark.Session;
 
@@ -121,7 +123,8 @@ public class ApartmentController {
 				username=user.getUsername();
 			}
 			
-			return apartmentService.searchApartments(req.queryParams("location"), req.queryParams("dateFrom"), req.queryParams("dateTo"), req.queryParams("numberOfGuest"), req.queryParams("minRoom"), req.queryParams("maxRoom"), req.queryParams("minPrice"), req.queryParams("maxPrice"), req.queryParams("sortValue"), req.queryParams("type"), req.queryParams("apartmentStatus"),whatToGet,username);
+
+			return apartmentService.searchApartments(req.queryParams("location"), req.queryParams("dateFrom"), req.queryParams("dateTo"), req.queryParams("numberOfGuest"), req.queryParams("minRoom"), req.queryParams("maxRoom"), req.queryParams("minPrice"), req.queryParams("maxPrice"), req.queryParams("sortValue"), req.queryParams("type"), req.queryParams("apartmentStatus"),g.fromJson(req.queryParams("amenities"), new TypeToken<List<Amenity>>(){}.getType()),whatToGet,username);
 		});
 		
 		get("/reservation/search/parameters", (req,res) -> {
