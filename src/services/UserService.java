@@ -19,8 +19,8 @@ public class UserService {
 	private static Gson g;
 	private UserDAO userDao;
 	
-	public UserService() {
-		this.userDao = new UserDAO();
+	public UserService(UserDAO userDao) {
+		this.userDao = userDao;
 		RuntimeTypeAdapterFactory<User> userAdapterFactory = RuntimeTypeAdapterFactory.of(User.class)
 		        .registerSubtype(Guest.class)
 		        .registerSubtype(Administrator.class)
@@ -60,9 +60,9 @@ public class UserService {
 		return g.toJson(null);
 	}
 	
-	public String GetAll() {
+	public String GetAll(int whatToGet, String username) {
 		try {
-			return g.toJson(userDao.GetAll());
+			return g.toJson(userDao.GetAllByUserType(whatToGet, username));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

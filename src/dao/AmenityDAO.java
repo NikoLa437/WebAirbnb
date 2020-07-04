@@ -20,9 +20,11 @@ import beans.Amenity;
 public class AmenityDAO {
 	private final String path = "./files/amenities.json";
 	private static Gson g = new Gson();
+	private static ApartmentDAO apartmentDao;
+
 	
-	public AmenityDAO() {
-		
+	public AmenityDAO(ApartmentDAO apartmentDao) {
+		this.apartmentDao = apartmentDao;
 	}
 	
 	public List<Amenity> GetAll() throws JsonSyntaxException, IOException{
@@ -56,6 +58,7 @@ public class AmenityDAO {
 			}
 		}
 		SaveAll(amenities);
+		apartmentDao.deleteAllAmenities(Integer.parseInt(id));
 		return retVal;
 	}
 	
@@ -68,6 +71,7 @@ public class AmenityDAO {
 			}
 		}
 		SaveAll(amenities);
+		apartmentDao.updateAllAmenities(amenity);
 		return amenity;
 	}
 	

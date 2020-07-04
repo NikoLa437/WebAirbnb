@@ -1,5 +1,4 @@
 Vue.component("reservation", {
-	props: ['id'],
 	data: function () {
 	    return {
 	    	disabledDates : {
@@ -16,11 +15,11 @@ Vue.component("reservation", {
 <table>
 		<tr>
 			<td>Izaberite datum dolaska: </td>
-		  	<td><vuejs-datepicker v-model="selectedDate" :disabled-dates="disabledDates"></vuejs-datepicker></td>
+		  	<td><vuejs-datepicker  v-model="selectedDate" :disabled-dates="disabledDates"></vuejs-datepicker></td>
 		</tr>
 		<tr>
 			<td>Unesite broj dana: </td>
-		  	<td><input class="input" placeholder="Unesite broj dana" type="number" min="0" v-model="numberOfDays" name="numberOfDays"/></td>
+		  	<td><input class="input" placeholder="Unesite broj dana" type="number" min="1" v-model="numberOfDays" name="numberOfDays"/></td>
 		</tr>
 		<tr>
 			<td colspan="2"><button class="buttonSave" v-on:click="checkAvailability">Proverite raspolozivost</button><br/></td>
@@ -28,25 +27,25 @@ Vue.component("reservation", {
  </table>
  
  <div v-bind:hidden="available!='OCCUPIED'">
-	<h4 style="color:red">U periodu od {{selectedDate | dateFormat('DD.MM.YYYY')}} do {{(selectedDate.getTime() + parseInt(this.numberOfDays)*24*60*60*1000) | dateFormat('DD.MM.YYYY')}} nema slobodnih termina!</h4>
+	<h4 style="color:red">U periodu od {{selectedDate | dateFormat('DD.MM.YYYY')}} do {{(selectedDate.getTime() + (parseInt(this.numberOfDays)-1)*24*60*60*1000) | dateFormat('DD.MM.YYYY')}} nema slobodnih termina!</h4>
  </div>
  <div v-bind:hidden="available!='AVAILABLE'">
 	<h4>Slobodan termin pronadjen!</h4>
-	<table>
+	<table style="width=50%">
 		<tr>
 			<td>Datum od:</td>
 			<td>{{selectedDate | dateFormat('DD.MM.YYYY')}}</td>
 		</tr>
 		<tr>
 			<td>Datum do:</td>
-			<td>{{(selectedDate.getTime() + parseInt(this.numberOfDays)*24*60*60*1000) | dateFormat('DD.MM.YYYY')}}</td>
+			<td>{{(selectedDate.getTime() + (parseInt(this.numberOfDays)-1)*24*60*60*1000) | dateFormat('DD.MM.YYYY')}}</td>
 		</tr>
 		<tr>
 			<td>Cena:</td>
-			<td>{{apartment.priceForNight * parseInt(this.numberOfDays)}}</td>
+			<td>{{apartment.priceForNight * parseInt(this.numberOfDays)}} dinara</td>
 		</tr>
 		<tr>
-			<td colspan="2"><textarea class="inputComment"  name="note" placeholder="Unesite poruku za domacina" rows="10" v-model="note"></textarea></td>
+			<td colspan="2"><textarea class="inputComment"  name="note" placeholder="Unesite poruku za domacina"  cols="70" rows="10" v-model="note"></textarea></td>
 		</tr>
 		<tr>
 			<td colspan="2"><button class="buttonSave" v-on:click="reserve">Rezervisi</button><br/></td>
@@ -59,7 +58,7 @@ Vue.component("reservation", {
 	},
 	mounted () {
 		axios
-		.get('/apartment/occupied/' + this.id)
+		.get('/apartment/occupied/' + this.$route.query.id)
 		.then(response => {
 			let datess = [];
 			for(let d of response.data)
@@ -70,7 +69,23 @@ Vue.component("reservation", {
 		});
 		
 		axios
-		.get('/apartment/' + this.id)
+		.get('/apartment/occupiedRanges/' + this.$route.query.id)
+		.then(response => {
+			let ranges = [];
+			
+			for(let d of response.data){
+				if(d.dateTo != 0){
+					ranges.push({from : new Date(d.dateFrom), to : new Date(d.dateTo)});
+				}else{
+					this.disabledDates["from"] = new Date(d.dateFrom);
+				}
+			}
+			
+			this.disabledDates["ranges"] = ranges;
+		});
+		
+		axios
+		.get('/apartment/' + this.$route.query.id)
 		.then(response => (this.apartment = response.data));
 	},
 	methods : {
@@ -78,7 +93,7 @@ Vue.component("reservation", {
 			let numb = parseInt(this.numberOfDays);
 			let seldates = [(new Date(this.selectedDate.getFullYear(),this.selectedDate.getMonth() , this.selectedDate.getDate())).getTime()];
 			console.log(seldates);
-			for (i = 1; i <= numb; i++) {
+			for (i = 1; i < numb; i++) {
 				seldates.push((new Date(this.selectedDate.getFullYear(),this.selectedDate.getMonth() , this.selectedDate.getDate())).getTime() + 24*60*60*1000*i);
 			}
 			for(let d of this.disabledDates.dates){
@@ -94,7 +109,7 @@ Vue.component("reservation", {
 		reserve : function(){
 
 			let seldates = (new Date(this.selectedDate.getFullYear(),this.selectedDate.getMonth() , this.selectedDate.getDate())).getTime();
-			let reservation = { appartment : this.apartment, startDate : seldates, daysForStay : parseInt(this.numberOfDays), price : this.apartment.priceForNight * parseInt(this.numberOfDays)
+			let reservation = { appartment : this.apartment, startDate : seldates, daysForStay : parseInt(this.numberOfDays) - 1, price : this.apartment.priceForNight * parseInt(this.numberOfDays)
 								, message : this.note, guest : null, status : 'created'};
 			
 			axios

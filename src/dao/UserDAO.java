@@ -19,6 +19,8 @@ import beans.Administrator;
 import beans.Apartment;
 import beans.Guest;
 import beans.Host;
+import beans.Reservation;
+import beans.ReservationStatus;
 import beans.User;
 import beans.UserType;
 import dao.adapter.RuntimeTypeAdapterFactory;
@@ -40,6 +42,27 @@ public class UserDAO {
 	
 	public List<User> GetAll() throws JsonSyntaxException, IOException{		
 		return g.fromJson((Files.readAllLines(Paths.get(path),Charset.defaultCharset()).size() == 0) ? "" : Files.readAllLines(Paths.get(path),Charset.defaultCharset()).get(0), new TypeToken<List<User>>(){}.getType());
+	}
+	
+	public List<User> GetAllByUserType(int whatToGet, String username) throws JsonSyntaxException, IOException{		
+		ArrayList<User> users = (ArrayList<User>) GetAll();
+		List<User> retVal = new ArrayList<User>();
+		for(User u : users) {
+			if(whatToGet == 1) {
+				if(u instanceof Guest) {
+					for(Reservation r : ((Guest)u).getReservations()) {
+						if(r.getAppartment().getHost().getUsername().equals(username)) {
+							retVal.add(u);
+							break;
+						}
+					}
+				}
+			}else {
+				retVal.add(u);
+			}
+		}
+	
+		return retVal;
 	}
 	
 	public User Create(User user) throws JsonSyntaxException, IOException {
@@ -121,6 +144,26 @@ public class UserDAO {
 		}		
 		return retVal;
 
+	}
+	
+	public void changeReservationStatus(String id, ReservationStatus status) throws JsonIOException, IOException {
+		ArrayList<User> users = (ArrayList<User>) GetAll();
+		boolean changed = false;
+
+		for(User u : users) {
+			if(u.getUserType() == UserType.Guest) {
+				for(Reservation r : ((Guest)u).getReservations()) {
+					if(r.getId() == Integer.parseInt(id)) {
+						r.setStatus(status);
+						changed = true;
+						break;
+					}
+				}
+			}
+			if(changed)
+				break;
+		}
+		SaveAll(users);
 	}
 
 }

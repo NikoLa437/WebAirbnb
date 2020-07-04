@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class Reservation {
 
+	int id;
 	private Apartment appartment;
 	private long startDate;
 	private int daysForStay = 1;
@@ -14,9 +15,10 @@ public class Reservation {
 	
 	public Reservation() {}
 	
-	public Reservation(Apartment appartment, long startDate, int daysForStay, double price, String message, Guest guest,
+	public Reservation(int id, Apartment appartment, long startDate, int daysForStay, double price, String message, Guest guest,
 			ReservationStatus status) {
 		super();
+		this.id = id;
 		this.startDate = startDate;
 		this.daysForStay = daysForStay;
 		this.price = price;
@@ -26,7 +28,13 @@ public class Reservation {
 		this.appartment = appartment;
 	}
 
+	public int getId() {
+		return id;
+	}
 
+	public void setId(int id) {
+		this.id = id;
+	}
 	public Apartment getAppartment() {
 		return appartment;
 	}
