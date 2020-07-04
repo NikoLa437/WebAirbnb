@@ -221,7 +221,7 @@ template: `
 				}
 	        },
 	        selectApartment : function(id) {
-	        	window.location.href = "http://localhost:8080/#/apartmentDetails?id=" + id;
+	        	window.location.href = "#/apartmentDetails?id=" + id;
 	    	}
 		}
 });

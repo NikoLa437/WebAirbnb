@@ -40,7 +40,7 @@ Vue.component("reservations", {
 </table>
 <table>
 <tr>
-<td style="width:70%">
+<td style="width:70%;vertical-align:top">
 <table class="users" style="width:90%">
 		<tr>
 			<th>Tip</th>
@@ -80,7 +80,7 @@ Vue.component("reservations", {
 </table>
 </td>
 
-<td>
+<td style="vertical-align:top">
 		<table>
 			<tr>
 				<td>Datum dolaska:</td>

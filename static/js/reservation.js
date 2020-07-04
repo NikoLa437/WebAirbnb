@@ -45,6 +45,14 @@ Vue.component("reservation", {
 			<td>{{apartment.priceForNight * parseInt(this.numberOfDays)}} dinara</td>
 		</tr>
 		<tr>
+			<td>Vreme ulaska u apartman:</td>
+			<td>{{apartment.checkInTime}}</td>
+		</tr>
+		<tr>
+			<td>Vreme izlaska iz apartmana:</td>
+			<td>{{apartment.checkOutTime}}</td>
+		</tr>
+		<tr>
 			<td colspan="2"><textarea class="inputComment"  name="note" placeholder="Unesite poruku za domacina"  cols="70" rows="10" v-model="note"></textarea></td>
 		</tr>
 		<tr>
@@ -56,7 +64,7 @@ Vue.component("reservation", {
 `, components : { 
 		vuejsDatepicker
 	},
-	mounted () {
+	created (){
 		axios
 		.get('/apartment/occupied/' + this.$route.query.id)
 		.then(response => {
@@ -83,16 +91,20 @@ Vue.component("reservation", {
 			
 			this.disabledDates["ranges"] = ranges;
 		});
-		
+	},
+	mounted () {
 		axios
 		.get('/apartment/' + this.$route.query.id)
 		.then(response => (this.apartment = response.data));
+		
+		
+		
+		
 	},
 	methods : {
 		checkAvailability : function(){
 			let numb = parseInt(this.numberOfDays);
 			let seldates = [(new Date(this.selectedDate.getFullYear(),this.selectedDate.getMonth() , this.selectedDate.getDate())).getTime()];
-			console.log(seldates);
 			for (i = 1; i < numb; i++) {
 				seldates.push((new Date(this.selectedDate.getFullYear(),this.selectedDate.getMonth() , this.selectedDate.getDate())).getTime() + 24*60*60*1000*i);
 			}
@@ -104,6 +116,22 @@ Vue.component("reservation", {
 					}
 				}
 			}
+			let pomoc = [];
+			for(let d of this.disabledDates["ranges"]){
+				pomoc.push(d.from.getTime());
+				pomoc.push(d.to.getTime());
+			}
+			pomoc.push(this.disabledDates["from"].getTime());
+			
+			for(let d of pomoc){
+				for(let a of seldates){
+					if(a === d){
+						this.available = 'OCCUPIED';
+						return;
+					}
+				}
+			}
+			
 			this.available = 'AVAILABLE';
 		},
 		reserve : function(){
@@ -114,7 +142,7 @@ Vue.component("reservation", {
 			
 			axios
 			.post('/apartment/reserve', JSON.stringify(reservation))
-			.then(response => (toast('Uspesno ste rezervisali apartman!')));
+			.then(response => (window.location.href="#/reservations"));
 		}
 	},
     filters: {

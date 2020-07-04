@@ -95,8 +95,8 @@ public class UserDAO {
 	}
 	
 	public boolean canUserComment(Guest user, String appartmentId) {
-		for (Apartment a : user.getRentedAppartments()) {
-			if(a.getId() == Integer.parseInt(appartmentId))
+		for (Reservation r : user.getReservations()) {
+			if(r.getAppartment().getId() == Integer.parseInt(appartmentId) && r.getStatus() == ReservationStatus.done)
 				return true;
 		}
 		return false;

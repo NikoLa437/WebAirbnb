@@ -16,8 +16,8 @@ public class Apartment {
 	private List<Comment> comments;
 	private List<String> pictures;
 	private double priceForNight;
-	private long checkInTime = Date.UTC(0, 0, 0, 14, 0, 0);
-	private long checkOutTime = Date.UTC(0, 0, 0, 14, 0, 0);
+	private String checkInTime = "14:00";
+	private String checkOutTime ="14:00";
 	private ApartmentStatus status;
 	private List<Amenity> amenities;
 	private List<Reservation> reservations;
@@ -30,7 +30,7 @@ public class Apartment {
 
 	public Apartment(int id,ApartmentType type, int numberOfRoom, int numberOfGuest, Location location,
 			List<Period> dateForRenting, List<Long> freeDateForRenting, Host host, List<Comment> comments,
-			List<String> pictures, double priceForNight, long checkInTime, long checkOutTime, ApartmentStatus status,
+			List<String> pictures, double priceForNight, String checkInTime, String checkOutTime, ApartmentStatus status,
 			List<Amenity> amenities, List<Reservation> reservations) {
 		super();
 		this.id=id;
@@ -161,22 +161,22 @@ public class Apartment {
 	}
 
 
-	public long getCheckInTime() {
+	public String getCheckInTime() {
 		return checkInTime;
 	}
 
 
-	public void setCheckInTime(long checkInTime) {
+	public void setCheckInTime(String checkInTime) {
 		this.checkInTime = checkInTime;
 	}
 
 
-	public long getCheckOutTime() {
+	public String getCheckOutTime() {
 		return checkOutTime;
 	}
 
 
-	public void setCheckOutTime(long checkOutTime) {
+	public void setCheckOutTime(String checkOutTime) {
 		this.checkOutTime = checkOutTime;
 	}
 

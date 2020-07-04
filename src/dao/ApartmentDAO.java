@@ -69,11 +69,26 @@ public class ApartmentDAO {
 		if(apartments == null) {
 			apartments = new ArrayList<Apartment>();
 		}
+		if(apartment.getDateForRenting().size() > 0)
+			apartment.setFreeDateForRenting(setFreeDateFromPeriod(apartment.getDateForRenting().get(0)));
 		apartments.add(apartment);
 		SaveAll(apartments);
 		return apartment;
 	}
 	
+	private List<Long> setFreeDateFromPeriod(Period period) {
+		List<Long> retVal = new ArrayList<Long>();
+			
+		long temp = period.getDateFrom();
+		long endDate = period.getDateTo();
+
+		while(temp <= endDate) {
+			retVal.add(temp);
+			temp += 24*60*60*1000;
+		}
+		return retVal;
+	}
+
 	public Apartment get(String id) throws JsonSyntaxException, IOException {
 		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
 		if(apartments != null) {
@@ -175,17 +190,17 @@ public class ApartmentDAO {
 			for(Reservation r : a.getReservations()) {
 				if(whatToGet == 0) {
 					if(r.getGuest().getUsername().equals(username)) {
-						r.setAppartment(new Apartment(a.getId(),a.getType(),a.getNumberOfRoom(),a.getNumberOfGuest(),a.getLocation(), null, null, null, null, null,0, 0, 0, null, null, null));
+						r.setAppartment(new Apartment(a.getId(),a.getType(),a.getNumberOfRoom(),a.getNumberOfGuest(),a.getLocation(), null, null, null, null, null,0,"", "", null, null, null));
 						retVal.add(r);
 					}
 				}else if(whatToGet == 1) {
 					if(a.getHost().getUsername().equals(username)) {
-						r.setAppartment(new Apartment(a.getId(),a.getType(),a.getNumberOfRoom(),a.getNumberOfGuest(),a.getLocation(), null, null, null, null, null,0, 0, 0, null, null, null));
+						r.setAppartment(new Apartment(a.getId(),a.getType(),a.getNumberOfRoom(),a.getNumberOfGuest(),a.getLocation(), null, null, null, null, null,0,"", "", null, null, null));
 						retVal.add(r);
 					}
 				}
 				else {
-					r.setAppartment(new Apartment(a.getId(),a.getType(),a.getNumberOfRoom(),a.getNumberOfGuest(),a.getLocation(), null, null, null, null, null,0, 0, 0, null, null, null));
+					r.setAppartment(new Apartment(a.getId(),a.getType(),a.getNumberOfRoom(),a.getNumberOfGuest(),a.getLocation(), null, null, null, null, null,0,"", "", null, null, null));
 					retVal.add(r);
 				}
 			}

@@ -29,18 +29,7 @@ public class ApartmentController {
 			Session ss = req.session(true);
 			Host user = ss.attribute("user");
 			Apartment a = g.fromJson(req.body(), Apartment.class);
-			//user.setAppartments(null);
-			List<Period> p = new ArrayList<Period>();
-			p.add(new Period(1596578400000l, 1599256800000l));
-			List<Long> dddd = new ArrayList<Long>();
-			dddd.add(1596405600000l);
-			dddd.add(1597183200000l);
-			dddd.add(1596837600000l);
-			dddd.add(1597096800000l);
-			dddd.add(1596751200000l);
-
-			a.setDateForRenting(p);
-			a.setFreeDateForRenting(dddd);
+			//user.setAppartments(null)
 			a.setHost(user);
 			return apartmentService.Create(a);
 			
