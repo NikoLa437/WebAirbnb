@@ -305,10 +305,22 @@ public class ApartmentDAO {
 						&&((!type.isEmpty())? (item.getType()==tip): true)) {
 					
 					if(amenities.size()!=0) {
-						if(uporediListe(item.getAmenities(), amenities))
-							retVal.add(item);
+						if(whatToGet==1) {
+							if(item.getStatus()==ApartmentStatus.active)
+								if(uporediListe(item.getAmenities(), amenities))
+									retVal.add(item);
+						}
+						else {
+							if(uporediListe(item.getAmenities(), amenities))
+								retVal.add(item);
+						}
 					}else {
-						retVal.add(item);
+						if(whatToGet==1) {
+							if(item.getStatus()==ApartmentStatus.active)
+									retVal.add(item);
+						}else {
+							retVal.add(item);
+						}
 					}
 					
 					
