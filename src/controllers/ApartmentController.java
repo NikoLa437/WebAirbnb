@@ -85,6 +85,21 @@ public class ApartmentController {
 		
 		get("/apartments/search/parameters", (req,res) -> apartmentService.searchApartments(req.queryParams("location"), req.queryParams("dateFrom"), req.queryParams("dateTo"), req.queryParams("numberOfGuest"), req.queryParams("minRoom"), req.queryParams("maxRoom"), req.queryParams("minPrice"), req.queryParams("maxPrice"), req.queryParams("sortValue"), req.queryParams("type"), req.queryParams("apartmentStatus")));
 
+		get("/reservation/search/parameters", (req,res) -> {
+			Session ss = req.session(true);
+			User user = ss.attribute("user");
+			int whatToGet = -1;
+			if(user instanceof Guest)
+				whatToGet = 0;
+			else if(user instanceof Host)
+				whatToGet = 1;
+			else 
+				whatToGet = 2;
+			
+			return apartmentService.searchReservation(req.queryParams("guestUsername"), req.queryParams("sortValue"), req.queryParams("reservationStatus"),whatToGet, user.getUsername());
+		
+		});
+		
 		put("/apartment/accept/:id", (req,res) -> (apartmentService.changeReservationStatus(req.params("id"),ReservationStatus.accepted)));
 		
 		put("/apartment/reject/:id", (req,res) -> (apartmentService.changeReservationStatus(req.params("id"),ReservationStatus.rejected)));

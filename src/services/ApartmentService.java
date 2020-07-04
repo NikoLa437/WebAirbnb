@@ -124,6 +124,16 @@ public class ApartmentService {
 		return null;
 	}
 	
+	public String searchReservation(String questUsername, String sortValue, String reservationStatus, int whatToGet , String username) {
+		try {
+			return g.toJson(apartmentDao.searchReservation(questUsername, sortValue, reservationStatus,whatToGet,username));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
 	public boolean changeReservationStatus(String id, ReservationStatus status) {
 		try {
 			return apartmentDao.changeReservationStatus(id, status);

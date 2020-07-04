@@ -4,11 +4,40 @@ Vue.component("reservations", {
 	        reservations: null,
 	        selectedReservation : {},
 	    	status : '',
-	    	userType : null
+	    	userType : null,
+	    	guestUsername: '',
+	    	sortValue:'',
+	    	reservationStatus:'',
+	    	searchedReservations: null,
+	        showSearched:false,
 	    }
 	},
 	template: ` 
 <div>
+<table class="searchtable" style="margin-bottom: 50px;">
+		<tr>
+			<td><input class="searchSelect" placeholder="Korisnicko ime gosta" type="text"  v-model="guestUsername" name="guestUsername"/></td>
+			<td>
+				<select class="searchSelect" @change="onChange($event)" name="sortValue" v-model="sortValue">
+				   <option class="option" value=""></option>
+				   <option class="option" value="rastuca">Cena rastuca</option>
+				   <option class="option" value="opadajuca">Cena opadajuca</option>
+				</select>
+			</td>
+			<td>
+				<select class="searchSelect" name="reservationStatus" v-model="reservationStatus">
+				   <option class="option" value=""></option>
+				   <option class="option" value="kreirano">Kreirano</option>
+				   <option class="option" value="odbijeno">Odbijeno</option>
+				   <option class="option" value="otkazano">Otkazano</option>
+				   <option class="option" value="prihvaceno">Prihvaceno</option>
+				   <option class="option" value="zavrseno">Zavrseno</option>
+				</select>
+			</td>
+			<td><button class="button" v-on:click="ponistipretragu">Ponisti pretragu</button></td>		
+			<td><button class="button" v-on:click="search">Pretrazi</button></td>		
+		</tr>
+</table>
 <table>
 <tr>
 <td style="width:70%">
@@ -19,18 +48,29 @@ Vue.component("reservations", {
 			<th>Datum dolaska</th>
 			<th>Datum povratka</th>
 			<th>Cena boravka</th>
-			<th>Ime gosta</th>
-			<th>Prezime gosta</th>
+			<th>Username gosta</th>
 			<th>Status</th>
 		</tr>
-		<tr v-for="r in reservations" v-on:click="selectReservation(r)" v-bind:class="{selected : selectedReservation.id===r.id}">
+		<tr v-bind:hidden="showSearched" v-for="r in reservations" v-on:click="selectReservation(r)" v-bind:class="{selected : selectedReservation.id===r.id}">
 			<td>{{(r.appartment.type == 'apartment') ? 'Apartman' : 'Soba'}}</td>
 			<td>{{r.appartment.location.adress.street + ' ' + r.appartment.location.adress.streetNumber + ', ' + r.appartment.location.adress.postNumber + ' ' + r.appartment.location.adress.city}}</td>
 			<td>{{r.startDate | dateFormat('DD.MM.YYYY')}}</td>
 			<td>{{r.startDate + r.daysForStay*24*60*60*1000 | dateFormat('DD.MM.YYYY')}}</td>
 			<td>{{r.price}} dinara</td>
-			<td>{{r.guest.name}}</td>
-			<td>{{r.guest.surname}}</td>
+			<td>{{r.guest.username}}</td>
+			<td v-if="r.status ==='created'">Kreirano</td>
+			<td v-else-if="r.status ==='rejected'">Odbijeno</td>
+			<td v-else-if="r.status ==='withdraw'">Otkazano</td>
+			<td v-else-if="r.status ==='accepted'">Prihvaceno</td>
+			<td v-else>Zavrseno</td>
+		</tr>
+		<tr v-bind:hidden="!showSearched" v-for="r in searchedReservations" v-on:click="selectReservation(r)" v-bind:class="{selected : selectedReservation.id===r.id}">
+			<td>{{(r.appartment.type == 'apartment') ? 'Apartman' : 'Soba'}}</td>
+			<td>{{r.appartment.location.adress.street + ' ' + r.appartment.location.adress.streetNumber + ', ' + r.appartment.location.adress.postNumber + ' ' + r.appartment.location.adress.city}}</td>
+			<td>{{r.startDate | dateFormat('DD.MM.YYYY')}}</td>
+			<td>{{r.startDate + r.daysForStay*24*60*60*1000 | dateFormat('DD.MM.YYYY')}}</td>
+			<td>{{r.price}} dinara</td>
+			<td>{{r.guest.username}}</td>
 			<td v-if="r.status ==='created'">Kreirano</td>
 			<td v-else-if="r.status ==='rejected'">Odbijeno</td>
 			<td v-else-if="r.status ==='withdraw'">Otkazano</td>
@@ -161,6 +201,29 @@ Vue.component("reservations", {
 			}else{
 				toast("Prelazak u status 'Zavrseno' je moguce za one rezervacije koje su zavrsene!");		
 			}
+		},
+		search : function(){
+			if(this.guestUsername != '' || this.sortValue != '' || this.reservationStatus != '' ){
+				axios
+				.get('/reservation/search/parameters', {
+				    params: {
+				    	guestUsername: this.guestUsername,
+				    	sortValue : this.sortValue,
+				    	reservationStatus : this.reservationStatus,
+				      }
+				    })
+				.then(response => {
+					this.searchedReservations = response.data;
+					this.showSearched = true;
+				});
+			}else{
+				this.showSearched = false;
+				this.searchedReservations = null;
+			}
+		},
+		ponistipretragu: function(){
+			this.searchedReservations = null;
+			this.showSearched = false;
 		}
 		
 	},

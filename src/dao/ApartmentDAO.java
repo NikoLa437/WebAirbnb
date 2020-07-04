@@ -252,63 +252,109 @@ public class ApartmentDAO {
 	    writer.close();
 	}
 	
-public List<Apartment> searchApartments(String location, String dateFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice, String sortValue, String type, String apartmentStatus) throws JsonSyntaxException, IOException{
+	public List<Apartment> searchApartments(String location, String dateFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice, String sortValue, String type, String apartmentStatus) throws JsonSyntaxException, IOException{
+			
+			ArrayList<Apartment> list = (ArrayList<Apartment>) GetAll();
+			List<Apartment> retVal = new ArrayList<Apartment>();
+			
+			System.out.println(type);
+			
+			ApartmentType tip;
+			if(type.equals("soba"))
+				tip = ApartmentType.room;
+			else
+				tip = ApartmentType.apartment;
+			
+			ApartmentStatus status;
+			if(apartmentStatus.equals("aktivan"))
+				status = ApartmentStatus.active;
+			else
+				status = ApartmentStatus.inactive;
+	
+			//datefrom//dateto
+			for(Apartment item : list) {
+				if((!location.isEmpty() ? item.getLocation().getAdress().getCity().equals(location) : true) 
+						&& (!numberOfGuest.isEmpty()? item.getNumberOfGuest()==Integer.parseInt(numberOfGuest):true)
+						&& ((!minRoom.isEmpty())? (item.getNumberOfRoom()>=Integer.parseInt(minRoom)) :true)
+						&&((!maxRoom.isEmpty())? (item.getNumberOfRoom()<=Integer.parseInt(maxRoom)): true)
+						&& ((!minPrice.isEmpty())? (item.getPriceForNight()>=Integer.parseInt(minPrice)) :true)
+						&&((!maxPrice.isEmpty())? (item.getPriceForNight()<=Integer.parseInt(maxPrice)): true)
+						&&((!apartmentStatus.isEmpty())? (item.getStatus()==status): true)
+						&&((!type.isEmpty())? (item.getType()==tip): true))
+					retVal.add(item);
+					
+	
+			}		
+						
+			if(sortValue.equals("rastuca")) {
+				Collections.sort(retVal, new Comparator<Apartment>() {
+					@Override
+					public int compare(Apartment o1, Apartment o2) {
+						// TODO Auto-generated method stub
+						return (int)(o1.getPriceForNight() - o2.getPriceForNight());
+					}
+				});	
+			}else if(sortValue.equals("opadajuca")) {
+				Collections.sort(retVal, new Comparator<Apartment>() {
+					@Override
+					public int compare(Apartment o1, Apartment o2) {
+						// TODO Auto-generated method stub
+						return (int)(o2.getPriceForNight() - o1.getPriceForNight());
+					}
+				});	
+			}
+			
+			return retVal;
+	
+		}
+	
+	public List<Reservation> searchReservation(String questUsername, String sortValue, String reservationStatus, int whatToGet , String username) throws JsonSyntaxException, IOException{
 		
-		ArrayList<Apartment> list = (ArrayList<Apartment>) GetAll();
-		List<Apartment> retVal = new ArrayList<Apartment>();
+		ArrayList<Reservation> list = (ArrayList<Reservation>) getAllReservations(whatToGet,username);
+		List<Reservation> retVal = new ArrayList<Reservation>();
 		
-		System.out.println(type);
-		
-		ApartmentType tip;
-		if(type.equals("soba"))
-			tip = ApartmentType.room;
-		else
-			tip = ApartmentType.apartment;
-		
-		ApartmentStatus status;
-		if(apartmentStatus.equals("aktivan"))
-			status = ApartmentStatus.active;
-		else
-			status = ApartmentStatus.inactive;
+		ReservationStatus status;
+		if(reservationStatus.equals("kreirano"))
+			status = ReservationStatus.created;
+		else if(reservationStatus.equals("odbijeno"))
+			status = ReservationStatus.rejected;
+		else if(reservationStatus.equals("otkazano"))
+			status = ReservationStatus.withdraw;
+		else if(reservationStatus.equals("prihvaceno"))
+			status = ReservationStatus.accepted;
+		else 
+			status = ReservationStatus.done;
 
-		//datefrom//dateto
-		for(Apartment item : list) {
-			if((!location.isEmpty() ? item.getLocation().getAdress().getCity().equals(location) : true) 
-					&& (!numberOfGuest.isEmpty()? item.getNumberOfGuest()==Integer.parseInt(numberOfGuest):true)
-					&& ((!minRoom.isEmpty())? (item.getNumberOfRoom()>=Integer.parseInt(minRoom)) :true)
-					&&((!maxRoom.isEmpty())? (item.getNumberOfRoom()<=Integer.parseInt(maxRoom)): true)
-					&& ((!minPrice.isEmpty())? (item.getPriceForNight()>=Integer.parseInt(minPrice)) :true)
-					&&((!maxPrice.isEmpty())? (item.getPriceForNight()<=Integer.parseInt(maxPrice)): true)
-					&&((!apartmentStatus.isEmpty())? (item.getStatus()==status): true)
-					&&((!type.isEmpty())? (item.getType()==tip): true))
+		for(Reservation item : list) {
+			if((!reservationStatus.isEmpty()? item.getStatus()==status : true)
+					&& (!questUsername.isEmpty()? item.getGuest().getUsername().equals(questUsername) : true))
 				retVal.add(item);
-				
-
-		}		
-		
-		System.out.println(sortValue);
+		}	
 		
 		if(sortValue.equals("rastuca")) {
-			Collections.sort(retVal, new Comparator<Apartment>() {
+			Collections.sort(retVal, new Comparator<Reservation>() {
 				@Override
-				public int compare(Apartment o1, Apartment o2) {
+				public int compare(Reservation o1, Reservation o2) {
 					// TODO Auto-generated method stub
-					return (int)(o1.getPriceForNight() - o2.getPriceForNight());
+					return (int)(o1.getPrice() - o2.getPrice());
 				}
 			});	
 		}else if(sortValue.equals("opadajuca")) {
-			Collections.sort(retVal, new Comparator<Apartment>() {
+			Collections.sort(retVal, new Comparator<Reservation>() {
 				@Override
-				public int compare(Apartment o1, Apartment o2) {
+				public int compare(Reservation o1, Reservation o2) {
 					// TODO Auto-generated method stub
-					return (int)(o2.getPriceForNight() - o1.getPriceForNight());
+					return (int)(o2.getPrice() - o1.getPrice());
 				}
 			});	
 		}
 		
+		
+		
 		return retVal;
 
 	}
+
 
 	
 	public boolean changeReservationStatus(String id, ReservationStatus status) throws JsonSyntaxException, IOException {
