@@ -28,16 +28,6 @@ public class HolidayService {
 	}
 	
 	
-	public String Update(Holiday holiday) {
-		try {
-			holidayDao.Update(holiday);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return g.toJson(holiday);		
-	}
-	
 	public String GetAll() {
 		try {
 			return g.toJson(holidayDao.GetAll());

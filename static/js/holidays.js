@@ -27,25 +27,12 @@ Vue.component("holidays", {
 			</tr>
 		</table>
 	</td>
-	<td>
-			<table  v-bind:hidden="mode=='BROWSE'">
-				<tr>
-					<td class="amenitytd">Naziv sadrzaja:</td>
-				</tr>
-				<tr>
-					<td><input class="input" placeholder="Unesite naziv sadrzaja" type="text"  v-model="selectHoliday.name" v-bind:disabled="mode=='BROWSE'" name="holidayName"/></td>
-				</tr>
-				<tr>
-					<td align="center"><input type="submit" id="submit" v-on:click="updateHoliday(selectedHoliday)" value="Sacuvaj"/>	<button v-on:click="cancelEditing" id="buttonOdustanak" v-bind:disabled="mode=='BROWSE'">Odustanak</button> <br /></td>
-				</tr>
-			</table>
-	</td>
+
 </tr>
 
 </table>
 <table>
 <tr>
-		<td><button v-on:click="editHoliday" v-bind:disabled="selectedHoliday==null" class="buttonGray">Izmeni</button><br />
 		<td><button v-on:click="deleteHoliday(selectedHoliday)" v-bind:disabled="selectedHoliday==null" class="buttonChange">Izbrisi</button><br />
 </td>
 </tr>
@@ -104,21 +91,25 @@ Vue.component("holidays", {
 			          });
 				}
 			},
-			updateHoliday: function(holiday){
-				
-			},
-			editHoliday : function() {
-	    		
-	    	},
 	    	selectHoliday : function(holiday) {
-	    		
+	    		if (this.mode == 'BROWSE') {
+	    			this.selectedHoliday = holiday;
+	    		}
 	    	},
-	    	cancelEditing : function() {
-	    		
-	    	},
-	    	
 	    	deleteHoliday : function(holiday){
-	    		
+	    		let id = holiday.id;
+	    		axios
+	    		.delete("/holidays/" + id)
+	    		.then(response => {
+	    			for(let item of this.holidays){
+	    				if(item.id === id){
+	    					const index = this.holidays.indexOf(item);
+	    					this.holidays.splice(index, 1);
+	    					break;
+	    				}
+	    			}
+	    			toast('Praznik ' + holiday.name + " uspešno izbrisan.");
+	    		});
 	    	}
 	},
 	filters: {

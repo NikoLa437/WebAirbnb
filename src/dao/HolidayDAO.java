@@ -64,18 +64,6 @@ public class HolidayDAO {
 		return retVal;
 	}
 	
-	public Holiday Update(Holiday holiday) throws JsonSyntaxException, IOException {
-		ArrayList<Holiday> holidays = (ArrayList<Holiday>) GetAll();
-		for(Holiday item : holidays) {
-			if(item.getId() == holiday.getId()) {
-				item.setName(holiday.getName());
-				break;
-			}
-		}
-		SaveAll(holidays);
-		return holiday;
-	}
-	
 	private int GetMaxID() throws JsonSyntaxException, IOException {
 		int maxId = 0;
 		ArrayList<Holiday> holidays = (ArrayList<Holiday>) GetAll();

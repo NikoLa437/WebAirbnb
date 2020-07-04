@@ -1,5 +1,6 @@
 package controllers;
 
+import static spark.Spark.delete;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
@@ -17,5 +18,8 @@ public class HolidayController {
 			
 			post("/holidays/add", (req, res) -> 
 				holidayService.Create(g.fromJson(req.body(), Holiday.class)));
+			
+			delete("/holidays/:id", (req,res) -> holidayService.Delete(req.params("id")));
+
 	}
 }
