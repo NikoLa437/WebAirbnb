@@ -22,8 +22,7 @@ Vue.component("apartment", {
 		        amenities: null,
 		        checkedAmenities: {},
 		        selectedAmenities: [],
-		        url: {},
-		        dateFrom: '',
+		        dateFrom: new Date(Date.now() + 24*60*60*1000),
 		        dateFromError: '',
 		        dateTo: '',
 		        dateToError: '',
@@ -34,9 +33,10 @@ Vue.component("apartment", {
 		        street:'',
 		        streetError:'',
 		        streetNumber:'',
+		        url: null,
 		        streetNumberError:'',
 		        images: []
-		    }
+			    }
 	},
 	template: ` 
 <div>
@@ -86,12 +86,12 @@ Vue.component("apartment", {
 		</tr>
 		<tr>
 			<td>Datum od:</td>
-			<td><input class="input" placeholder="Unesite pocetni datum" type="date" v-model="dateFrom" name="dateFrom"></td>
+			<td><vuejs-datepicker placeholder="Unesite pocetni datum" v-model="dateFrom" ></vuejs-datepicker></td>
 			<td ><p style="color: red" >{{dateFromError}}</p></td>	
 		</tr>
 		<tr>
 			<td>Datum do:</td>
-			<td><input class="input" placeholder="Unestice krajnji datum" type="date" v-model="dateTo" name="dateTo"></td>
+			<td><vuejs-datepicker placeholder="Unesite krajnji datum" v-model="dateTo" ></vuejs-datepicker></td>
 			<td ><p style="color: red" >{{dateToError}}</p></td>	
 		</tr>
 		<tr>
@@ -99,8 +99,11 @@ Vue.component("apartment", {
 		</tr>
 	</table>
 	    
-	   <input type="file" @change="onFileChange" />
+  <input type="file" @change="onFileChange" />
 
+  <div id="preview">
+    <img v-if="url" :src="url" />
+  </div>
 	
 	<h1>Sadrzaj apartmana:</h1>
 	
@@ -152,7 +155,9 @@ Vue.component("apartment", {
 
   </div>
 </div>
-`
+`,components : { 
+	vuejsDatepicker
+}
 	,
 	mounted(){
 		axios
@@ -171,7 +176,7 @@ Vue.component("apartment", {
 			this.numberOfGuestsError='';
 			this.priceError='';
 			this.checkInTimeError='';
-			
+						
 		    if(this.apartmentType == "")
 				this.apartmentTypeError =  'Tip apartmana je obavezno polje!';
 			else if(this.numberOfRooms == "")
@@ -235,10 +240,10 @@ Vue.component("apartment", {
 				}
 		}
 	},
-	uploadImage(event) {
-
-	    images.append(event.target.files[0]); 
-	  },
+	onFileChange(e) {
+	      const file = e.target.files[0];
+	      this.url = URL.createObjectURL(file);
+	    },
     
 });
 

@@ -26,7 +26,7 @@ public class ApartmentController {
 			Session ss = req.session(true);
 			Host user = ss.attribute("user");
 			Apartment a = g.fromJson(req.body(), Apartment.class);
-			user.setAppartments(null);
+			//user.setAppartments(null);
 			List<Period> p = new ArrayList<Period>();
 			p.add(new Period(1596578400000l, 1599256800000l));
 			List<Long> dddd = new ArrayList<Long>();
