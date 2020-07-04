@@ -67,9 +67,9 @@ public class ApartmentService {
 		return g.toJson(apartment);		
 	}
 	
-	public String GetAll() {
+	public String GetAll(int whatToGet, String username) {
 		try {
-			return g.toJson(apartmentDao.GetAll());
+			return g.toJson(apartmentDao.GetAllApartmentForUser(whatToGet, username));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -115,9 +115,9 @@ public class ApartmentService {
 		return g.toJson(null);
 	}
 	
-	public String searchApartments(String location, String datFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice, String sortValue, String type, String apartmentStatus) {
+	public String searchApartments(String location, String datFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice, String sortValue, String type, String apartmentStatus, int whatToGet , String username) {
 		try {
-			return g.toJson(apartmentDao.searchApartments(location, datFrom, dateTo, numberOfGuest, minRoom, maxRoom, minPrice, maxPrice,sortValue,type,apartmentStatus));
+			return g.toJson(apartmentDao.searchApartments(location, datFrom, dateTo, numberOfGuest, minRoom, maxRoom, minPrice, maxPrice,sortValue,type,apartmentStatus,whatToGet,username));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

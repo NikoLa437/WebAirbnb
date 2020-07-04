@@ -81,10 +81,49 @@ public class ApartmentController {
 			return apartmentService.getAllReservations(whatToGet, user.getUsername());
 		});
 		
-		get("/apartments", (req,res) -> apartmentService.GetAll());
+		get("/apartments", (req,res) -> {
+			Session ss = req.session(true);
+			User user = ss.attribute("user");
+			int whatToGet = -1;
+			if(user instanceof Guest || user==null)
+				whatToGet = 0;
+			else if(user instanceof Host)
+				whatToGet = 1;
+			else 
+				whatToGet = 2;
+			
+			String username;
+			if(user==null) 
+				username="";
+			else {
+				username=user.getUsername();
+			}
+				
+			
+			return apartmentService.GetAll(whatToGet,username);
+		});
 		
-		get("/apartments/search/parameters", (req,res) -> apartmentService.searchApartments(req.queryParams("location"), req.queryParams("dateFrom"), req.queryParams("dateTo"), req.queryParams("numberOfGuest"), req.queryParams("minRoom"), req.queryParams("maxRoom"), req.queryParams("minPrice"), req.queryParams("maxPrice"), req.queryParams("sortValue"), req.queryParams("type"), req.queryParams("apartmentStatus")));
-
+		get("/apartments/search/parameters", (req,res) -> {
+			Session ss = req.session(true);
+			User user = ss.attribute("user");
+			int whatToGet = -1;
+			if(user instanceof Guest)
+				whatToGet = 0;
+			else if(user instanceof Host)
+				whatToGet = 1;
+			else 
+				whatToGet = 2;
+			
+			String username;
+			if(user==null) 
+				username="";
+			else {
+				username=user.getUsername();
+			}
+			
+			return apartmentService.searchApartments(req.queryParams("location"), req.queryParams("dateFrom"), req.queryParams("dateTo"), req.queryParams("numberOfGuest"), req.queryParams("minRoom"), req.queryParams("maxRoom"), req.queryParams("minPrice"), req.queryParams("maxPrice"), req.queryParams("sortValue"), req.queryParams("type"), req.queryParams("apartmentStatus"),whatToGet,username);
+		});
+		
 		get("/reservation/search/parameters", (req,res) -> {
 			Session ss = req.session(true);
 			User user = ss.attribute("user");
@@ -95,6 +134,8 @@ public class ApartmentController {
 				whatToGet = 1;
 			else 
 				whatToGet = 2;
+			
+	
 			
 			return apartmentService.searchReservation(req.queryParams("guestUsername"), req.queryParams("sortValue"), req.queryParams("reservationStatus"),whatToGet, user.getUsername());
 		

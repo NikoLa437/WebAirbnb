@@ -42,6 +42,27 @@ public class ApartmentDAO {
 		return g.fromJson((Files.readAllLines(Paths.get(path),Charset.defaultCharset()).size() == 0) ? "" : Files.readAllLines(Paths.get(path),Charset.defaultCharset()).get(0), new TypeToken<List<Apartment>>(){}.getType());
 	}
 	
+	public List<Apartment> GetAllApartmentForUser(int whatToGet, String username) throws JsonSyntaxException, IOException{		
+		List<Apartment> retVal = new ArrayList<Apartment>();
+		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
+		
+		for(Apartment a : apartments) {
+				if(whatToGet == 0) {
+					if(a.getStatus()==ApartmentStatus.active) {
+						retVal.add(a);
+					}
+				}else if(whatToGet == 1) {
+					if(a.getHost().getUsername().equals(username)) {
+						retVal.add(a);
+					}
+				}
+				else {
+					retVal.add(a);
+				}
+			}
+		return retVal;
+	}
+	
 	public Apartment Create(Apartment apartment) throws JsonSyntaxException, IOException {
 		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
 		apartment.setId(GetMaxID());
@@ -252,9 +273,9 @@ public class ApartmentDAO {
 	    writer.close();
 	}
 	
-	public List<Apartment> searchApartments(String location, String dateFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice, String sortValue, String type, String apartmentStatus) throws JsonSyntaxException, IOException{
+	public List<Apartment> searchApartments(String location, String dateFrom, String dateTo, String numberOfGuest,String minRoom, String maxRoom, String minPrice, String maxPrice, String sortValue, String type, String apartmentStatus,int whatToGet , String username) throws JsonSyntaxException, IOException{
 			
-			ArrayList<Apartment> list = (ArrayList<Apartment>) GetAll();
+			ArrayList<Apartment> list = (ArrayList<Apartment>) GetAllApartmentForUser(whatToGet, username);
 			List<Apartment> retVal = new ArrayList<Apartment>();
 			
 			System.out.println(type);
