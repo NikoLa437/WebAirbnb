@@ -50,6 +50,9 @@ public class ApartmentController {
 
 		get("/apartment/occupied/:id", (req,res) ->  apartmentService.getOccupiedDates(req.params("id")));
 		
+		get("/apartment/occupiedRanges/:id", (req,res) ->  apartmentService.getOccupiedRanges(req.params("id")));
+
+		
 		post("/apartment/reserve", (req,res) -> {
 			Reservation r = g.fromJson(req.body(), Reservation.class);
 			

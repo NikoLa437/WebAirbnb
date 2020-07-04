@@ -46,7 +46,19 @@ public class UserController {
 		
 		get("/users/search/parameters", (req,res) -> userService.searchUsers(req.queryParams("username"), req.queryParams("name"), req.queryParams("surname"), req.queryParams("userType")));
 	
-		get("/users", (req,res) -> userService.GetAll());
+		get("/users", (req,res) -> {
+			
+			Session ss = req.session(true);
+			User user = ss.attribute("user");
+			int whatToGet = -1;
+			if(user instanceof Guest)
+				whatToGet = 0;
+			else if(user instanceof Host)
+				whatToGet = 1;
+			else 
+				whatToGet = 2;
+			return userService.GetAll(whatToGet, user.getUsername());
+		});
 		
 		post("/users/login", (req, res) -> {
 			res.type("application/json");
@@ -81,10 +93,10 @@ public class UserController {
 		get("/users/apartment/cancoment/:appartmentId", (req, res) -> {
 			res.type("application/json");
 			Session ss = req.session(true);
-			Guest user = ss.attribute("user");
-			if(user == null)
+			User user = ss.attribute("user");
+			if(user == null || !(user instanceof Guest))
 				return false;
-			return userService.canUserComment(user, req.params("appartmentId"));
+			return userService.canUserComment((Guest)user, req.params("appartmentId"));
 		});
 		
 		put("/users/update", (req,res)-> userService.Update(g.fromJson(req.body(), User.class)));

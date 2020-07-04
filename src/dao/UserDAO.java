@@ -44,6 +44,27 @@ public class UserDAO {
 		return g.fromJson((Files.readAllLines(Paths.get(path),Charset.defaultCharset()).size() == 0) ? "" : Files.readAllLines(Paths.get(path),Charset.defaultCharset()).get(0), new TypeToken<List<User>>(){}.getType());
 	}
 	
+	public List<User> GetAllByUserType(int whatToGet, String username) throws JsonSyntaxException, IOException{		
+		ArrayList<User> users = (ArrayList<User>) GetAll();
+		List<User> retVal = new ArrayList<User>();
+		for(User u : users) {
+			if(whatToGet == 1) {
+				if(u instanceof Guest) {
+					for(Reservation r : ((Guest)u).getReservations()) {
+						if(r.getAppartment().getHost().getUsername().equals(username)) {
+							retVal.add(u);
+							break;
+						}
+					}
+				}
+			}else {
+				retVal.add(u);
+			}
+		}
+	
+		return retVal;
+	}
+	
 	public User Create(User user) throws JsonSyntaxException, IOException {
 		ArrayList<User> users = (ArrayList<User>) GetAll();
 		if(users == null) {

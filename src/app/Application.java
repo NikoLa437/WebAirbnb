@@ -9,6 +9,7 @@ import java.io.IOException;
 import controllers.AmenityController;
 import controllers.ApartmentController;
 import controllers.UserController;
+import dao.AmenityDAO;
 import dao.ApartmentDAO;
 import dao.UserDAO;
 import services.AmenityService;
@@ -34,8 +35,10 @@ public class Application {
 
 		UserDAO userDAO = new UserDAO();
 		ApartmentDAO apartmentDAO = new ApartmentDAO(userDAO);
+		AmenityDAO amenityDAO = new AmenityDAO(apartmentDAO);
+		
 		new UserController(new UserService(userDAO));
-		new AmenityController(new AmenityService());
+		new AmenityController(new AmenityService(amenityDAO));
 		
 		new ApartmentController(new ApartmentService(apartmentDAO));
 

@@ -23,11 +23,11 @@
 <div class="header" id="header">
 	<div class="container">
 		<div class="logo">
-			<h1><a href="/"></a>AirBnB</h1>
+			<h1><a href="#/">AirBnB</a></h1>
 		</div>
 			<div class="nav">
 				<ul>
-					<li  >
+					<li v-bind:hidden="mod!='ADMIN'">
 						<div class="dropdown">
 						    <button class="dropbtn">Korisnici 
 						      <i class="fa fa-caret-down"></i>
@@ -35,24 +35,39 @@
 						    <div class="dropdown-content">
 						      <a href="#/users">Svi korisnici</a>
 						      <a href="#/register">Dodavanje domacina</a>
-						      <a href="#">Link 3</a>
 						    </div>
 					  </div> 
 					</li>
-					<li><a href="#/apartmentDetails">PROBICA</a></li>
-					<li>
+					<li v-bind:hidden="mod!='HOST'">
+						<div class="dropdown">
+						    <button class="dropbtn">Korisnici 
+						      <i class="fa fa-caret-down"></i>
+						    </button>
+						    <div class="dropdown-content">
+						      <a href="#/users">Moji gosti</a>
+						    </div>
+					  </div> 
+					</li>
+					<li v-bind:hidden="mod!='ADMIN'">
 						<div class="dropdown">
 						    <button class="dropbtn">Apartmani 
 						      <i class="fa fa-caret-down"></i>
 						    </button>
 						    <div class="dropdown-content">
 						      <a href="#/amenities">Sadrzaji apartmana</a>
-						      <a href="#">Link 2</a>
-						      <a href="#">Link 3</a>
 						    </div>
 					  </div> 
 					</li>
-					<li><a href="#/apartment">Moji gosti</a></li>
+					<li v-bind:hidden="mod!='HOST'">
+						<div class="dropdown">
+						    <button class="dropbtn">Apartmani 
+						      <i class="fa fa-caret-down"></i>
+						    </button>
+						    <div class="dropdown-content">
+						      <a href="#/apartment">Dodavanje apartmana</a>
+						    </div>
+					  </div> 
+					</li>
 					<li v-bind:hidden="mod=='USER'">
 						<div class="dropdown">
 						    <button class="dropbtn">Nalog 

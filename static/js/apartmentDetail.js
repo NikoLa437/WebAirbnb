@@ -1,10 +1,10 @@
 Vue.component("apartment-details", {
-	props: ['id'],
 	data: function () {
 	    return {
 	        apartment:null,
 	        picture:'',
 	        comment:'',
+	        canReserve:null,
 	        canUserComment:null
 	    }
 	},
@@ -91,13 +91,26 @@ Vue.component("apartment-details", {
 		.then(response => {this.apartment = response.data; this.picture = this.apartment.pictures[0];});
 		
 		axios
-		.get('/users/apartment/cancoment/' + this.id)
+		.get('/users/apartment/cancoment/' + this.$route.query.id)
 		.then(response => {
 			if(response.data === true)
 				this.canUserComment = true;
 			else
 				this.canUserComment = false;
 		});
+		
+		axios
+        .get('/users/log/test')
+        .then(response => {
+        	if(response.data == null)
+        		this.canReserve=false;
+        	else{
+        		if(response.data.userType == "Guest")
+        			this.canReserve=true;
+        		else 
+        			this.canReserve=false;
+        	}
+        })
 	},
 	methods : {
 		myFunction : function(imgs) {
@@ -108,7 +121,10 @@ Vue.component("apartment-details", {
 			this.$refs.container.style.display='none';
 		},
 		rezervisiClick : function(){
-			window.location.href = "#/reservation";
+			if(this.canReserve)
+				window.location.href = "#/reservation?id=" + this.$route.query.id;
+			else
+				toast("Samo Gosti mogu rezervisati termine!");
 		}
 	}
 });

@@ -12,8 +12,8 @@ public class AmenityService {
 	private static Gson g = new Gson();
 	private static AmenityDAO amenityDao;
 	
-	public AmenityService() {
-		this.amenityDao = new AmenityDAO();
+	public AmenityService(AmenityDAO amenityDao) {
+		this.amenityDao = amenityDao;
 	}
 	
 	

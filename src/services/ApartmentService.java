@@ -96,6 +96,16 @@ public class ApartmentService {
 		return null;
 	}
 	
+	public String getOccupiedRanges(String id) {
+		try {
+			return g.toJson(apartmentDao.getOccupiedRanges(id));
+		} catch(Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public String getApartment(String id) {
 		try {
 			return g.toJson(apartmentDao.get(id));

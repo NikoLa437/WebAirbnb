@@ -60,9 +60,9 @@ public class UserService {
 		return g.toJson(null);
 	}
 	
-	public String GetAll() {
+	public String GetAll(int whatToGet, String username) {
 		try {
-			return g.toJson(userDao.GetAll());
+			return g.toJson(userDao.GetAllByUserType(whatToGet, username));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
