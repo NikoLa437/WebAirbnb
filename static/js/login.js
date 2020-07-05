@@ -70,7 +70,7 @@ Vue.component("login", {
 				  .then(response => {
 					  if(response.data!=""){
 						  //TODO 1: set cookie
-						  window.location.href = "http://localhost:8080/";
+						  window.location.href = "/";
 					  }
 					  else{
 						  //TODO 2: napraviti neki lepsi nacin prikaza 

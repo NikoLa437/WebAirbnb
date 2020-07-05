@@ -1,7 +1,7 @@
 Vue.component("apartment-details", {
 	data: function () {
 	    return {
-	        apartment:null,
+	        apartment:{},
 	        picture:'',
 	        comment:'',
 	        userType:'',
@@ -66,7 +66,7 @@ Vue.component("apartment-details", {
 		</tr>
 </table>
 
-<table class="komentari">
+<table class="komentari" v-bind:hidden="apartment.comments.length == 0">
 		<h3>Komentari: </h3>
 		<tr>
 		<td v-bind:hidden="userType != 'HOST'">
@@ -187,7 +187,7 @@ Vue.component("apartment-details", {
 		},
 		disableComment : function(){
 			if(this.selectedComment){
-				if(this.selectedComment.visibleForGuest){
+				if(this.selectedComment.visibleForGuest || this.selectedComment.visibleForGuest === undefined){
 					axios
 					.put('/apartment/comment/toggle/' + this.selectedComment.id)
 					.then(response => {
@@ -198,7 +198,7 @@ Vue.component("apartment-details", {
 		},
 		enableComment : function(){
 			if(this.selectedComment){
-				if(!this.selectedComment.visibleForGuest){
+				if(!this.selectedComment.visibleForGuest || this.selectedComment.visibleForGuest === undefined){
 					axios
 					.put('/apartment/comment/toggle/' + this.selectedComment.id)
 					.then(response => {

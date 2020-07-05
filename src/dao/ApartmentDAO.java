@@ -24,6 +24,7 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
+import Decoder.BASE64Decoder;
 import beans.Amenity;
 import beans.Apartment;
 import beans.ApartmentStatus;
@@ -34,7 +35,6 @@ import beans.Host;
 import beans.Period;
 import beans.Reservation;
 import beans.ReservationStatus;
-import sun.misc.BASE64Decoder;
 
 
 public class ApartmentDAO {
@@ -407,7 +407,7 @@ public class ApartmentDAO {
 						&&((!apartmentStatus.isEmpty())? (item.getStatus()==status): true)
 						&&((!type.isEmpty())? (item.getType()==tip): true)) {
 					
-					if(amenities.size()!=0) {
+					if(amenities!=null) {
 						if(whatToGet==1) {
 							if(item.getStatus()==ApartmentStatus.active)
 								if(uporediListe(item.getAmenities(), amenities))
