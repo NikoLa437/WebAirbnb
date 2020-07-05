@@ -4,6 +4,11 @@ Vue.component("apartment-details", {
 	        apartment:null,
 	        picture:'',
 	        comment:'',
+	        userType:'',
+	        grade:'',
+	        user:null,
+	        commentError:'',
+	        selectedComment:{},
 	        canReserve:null,
 	        canUserComment:null
 	    }
@@ -48,7 +53,7 @@ Vue.component("apartment-details", {
 					<td class="infotext">{{apartment.priceForNight + ' dinara'}}</td>
 				</tr>
 				<tr>
-					<td colspan="2"><button id="buttonBrisanje" v-on:click="rezervisiClick">Rezervisi</button><br/></td>
+					<td colspan="2"><button class="buttonBris" v-on:click="rezervisiClick">Rezervisi</button><br/></td>
 				</tr>
 			</table>
 		</td>	
@@ -61,26 +66,48 @@ Vue.component("apartment-details", {
 		</tr>
 </table>
 
-<h3>Komentari: </h3>
 <table class="komentari">
-		<tr v-for="c in apartment.comments">
-			<td>
+		<h3>Komentari: </h3>
+		<tr>
+		<td v-bind:hidden="userType != 'HOST'">
+				<button class="buttonBris" v-on:click="disableComment()">Skini komentar</button>
+				<button class="buttonBris" v-on:click="enableComment()">Prikazi komentar</button>
+		</td>
+		</tr>
+		<tr v-for="c in apartment.comments" v-if="c.visibleForGuest || (userType == 'HOST' || userType == 'ADMIN')" v-on:click="selectComment(c)" v-bind:class="{selected : selectedComment.id===c.id}">
+			<td style="border: solid 1px rgb(152, 0, 0);border-top-left-radius: 10px;border-top-right-radius: 10px;border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;">
 				<table>
-					<tr><td>{{"Ocena: " + c.grade}}</td></tr>
-					<tr><td>{{"Ocenio: " + c.guest.name + ' ' + c.guest.surname}}</td></tr>
-					<tr><td>{{c.text}}</td></tr>
+					<tr><td style="color:rgb(152, 0, 0)">{{"Ocena: " + c.grade}}</td><td v-bind:hidden="userType != 'HOST'">{{(c.visibleForGuest) ? 'Vidljiv' : 'Nevidljiv'}}</td</tr>
+					<tr><td style="color:rgb(152, 0, 0)">{{"Ocenio: " + c.guest.name + ' ' + c.guest.surname}}</td></tr>
+					<tr><td >{{c.text}}</td></tr>
 				</table>
-			</td>
+			</td>	
 		</tr>
 </table>
 
 <table class="komentari" v-bind:hidden="!canUserComment">
 		<tr>
-			<td><textarea class="inputComment"  name="comment" placeholder="Unesite komentar" cols="70" rows="10" v-model="comment"></textarea></td>
+			<td>Ocena:
+				<select class="select" name="grade" style="width:100px" v-model="grade">
+						<option class="option" value=""></option>
+						<option class="option" value="I">1</option>
+						<option class="option" value="II">2</option>
+						<option class="option" value="III">3</option>
+						<option class="option" value="IV">4</option>
+						<option class="option" value="V">5</option>
+				</select>
+			</td>
 		</tr>
 		<tr>
-			<td><button id="buttonBrisanje">Dodaj komentar</button><br/></td>
+			<td colspan="2"><textarea class="inputComment"  name="comment" placeholder="Unesite komentar" cols="70" rows="10" v-model="comment"></textarea></td>
 		</tr>
+		<tr>
+			<td><button class="buttonBris" v-on:click="commentClick">Dodaj komentar</button><br/></td>
+		</tr>
+		<tr>
+			<td colspan="2"><p style="color: red" >{{commentError}}</p></td>		
+		</tr>
+		
 </table>
 
 </div>		  
@@ -102,13 +129,23 @@ Vue.component("apartment-details", {
 		axios
         .get('/users/log/test')
         .then(response => {
-        	if(response.data == null)
+        	if(response.data == null){
         		this.canReserve=false;
+        		this.userType = 'USER';
+        	}
         	else{
-        		if(response.data.userType == "Guest")
+        		this.user = response.data;
+        		if(response.data.userType == "Guest"){
         			this.canReserve=true;
-        		else 
+            		this.userType = 'USER';
+        		}
+        		else if(response.data.userType == "Host"){
         			this.canReserve=false;
+            		this.userType = 'HOST';
+        		}else{
+        			this.canReserve = false;
+            		this.userType = 'ADMIN';
+        		}
         	}
         })
 	},
@@ -125,6 +162,50 @@ Vue.component("apartment-details", {
 				window.location.href = "#/reservation?id=" + this.$route.query.id;
 			else
 				toast("Samo Gosti mogu rezervisati termine!");
+		},
+		selectComment : function(c){
+			this.selectedComment = c;
+		},
+		commentClick : function(){
+			this.commentError = '';
+			if(this.grade == '')
+				this.commentError = 'Ocena se mora uneti!';
+			else if(this.comment == '')
+				this.commentError = 'Komentar se mora uneti!';
+			else{
+				let komentar = { id:0 , guest : this.user, forApartment : this.apartment, text: this.comment, grade : this.grade, visibleForGuest : false};
+				
+				axios
+				.post('/apartment/comment', komentar)
+				.then(response =>{
+					toast('Uspesno dodat komentar! Bice prikazan kada ga domacin odobri!');
+					this.grade = '';
+					this.comment = '';
+				});
+			}
+
+		},
+		disableComment : function(){
+			if(this.selectedComment){
+				if(this.selectedComment.visibleForGuest){
+					axios
+					.put('/apartment/comment/toggle/' + this.selectedComment.id)
+					.then(response => {
+						this.selectedComment.visibleForGuest = false;
+					});
+				}
+			}
+		},
+		enableComment : function(){
+			if(this.selectedComment){
+				if(!this.selectedComment.visibleForGuest){
+					axios
+					.put('/apartment/comment/toggle/' + this.selectedComment.id)
+					.then(response => {
+						this.selectedComment.visibleForGuest = true;
+					});
+				}
+			}
 		}
 	}
 });

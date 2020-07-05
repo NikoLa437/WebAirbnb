@@ -52,7 +52,8 @@ public class UserDAO {
 				if(u instanceof Guest) {
 					for(Reservation r : ((Guest)u).getReservations()) {
 						if(r.getAppartment().getHost().getUsername().equals(username)) {
-							retVal.add(u);
+							if(!u.isBlocked())
+								retVal.add(u);
 							break;
 						}
 					}
@@ -96,10 +97,27 @@ public class UserDAO {
 	
 	public boolean canUserComment(Guest user, String appartmentId) {
 		for (Reservation r : user.getReservations()) {
-			if(r.getAppartment().getId() == Integer.parseInt(appartmentId) && r.getStatus() == ReservationStatus.done)
+			if(r.getAppartment().getId() == Integer.parseInt(appartmentId) && (r.getStatus() == ReservationStatus.done || r.getStatus() == ReservationStatus.rejected)) {
 				return true;
+			}
 		}
 		return false;
+	}
+	
+	public boolean toggleBlockUser(String username) throws JsonIOException, IOException {
+		ArrayList<User> users = (ArrayList<User>) GetAll();
+		for(User u : users) {
+			if(u.getUsername().equals(username)){
+				if(u.isBlocked())
+					u.setBlocked(false);
+				else
+					u.setBlocked(true);
+				break;
+			}
+		}
+		SaveAll(users);
+		
+		return true;
 	}
 	
 	public User get(String username) throws JsonSyntaxException, IOException {

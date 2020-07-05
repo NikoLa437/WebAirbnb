@@ -23,7 +23,9 @@ import beans.Amenity;
 import beans.Apartment;
 import beans.ApartmentStatus;
 import beans.ApartmentType;
+import beans.Comment;
 import beans.Guest;
+import beans.Host;
 import beans.Period;
 import beans.Reservation;
 import beans.ReservationStatus;
@@ -48,9 +50,11 @@ public class ApartmentDAO {
 		
 		
 		for(Apartment a : apartments) {
+			Host h = (Host) userDao.get(a.getHost().getUsername());
 				if(whatToGet == 0) {
 					if(a.getStatus()==ApartmentStatus.active) {
-						retVal.add(a);
+						if(!h.isBlocked())
+							retVal.add(a);
 					}
 				}else if(whatToGet == 1) {
 					if(a.getHost().getUsername().equals(username)) {
@@ -149,6 +153,57 @@ public class ApartmentDAO {
 		
 		return retVal;
 	}
+	
+	
+	public Comment addComment(Comment comment) throws JsonSyntaxException, IOException {
+		
+		comment.setId(GetMaxIDForComment());
+		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
+		for(Apartment a : apartments) {
+			if(a.getId() == comment.getForApartment().getId()) {
+				List<Comment> com = a.getComments();
+				com.add(comment);
+				a.setComments(com);
+				break;
+			}
+		}
+		SaveAll(apartments);
+		return comment;
+	}
+	
+	public boolean toggleCommentVisiility(String id) throws JsonSyntaxException, IOException {
+		int idNum = Integer.parseInt(id);
+		
+		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
+		for(Apartment a : apartments) {
+			for(Comment c : a.getComments()) {
+				if(c.getId() == idNum) {
+					if(c.isVisibleForGuest()) {
+						c.setVisibleForGuest(false);
+					}else {
+						c.setVisibleForGuest(true);
+					}
+					SaveAll(apartments);
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	private int GetMaxIDForComment() throws JsonSyntaxException, IOException  {
+		int maxId = 0;
+		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
+		for(Apartment a : apartments) {
+			for(Comment c : a.getComments()) {
+				if(c.getId() > maxId)
+					maxId = c.getId();
+			}
+		}
+		return ++maxId;
+	}
+	
 	
 	private int GetMaxIDForReservation() throws JsonSyntaxException, IOException  {
 		int maxId = 0;

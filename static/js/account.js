@@ -6,6 +6,7 @@ function initialIsCapital( word ){
 Vue.component("account", {
 	data: function () {
 		    return {
+		    	user:null,
 		    	username: '',
 			    name: '',
 			    surname: '',
@@ -13,6 +14,7 @@ Vue.component("account", {
 			    savedPassword:'',
 		    	oldpassword:'',
 			    password:'',
+			    passwordC:'',
 			    againpassword:'',
 			    usernameError:'',
 			    nameError:'',
@@ -100,12 +102,13 @@ Vue.component("account", {
 		.get("/users/log/test")
 		.then(response => {
 			if(response.data != null){
+				this.user = response.data;
 				this.username= response.data.username;
 				this.name= response.data.name;
 				this.surname= response.data.surname;
 				this.gender =response.data.gender;
 				this.savedPassword = response.data.password;
-				this.password = response.data.password;
+				this.passwordC = response.data.password;
 				this.backup = [this.username, this.name, this.surname, this.gender];
 			}else{
       		  window.location.href = "http://localhost:8080/#/login";
@@ -134,11 +137,23 @@ Vue.component("account", {
 			else
 				{
 		      			  this.mode = "BROWSE";
-		        		  let user = {username: this.username, name : this.name, surname : this.surname, gender : this.gender, password : this.password};
-		        		  axios
+		      			  
+		      			if(this.user.userType == 'Guest')
+							user = {userType:this.user.userType ,username: this.user.username, name : this.name, surname : this.surname, gender : this.gender, password : this.savedPassword,rentedAppartments : this.user.rentedAppartments,
+									reservations : this.user.reservations};
+						else if(this.user.userType == 'Host')
+							user = {userType:this.user.userType ,username: this.user.username, name : this.name, surname : this.surname, gender : this.gender, password : this.savedPassword,appartments : this.user.appartments};
+						else
+							user = {userType:this.user.userType ,username: this.user.username, name : this.name, surname : this.surname, gender : this.gender, password : this.savedPassword};
+		      			  
+		        		 axios
 			  				.put("/users/update", JSON.stringify(user))
 			  				.then(response => toast('Informacije su uspesno izmenjene'));
 						 
+		        		  this.user.username = this.username;
+		        		  this.user.name = this.name;
+		        		  this.user.surname = this.surname;
+		        		  this.user.gender = this.gender;
 		        		  //window.location.href = "http://localhost:8080/";
 						}
 		         
@@ -178,16 +193,23 @@ Vue.component("account", {
 			}else
 				{	
 				this.mode = "BROWSE";
-				
-				let user = {username: this.username, name : this.name, surname : this.surname, gender : this.gender, password : this.password};
+				let user
 
+				if(this.user.userType == 'Guest')
+					user = {userType:this.user.userType ,username: this.user.username, name : this.user.name, surname : this.user.surname, gender : this.user.gender, password : this.password,rentedAppartments : this.user.rentedAppartments,
+							reservations : this.user.reservations};
+				else if(this.user.userType == 'Host')
+					user = {userType:this.user.userType ,username: this.user.username, name : this.user.name, surname : this.user.surname, gender : this.user.gender, password : this.password,appartments : this.user.appartments};
+				else
+					user = {userType:this.user.userType ,username: this.user.username, name : this.user.name, surname : this.user.surname, gender : this.user.gender, password : this.password};
+				
 				axios
 				.put("/users/update", JSON.stringify(user))
 				.then(response => toast('Lozinka je uspesno izmenjena!'));
 				
 			    this.savedPassword= this.password;
 			    this.oldpassword = this.password;
-			    this.againpassword= this.password;
+			    this.againpassword= '';
 			}
 		},
 		odustanaPasswordkEvent: function(){

@@ -2,6 +2,7 @@ Vue.component("login", {
 	data: function () {
 		    return {
 		    	logged : null,
+		    	error:'',
 		    	username: '',
 		    	usernameError:'',
 			    password:'',
@@ -24,11 +25,16 @@ Vue.component("login", {
 			<td ><p style="color: red" >{{passwordError}}</p></td>	
 		</tr>
 		<tr>
+		<td colspan="2"><p style="color:red">{{error}}</p></td>
+		</tr>
+		<tr>
 			<td colspan="2" align="center"><input type="submit"  value="Uloguj se"/></td>	
 		</tr>
+
 	</table>
 	<p v-bind:hidden="!logged">Kosirnik je vec ulogovan!</p>
 	<button v-bind:hidden="!logged" id="buttonBrisanje">Odjava</button><br />
+
 </form>
 </div>
 `
@@ -46,7 +52,7 @@ Vue.component("login", {
     },
 	methods : {
 		checkFormValid : function() {
-			
+			this.error = '';
 			this.usernameError='';
 			this.passwordError='';
 			
@@ -61,18 +67,18 @@ Vue.component("login", {
 				
 				axios
 		          .post('/users/login', JSON.stringify(loginData))
-				  .then(function (response) {
-					  if(response.data!=null){
+				  .then(response => {
+					  if(response.data!=""){
 						  //TODO 1: set cookie
 						  window.location.href = "http://localhost:8080/";
 					  }
 					  else{
 						  //TODO 2: napraviti neki lepsi nacin prikaza 
-						  alert("Uneti su pogresni podaci");
+						  this.error = 'Uneti su pogresni podaci ili je korisnik blokiran!';
 					  }
 
 					  
-					})
+					});
       		  	
 				
 				}

@@ -4,6 +4,7 @@ Vue.component("users", {
 		        users: null,
 		        searchedUsers:[],
 		        showSearched:false,
+		        selectedUser:{},
 		        user : null,
 		        searchName:'',
 		        searchSurname:'',
@@ -29,6 +30,18 @@ Vue.component("users", {
 				<td><button class="button" v-on:click="searchUser">Pretrazi</button></td>		
 			</tr>
 </table>
+<br/>
+<br/>
+
+<button v-bind:hidden="user != 'ADMIN'" class="button" style="width:20%" v-on:click="blockUser">Blokiraj korisnika</button>
+<br/>
+<br/>
+
+<button v-bind:hidden="user != 'ADMIN'" class="button" style="width:20%" v-on:click="unblockUser">Odblokiraj korisnika</button>
+
+<br/>
+<br/>
+
 <table class="users">
 		<tr>
 			<th>Korisnicko ime</th>
@@ -36,9 +49,10 @@ Vue.component("users", {
 			<th>Prezime</th>
 			<th>Pol</th>
 			<th>Uloga</th>
+			<th v-bind:hidden="user != 'ADMIN'">Status</th>
 		</tr>
 		
-		<tr v-bind:hidden="showSearched" v-for="u in users">
+		<tr v-bind:hidden="showSearched" v-for="u in users" v-on:click="selectUser(u)" v-bind:class="{selected : selectedUser.username===u.username}">
 			<td>{{u.username }}</td>
 			<td>{{u.name }}</td>
 			<td>{{u.surname }}</td>
@@ -46,8 +60,9 @@ Vue.component("users", {
 			<td v-if="u.userType == 'Guest'">Gost</td>
 			<td v-else-if="u.userType == 'Administrator'">Administrator</td>
 			<td v-else>Domacin</td>
+			<td v-bind:hidden="user != 'ADMIN'">{{(u.blocked) ? "Blokiran" : "Neblokiran"}}</td>
 		</tr>
-		<tr v-bind:hidden="!showSearched" v-for="u in searchedUsers">
+		<tr v-bind:hidden="!showSearched" v-for="u in searchedUsers" v-on:click="selectUser(u)" v-bind:class="{selected : selectedUser.username===u.username}">
 			<td>{{u.username }}</td>
 			<td>{{u.name }}</td>
 			<td>{{u.surname }}</td>
@@ -55,6 +70,7 @@ Vue.component("users", {
 			<td v-if="u.userType == 'Guest'">Gost</td>
 			<td v-else-if="u.userType == 'Administrator'">Administrator</td>
 			<td v-else>Domacin</td>
+			<td v-bind:hidden="user != 'ADMIN'">{{(u.blocked) ? "Blokiran" : "Neblokiran"}}</td>
 		</tr>
 	</table>
 </div>
@@ -93,6 +109,27 @@ Vue.component("users", {
 				});
 			}else{
 				this.showSearched = false;
+			}
+		},
+		selectUser : function(user){
+			this.selectedUser = user;
+		},
+		blockUser : function(){
+			if(this.selectedUser && this.selectedUser.userType != 'ADMIN' && this.selectedUser.blocked == false){
+				axios
+				.put('/users/toggleBlocked/' + this.selectedUser.username)
+				.then(response =>{
+					this.selectedUser.blocked = true;
+				});
+			}
+		},
+		unblockUser : function(){
+			if(this.selectedUser && this.selectedUser.userType != 'ADMIN' && this.selectedUser.blocked == true){
+				axios
+				.put('/users/toggleBlocked/' + this.selectedUser.username)
+				.then(response =>{
+					this.selectedUser.blocked = false;
+				});
 			}
 		},
 		onChange(event) {

@@ -75,7 +75,16 @@ tr.selected {
 			outline: none;
 	
 }
-
+.buttonBris{
+	background-color:grey;
+	  color: white;
+	  border: none;
+	padding:5px 8px 5px 8px;
+	font-size: 17px;
+	border-radius: 7px;
+	margin-top: 10px;
+		outline: none;
+}
 
 .buttonOdustanak{
 	background-color:grey;

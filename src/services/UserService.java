@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
 import UtilData.LoginData;
@@ -81,6 +82,16 @@ public class UserService {
 		}
 		return null;
 
+	}
+	
+	public boolean toggleBlockUser(String username) {
+		try {
+			return userDao.toggleBlockUser(username);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	public String searchUsers(String username, String name, String surname, String userType) {

@@ -29,11 +29,13 @@
 }
 
 #slike {
-	  width: 60%;		
+	  width: 60%;
+	  vertical-align:top;	
 }
 
 #info {
-	  width: 40%;		
+	  width: 40%;
+	  vertical-align:top;		
 }
 
 #apartmanInfo{
@@ -42,7 +44,9 @@
 
 .komentari{
 	margin: auto;
+	width:60%;
 }
+
 
 #inputComment{
 		width:60%;

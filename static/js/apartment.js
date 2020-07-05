@@ -32,7 +32,7 @@ Vue.component("apartment", {
 		    	checkInTimeError: '',
 		    	checkOutTime: '',
 		    	checkOutTimeError: '',
-		    	apartmentStatus: '',
+		    	apartmentStatus: 'active',
 		        amenities: null,
 		        checkedAmenities: {},
 		        selectedAmenities: [],
@@ -97,7 +97,7 @@ Vue.component("apartment", {
 			<td>Status:</td>
 			<td>
   				<div class="pol"><input type="radio" name="apartmentStatus" v-model="apartmentStatus" value="active"> Aktivan<br></div>
-  				<div class="pol"><input type="radio" name="apartmentStatus" v-model="apartmentStatus" value="inactive" checked> Neaktivan<br></div>
+  				<div class="pol"><input type="radio" name="apartmentStatus" v-model="apartmentStatus" value="inactive"> Neaktivan<br></div>
 			</td>
 		</tr>
 		<tr>
@@ -269,7 +269,7 @@ Vue.component("apartment", {
 
 
 				 	let apartment = {id: 0,type:this.apartmentType, numberOfRoom: this.numberOfRooms,numberOfGuest: this.numberOfGuests,location:location,dateForRenting:period,freeDateForRenting:[]
-							,host:null,comments:null,pictures:this.images,priceForNight:this.price,checkInTime:this.checkInTime,checkOutTime:this.checkOutTime,amenities:this.selectedAmenities,status:this.apartmentStatus,reservations:[]};
+							,host:null,comments:[],pictures:[],priceForNight:this.price,checkInTime:this.checkInTime,checkOutTime:this.checkOutTime,amenities:this.selectedAmenities,status:this.apartmentStatus,reservations:[]};
 				 	
 	        		
 				 	axios

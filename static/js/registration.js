@@ -121,7 +121,7 @@ Vue.component("registration", {
 		        		  this.uniqueError = "Uneto korisnicko ime vec postoji!";
 		        	  }else{
 		        		  if(this.userType ==='USER'){
-			        		  let user = {username: this.username, name : this.name, surname : this.surname, gender : this.gender, password : this.password, userType : 'Guest' ,rentedAppartments: [], reservations : [] };
+			        		  let user = {blocked: false,username: this.username, name : this.name, surname : this.surname, gender : this.gender, password : this.password, userType : 'Guest' ,rentedAppartments: [], reservations : [] };
 			        		  axios
 					          .post('/users/addGuest', JSON.stringify(user))
 					          .then(response => {
@@ -132,7 +132,7 @@ Vue.component("registration", {
 					          });
 							 
 		        		  }else{
-		        			  let user = {username: this.username, name : this.name, surname : this.surname, gender : this.gender, password : this.password, userType : 'Host', appartments: []};
+		        			  let user = {blocked: false, username: this.username, name : this.name, surname : this.surname, gender : this.gender, password : this.password, userType : 'Host', appartments: []};
 			        		  axios
 					          .post('/users/addHost', JSON.stringify(user))
 					          .then(response => (window.location.href = "http://localhost:8080/"));

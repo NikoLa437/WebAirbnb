@@ -67,14 +67,14 @@ template: `
 		</tr>
 	</table>
 	
-	<div v-bind:style="{ width: computedWidth }" v-on:click="selectApartment(apartment.id)" style="background-color: lightBlue; display: block;
+	<div v-bind:style="{ width: computedWidth }" v-on:click="selectApartment(apartment.id)" style="border: solid 1px rgb(152, 0, 0);border-top-left-radius: 10px;border-top-right-radius: 10px;border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;display: block;
   margin-bottom: 25px;
   margin-left: auto;
   margin-right: auto;" v-for="(apartment, index) in apartments">
           <table v-bind:hidden="showSearched">
           		<tr>
-          			<td colspan="2">
-          				<img src="slika1.jpg" alt="Detalji" height="250" width= 745>
+          			<td colspan="2" style="width: 100%;">
+          				<img src="slika1.jpg" alt="Detalji" width="80%" height="80%">
           			</td>
           		</tr>
           		

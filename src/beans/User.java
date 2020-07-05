@@ -7,6 +7,7 @@ public abstract class User {
 	private String name;
 	private String surname;
 	private Gender gender;
+	private boolean blocked = false;
 	private UserType userType;
 	
 	public UserType getUserType() {
@@ -55,6 +56,14 @@ public abstract class User {
 
 	public void setGender(Gender gender) {
 		this.gender = gender;
+	}
+
+	public boolean isBlocked() {
+		return blocked;
+	}
+
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
 	}	
 	
 }

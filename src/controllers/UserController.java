@@ -63,13 +63,18 @@ public class UserController {
 		post("/users/login", (req, res) -> {
 			res.type("application/json");
 			User u = userService.Login(gs.fromJson(req.body(), LoginData.class));
-			Session ss = req.session(true);
-			User user = ss.attribute("user");
-			if (user == null) {
-				user = u;
-				ss.attribute("user", user);
+			if(u != null) {
+				if(!u.isBlocked()) {
+					Session ss = req.session(true);
+					User user = ss.attribute("user");
+					if (user == null) {
+						user = u;
+						ss.attribute("user", user);
+					}
+					return g.toJson(user);
+				}
 			}
-			return g.toJson(user);
+			return "";
 		});
 		
 		get("/users/log/test", (req, res) -> {
@@ -99,6 +104,27 @@ public class UserController {
 			return userService.canUserComment((Guest)user, req.params("appartmentId"));
 		});
 		
-		put("/users/update", (req,res)-> userService.Update(g.fromJson(req.body(), User.class)));
+		put("/users/toggleBlocked/:username", (req,res)->(userService.toggleBlockUser(req.params("username"))));
+		
+		
+		put("/users/update", (req,res)-> {
+			Session ss = req.session(true);
+			User user = ss.attribute("user");
+			if(user instanceof Guest) {
+				String a = userService.Update(g.fromJson(req.body(), Guest.class));
+				ss.attribute("user", g.fromJson(a, Guest.class));
+				return a;
+			}
+			else if(user instanceof Host) {
+				String a =userService.Update(g.fromJson(req.body(), Host.class));
+				ss.attribute("user", g.fromJson(a, Host.class));
+				return a;
+			}
+			else {
+				String a =userService.Update(g.fromJson(req.body(), Administrator.class));
+				ss.attribute("user", g.fromJson(a, Administrator.class));
+				return a;
+			}
+		});
 	}
 }
