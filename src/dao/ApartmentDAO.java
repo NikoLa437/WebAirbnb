@@ -1,5 +1,8 @@
 package dao;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -13,6 +16,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
@@ -29,6 +34,7 @@ import beans.Host;
 import beans.Period;
 import beans.Reservation;
 import beans.ReservationStatus;
+import sun.misc.BASE64Decoder;
 
 
 public class ApartmentDAO {
@@ -76,6 +82,33 @@ public class ApartmentDAO {
 		}
 		if(apartment.getDateForRenting().size() > 0)
 			apartment.setFreeDateForRenting(setFreeDateFromPeriod(apartment.getDateForRenting().get(0)));
+		
+		List<String> lista = new ArrayList<String>();
+		 
+        int numberOfImages=0;
+        for(String item : apartment.getPictures()) {
+            numberOfImages++;
+            String imageString = item.split(",")[1];
+ 
+            BufferedImage image = null;
+            byte[] imageByte;
+ 
+            BASE64Decoder decoder = new BASE64Decoder();
+            imageByte = decoder.decodeBuffer(imageString);
+            ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
+            image = ImageIO.read(bis);
+            bis.close();
+ 
+            String imageName= apartment.getId() + "-" + numberOfImages + ".png";
+                       
+            lista.add("apartmentPictures\\" + imageName);
+           
+            File outputfile = new File(System.getProperty("user.dir")+ "\\static\\apartmentPictures\\" + imageName);
+            ImageIO.write(image, "png", outputfile);
+        }
+       
+        apartment.setPictures(lista);
+		
 		apartments.add(apartment);
 		SaveAll(apartments);
 		return apartment;

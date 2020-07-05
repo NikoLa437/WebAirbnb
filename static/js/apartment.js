@@ -47,8 +47,10 @@ Vue.component("apartment", {
 		        streetNumber:'',
 		        longitude:'',
 		        latitude:'',
-		        url: null,
-		        images: []
+		        images: [],
+                imagesForBackend: [],
+                imageSize: '40%',
+                imageCount: 0 
 			    }
 	},
 	template: ` 
@@ -175,12 +177,20 @@ Vue.component("apartment", {
 </td>
 </tr>
 </table>	    
-  <input type="file" @change="onFileChange" />
-
-  <div id="preview">
-    <img v-if="url" :src="url" />
-  </div>
-
+  
+<input v-if="imageCount < 5" type="file" @change="onFileChange" />
+        <input v-else type="file" @change="onFileChange" disabled="true"/>
+ 
+ 
+ 
+     
+    <table>
+        <tr>
+            <td v-for="(url, index) in images"  >
+                <img :src="url" v-bind:style="{ height: computedWidth}" v-on:click="deleteImage(index)" />
+            </td>
+        </tr>
+    </table>
 
 </form>	
 
@@ -189,7 +199,12 @@ Vue.component("apartment", {
 `,components : { 
 	vuejsDatepicker
 }
-	,
+	,  
+    computed: {
+        computedWidth: function () {
+          return this.imageSize;
+        }
+      },
 	mounted(){
 		axios
         .get('/amenities')
@@ -224,9 +239,25 @@ Vue.component("apartment", {
 	}, 
 	methods : {	
 		onFileChange(e) {
-		      const file = e.target.files[0];
-		      this.images.push(URL.createObjectURL(file));
-		},
+            const file = e.target.files[0];
+            this.createBase64Image(file);
+            this.imageCount++;
+            this.images.push(URL.createObjectURL(file));
+        },
+        createBase64Image(file){
+            const reader= new FileReader();
+           
+            reader.onload = (e) =>{
+                this.imagesForBackend.push(e.target.result);
+            }
+            reader.readAsDataURL(file);
+        },
+ 
+        deleteImage(index){
+            this.imageCount--;
+            this.images.splice(index,1);
+            this.imagesForBackend.splice(index,1);
+        },
 		checkFormValid : function() {
 			
 			this.apartmentTypeError='';
@@ -269,7 +300,7 @@ Vue.component("apartment", {
 
 
 				 	let apartment = {id: 0,type:this.apartmentType, numberOfRoom: this.numberOfRooms,numberOfGuest: this.numberOfGuests,location:location,dateForRenting:period,freeDateForRenting:[]
-							,host:null,comments:[],pictures:[],priceForNight:this.price,checkInTime:this.checkInTime,checkOutTime:this.checkOutTime,amenities:this.selectedAmenities,status:this.apartmentStatus,reservations:[]};
+							,host:null,comments:[],pictures:this.imagesForBackend,priceForNight:this.price,checkInTime:this.checkInTime,checkOutTime:this.checkOutTime,amenities:this.selectedAmenities,status:this.apartmentStatus,reservations:[]};
 				 	
 	        		
 				 	axios

@@ -74,10 +74,10 @@ template: `
           <table v-bind:hidden="showSearched">
           		<tr>
           			<td colspan="2" style="width: 100%;">
-          				<img src="slika1.jpg" alt="Detalji" width="80%" height="80%">
+                        <img :src="apartment.pictures[0]" alt="Detalji" height="250" width= 745>
           			</td>
           		</tr>
-          		
+          
           		
           		<tr>
           			<td><label v-if="apartment.type === 'room'">Soba</label>
