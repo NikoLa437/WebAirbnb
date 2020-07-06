@@ -170,7 +170,7 @@ Vue.component("reservation", {
 		reserve : function(){
 
 			let seldates = (new Date(this.selectedDate.getFullYear(),this.selectedDate.getMonth() , this.selectedDate.getDate())).getTime();
-			let reservation = { appartment : this.apartment, startDate : seldates, daysForStay : parseInt(this.numberOfDays) - 1, price : getPrice()
+			let reservation = { appartment : this.apartment, startDate : seldates, daysForStay : parseInt(this.numberOfDays) - 1, price : this.getPrice()
 								, message : this.note, guest : null, status : 'created'};
 			
 			axios
