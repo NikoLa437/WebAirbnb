@@ -43,6 +43,16 @@ public class ApartmentService {
 		return g.toJson(apartment);		
 	}
 	
+	public String Delete(String id) {
+		try {
+			return g.toJson(apartmentDao.Delete(id));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return null;
+	}
+	
 	public String GetAll(int whatToGet, String username) {
 		try {
 			return g.toJson(apartmentDao.GetAllApartmentForUser(whatToGet, username));

@@ -1,5 +1,6 @@
 package controllers;
 
+import static spark.Spark.delete;
 import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.Spark.put;
@@ -36,7 +37,7 @@ public class ApartmentController {
 		});
 		
 		get("/apartment/:id", (req,res) -> apartmentService.getApartment(req.params("id")));
-
+		
 		get("/apartment/occupied/:id", (req,res) ->  apartmentService.getOccupiedDates(req.params("id")));
 		
 		get("/apartment/occupiedRanges/:id", (req,res) ->  apartmentService.getOccupiedRanges(req.params("id")));
@@ -93,6 +94,8 @@ public class ApartmentController {
 			
 			return apartmentService.GetAll(whatToGet,username);
 		});
+		
+		delete("/apartment/:id", (req,res) -> apartmentService.Delete(req.params("id")));
 		
 		get("/apartments/search/parameters", (req,res) -> {
 			Session ss = req.session(true);

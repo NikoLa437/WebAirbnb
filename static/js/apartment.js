@@ -32,7 +32,6 @@ Vue.component("apartment", {
 		    	checkInTimeError: '',
 		    	checkOutTime: '',
 		    	checkOutTimeError: '',
-		    	apartmentStatus: 'active',
 		        amenities: null,
 		        checkedAmenities: {},
 		        selectedAmenities: [],
@@ -96,13 +95,6 @@ Vue.component("apartment", {
 			<td ><p style="color: red" >{{checkOutTimeError}}</p></td>	
 		</tr>
 		<tr>
-			<td>Status:</td>
-			<td>
-  				<div class="pol"><input type="radio" name="apartmentStatus" v-model="apartmentStatus" value="active"> Aktivan<br></div>
-  				<div class="pol"><input type="radio" name="apartmentStatus" v-model="apartmentStatus" value="inactive"> Neaktivan<br></div>
-			</td>
-		</tr>
-		<tr>
 			<td>Datum od:</td>
 			<td><vuejs-datepicker placeholder="Unesite pocetni datum" v-model="dateFrom" ></vuejs-datepicker></td>
 			<td ><p style="color: red" >{{dateFromError}}</p></td>	
@@ -157,9 +149,7 @@ Vue.component("apartment", {
 			</div>
 			</td>
 		</tr>
-		<tr>
-			<td colspan="3" align="center"><input type="submit"  value="Unesi apartman"/></td>
-		</tr>
+
 	</table>
 </td>
 <td style="vertical-align:top">
@@ -182,8 +172,6 @@ Vue.component("apartment", {
         <input v-else type="file" @change="onFileChange" disabled="true"/>
  
  
- 
-     
     <table>
         <tr>
             <td v-for="(url, index) in images"  >
@@ -191,6 +179,8 @@ Vue.component("apartment", {
             </td>
         </tr>
     </table>
+
+			<td colspan="3" align="center"><input type="submit"  value="Unesi apartman"/></td>
 
 </form>	
 
@@ -210,9 +200,7 @@ Vue.component("apartment", {
         .get('/amenities')
         .then(response => (this.amenities = response.data));
 		
-		axios
-		.get('/apartment/' + this.$route.query.id)
-		.then(response => {this.apartment = response.data});
+
 		
 		this.placesAutocomplete = places({
 		    appId: 'plQ4P1ZY8JUZ',
@@ -303,7 +291,7 @@ Vue.component("apartment", {
 
 
 				 	let apartment = {id: 0,type:this.apartmentType, numberOfRoom: this.numberOfRooms,numberOfGuest: this.numberOfGuests,location:location,dateForRenting:period,freeDateForRenting:[]
-							,host:null,comments:[],pictures:this.imagesForBackend,priceForNight:this.price,checkInTime:this.checkInTime,checkOutTime:this.checkOutTime,amenities:this.selectedAmenities,status:this.apartmentStatus,reservations:[]};
+							,host:null,comments:[],pictures:this.imagesForBackend,priceForNight:this.price,checkInTime:this.checkInTime,checkOutTime:this.checkOutTime,amenities:this.selectedAmenities,status:null,reservations:[]};
 				 	
 	        		
 				 	axios

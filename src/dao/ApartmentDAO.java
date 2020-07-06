@@ -46,8 +46,24 @@ public class ApartmentDAO {
 		this.userDao = userDao;
 	}
 	
-	public List<Apartment> GetAll() throws JsonSyntaxException, IOException{		
+	public List<Apartment> GetAllFromFile() throws JsonSyntaxException, IOException{		
 		return g.fromJson((Files.readAllLines(Paths.get(path),Charset.defaultCharset()).size() == 0) ? "" : Files.readAllLines(Paths.get(path),Charset.defaultCharset()).get(0), new TypeToken<List<Apartment>>(){}.getType());
+	}
+	
+	public List<Apartment> GetAll() throws JsonSyntaxException, IOException {
+		List<Apartment> lista = GetAllFromFile();
+		List<Apartment> retList = new ArrayList<Apartment>();
+		
+		
+		if(lista!=null) {
+			for(Apartment item : lista) {
+				if(!item.isDeleted())
+					retList.add(item);
+			}
+		}
+
+		
+		return retList;
 	}
 	
 	public Apartment Update(Apartment apartment) throws JsonSyntaxException, IOException {
@@ -130,6 +146,20 @@ public class ApartmentDAO {
 		return retVal;
 	}
 	
+	public Apartment Delete(String id) throws JsonSyntaxException, IOException {
+		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
+		Apartment retVal = null;
+		for(Apartment a : apartments) {
+			if(a.getId() == Integer.parseInt(id)) {
+				a.setDeleted(true);
+				retVal = a;
+				break;
+			}
+		}
+		SaveAll(apartments);
+		return retVal;
+	}
+	
 	public Apartment Create(Apartment apartment) throws JsonSyntaxException, IOException {
 		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
 		apartment.setId(GetMaxID());
@@ -138,6 +168,8 @@ public class ApartmentDAO {
 		}
 		if(apartment.getDateForRenting().size() > 0)
 			apartment.setFreeDateForRenting(setFreeDateFromPeriod(apartment.getDateForRenting().get(0)));
+		
+		apartment.setStatus(ApartmentStatus.inactive);
 		
 		List<String> lista = new ArrayList<String>();
 		 
@@ -329,7 +361,7 @@ public class ApartmentDAO {
 	
 	public List<Reservation> getAllReservations(int whatToGet, String username) throws JsonSyntaxException, IOException{
 		List<Reservation> retVal = new ArrayList<Reservation>();
-		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
+		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAllFromFile();
 		
 		for(Apartment a : apartments) {
 			for(Reservation r : a.getReservations()) {
