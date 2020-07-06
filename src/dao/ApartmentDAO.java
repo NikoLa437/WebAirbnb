@@ -52,13 +52,18 @@ public class ApartmentDAO {
 	
 	public List<Apartment> GetAll() throws JsonSyntaxException, IOException {
 		List<Apartment> lista = GetAllFromFile();
+		List<Apartment> retList = new ArrayList<Apartment>();
 		
-		for(Apartment item : lista) {
-			if(!item.isDeleted())
-				lista.add(item);
+		
+		if(lista!=null) {
+			for(Apartment item : lista) {
+				if(!item.isDeleted())
+					retList.add(item);
+			}
 		}
+
 		
-		return lista;
+		return retList;
 	}
 	
 	public Apartment Update(Apartment apartment) throws JsonSyntaxException, IOException {
@@ -163,6 +168,8 @@ public class ApartmentDAO {
 		}
 		if(apartment.getDateForRenting().size() > 0)
 			apartment.setFreeDateForRenting(setFreeDateFromPeriod(apartment.getDateForRenting().get(0)));
+		
+		apartment.setStatus(ApartmentStatus.inactive);
 		
 		List<String> lista = new ArrayList<String>();
 		 

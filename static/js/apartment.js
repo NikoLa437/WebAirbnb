@@ -32,7 +32,6 @@ Vue.component("apartment", {
 		    	checkInTimeError: '',
 		    	checkOutTime: '',
 		    	checkOutTimeError: '',
-		    	apartmentStatus: 'active',
 		        amenities: null,
 		        checkedAmenities: {},
 		        selectedAmenities: [],
@@ -94,13 +93,6 @@ Vue.component("apartment", {
 			<td>Vreme za odjavu:</td>
 			<td><input class="input" placeholder="Unestice cenu" type="time" v-model="checkOutTime" name="checkOutTime"></td>
 			<td ><p style="color: red" >{{checkOutTimeError}}</p></td>	
-		</tr>
-		<tr>
-			<td>Status:</td>
-			<td>
-  				<div class="pol"><input type="radio" name="apartmentStatus" v-model="apartmentStatus" value="active"> Aktivan<br></div>
-  				<div class="pol"><input type="radio" name="apartmentStatus" v-model="apartmentStatus" value="inactive"> Neaktivan<br></div>
-			</td>
 		</tr>
 		<tr>
 			<td>Datum od:</td>
@@ -299,7 +291,7 @@ Vue.component("apartment", {
 
 
 				 	let apartment = {id: 0,type:this.apartmentType, numberOfRoom: this.numberOfRooms,numberOfGuest: this.numberOfGuests,location:location,dateForRenting:period,freeDateForRenting:[]
-							,host:null,comments:[],pictures:this.imagesForBackend,priceForNight:this.price,checkInTime:this.checkInTime,checkOutTime:this.checkOutTime,amenities:this.selectedAmenities,status:this.apartmentStatus,reservations:[]};
+							,host:null,comments:[],pictures:this.imagesForBackend,priceForNight:this.price,checkInTime:this.checkInTime,checkOutTime:this.checkOutTime,amenities:this.selectedAmenities,status:null,reservations:[]};
 				 	
 	        		
 				 	axios
