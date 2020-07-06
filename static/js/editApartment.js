@@ -16,10 +16,13 @@ function transliterate(string) {
   }
 
 
-Vue.component("apartment", {
+Vue.component("editApartment", {
 	data: function () {
 		    return {
 		    	placesAutocomplete:null,
+		    	apartment:{},
+		    	adress:{},
+		    	location:{},
 		    	apartmentType: '',
 		    	apartmentTypeError: '',
 		    	numberOfRooms: '',
@@ -45,9 +48,9 @@ Vue.component("apartment", {
 		        street:'',
 		        streetError:'',
 		        streetNumber:'',
+		        streetNumberError:'',
 		        longitude:'',
 		        latitude:'',
-		        images: [],
                 imagesForBackend: [],
                 imageSize: '40%',
                 imageCount: 0 
@@ -64,53 +67,43 @@ Vue.component("apartment", {
 		<tr>
 			<td>Tip apartmana:</td>
 			<td>
-  				<div class="pol"><input type="radio" name="apartmentType" v-model="apartmentType" value="room"> Soba<br></div>
-  				<div class="pol"><input type="radio" name="apartmentType" v-model="apartmentType" value="apartment"> Apartman<br></div>
+  				<div class="pol"><input type="radio" name="apartmentType" v-model="apartment.type" value="room"> Soba<br></div>
+  				<div class="pol"><input type="radio" name="apartmentType" v-model="apartment.type" value="apartment"> Apartman<br></div>
 			</td>
 			<td ><p style="color: red" >{{apartmentTypeError}}</p></td>	
 		</tr>
 		<tr>
 			<td>Broj soba:</td>
-			<td><input class="input" placeholder="Unesite broj soba" type="number" min="1" v-model="numberOfRooms" name="numberOfRooms"/></td>
+			<td><input class="input" placeholder="Unesite broj soba" type="number" min="1" v-model="apartment.numberOfRoom" name="numberOfRooms"/></td>
 			<td ><p style="color: red" >{{numberOfRoomsError}}</p></td>	
 		</tr>
 		<tr>
 			<td>Broj gostiju:</td>
-			<td><input class="input" placeholder="Unesite broj gostiju" type="number" min="1" v-model="numberOfGuests" name="numberOfGuests"/></td>
+			<td><input class="input" placeholder="Unesite broj gostiju" type="number" min="1" v-model="apartment.numberOfGuest" name="numberOfGuests"/></td>
 			<td ><p style="color: red" >{{numberOfGuestsError}}</p></td>	
 		</tr>
 		<tr>
 			<td>Cena po noci:</td>
-			<td><input class="input" placeholder="Unestice cenu" type="number" min="0" v-model="price" name="price"></td>
+			<td><input class="input" placeholder="Unestice cenu" type="number" min="0" v-model="apartment.priceForNight" name="price"></td>
 			<td>din</td>
 			<td ><p style="color: red" >{{priceError}}</p></td>	
 		</tr>
 		<tr>
 			<td>Vreme za prijavu:</td>
-			<td><input class="input" placeholder="Unestice cenu" type="time" v-model="checkInTime" name="checkInTime"></td>
+			<td><input class="input" placeholder="Unestice cenu" type="time" v-model="apartment.checkInTime" name="checkInTime"></td>
 			<td ><p style="color: red" >{{checkInTimeError}}</p></td>	
 		</tr>
 		<tr>
 			<td>Vreme za odjavu:</td>
-			<td><input class="input" placeholder="Unestice cenu" type="time" v-model="checkOutTime" name="checkOutTime"></td>
+			<td><input class="input" placeholder="Unestice cenu" type="time" v-model="apartment.checkOutTime" name="checkOutTime"></td>
 			<td ><p style="color: red" >{{checkOutTimeError}}</p></td>	
 		</tr>
 		<tr>
 			<td>Status:</td>
 			<td>
-  				<div class="pol"><input type="radio" name="apartmentStatus" v-model="apartmentStatus" value="active"> Aktivan<br></div>
-  				<div class="pol"><input type="radio" name="apartmentStatus" v-model="apartmentStatus" value="inactive"> Neaktivan<br></div>
+  				<div class="pol"><input type="radio" name="apartmentStatus" v-model="apartment.status" value="active"> Aktivan<br></div>
+  				<div class="pol"><input type="radio" name="apartmentStatus" v-model="apartment.status" value="inactive"> Neaktivan<br></div>
 			</td>
-		</tr>
-		<tr>
-			<td>Datum od:</td>
-			<td><vuejs-datepicker placeholder="Unesite pocetni datum" v-model="dateFrom" ></vuejs-datepicker></td>
-			<td ><p style="color: red" >{{dateFromError}}</p></td>	
-		</tr>
-		<tr>
-			<td>Datum do:</td>
-			<td><vuejs-datepicker placeholder="Unesite krajnji datum" v-model="dateTo" ></vuejs-datepicker></td>
-			<td ><p style="color: red" >{{dateToError}}</p></td>	
 		</tr>
 		<tr>
 			<td colspan="2"><h3>Unesite lokaciju:</h3></td>
@@ -119,12 +112,14 @@ Vue.component("apartment", {
 			<td colspan="2">
 			<div class="form-group">
 	    		<label for="form-address">Adresa</label>
-	    		<input type="search" class="form-control" id="form-address" placeholder="Unesite adresu" />
+	    		<input type="search"  class="form-control" id="form-address" placeholder="Unesite adresu" />
 			</div>
 			<br/>
 			<div >
 	    		<label >Broj:</label>
 	    		<input type="number" min="1" v-model="streetNumber" name="streetNumber" class="form-control"  placeholder="Unesite broj" />
+ 			 <p style="color: red" >{{streetNumberError}}</p>	
+
 			</div>
 			<br/>
 			<div class="form-group">
@@ -157,9 +152,6 @@ Vue.component("apartment", {
 			</div>
 			</td>
 		</tr>
-		<tr>
-			<td colspan="3" align="center"><input type="submit"  value="Unesi apartman"/></td>
-		</tr>
 	</table>
 </td>
 <td style="vertical-align:top">
@@ -168,7 +160,7 @@ Vue.component("apartment", {
 	
 	<table class="tableAmenities">
 		<tr v-for="(amenity, index) in amenities">
-			<input type="checkbox" v-bind:value="amenity" v-model="selectedAmenities" :value="amenity"/>
+			<input type="checkbox" v-bind:value="amenity" v-model="apartment.amenities" :value="amenity"/>
           {{amenity.name}}
           </br>
         </tr>
@@ -180,18 +172,16 @@ Vue.component("apartment", {
   
 <input v-if="imageCount < 5" type="file" @change="onFileChange" />
         <input v-else type="file" @change="onFileChange" disabled="true"/>
- 
- 
- 
-     
     <table>
         <tr>
-            <td v-for="(url, index) in images"  >
+            <td v-for="(url, index) in apartment.pictures"  >
                 <img :src="url" v-bind:style="{ height: computedWidth}" v-on:click="deleteImage(index)" />
             </td>
         </tr>
     </table>
-
+    
+<input type="submit"  value="Izmeni apartman"/>
+    
 </form>	
 
   </div>
@@ -212,7 +202,20 @@ Vue.component("apartment", {
 		
 		axios
 		.get('/apartment/' + this.$route.query.id)
-		.then(response => {this.apartment = response.data});
+		.then(response => {this.apartment = response.data; 
+			this.imageCount=this.apartment.pictures.length;
+		
+			this.streetNumber=this.apartment.location.adress.streetNumber;
+			document.querySelector('#form-street').value = this.apartment.location.adress.street || '';
+		    document.querySelector('#form-city').value = this.apartment.location.adress.city || '';
+		    document.querySelector('#form-zip').value = this.apartment.location.adress.postNumber || '';
+		    document.querySelector('#form-longitude').value = this.apartment.location.longitude || '';
+			document.querySelector('#form-latitude').value =this.apartment.location.latitude || '';
+		
+			for(let string of this.apartment.pictures){
+					this.imagesForBackend.push(string);
+			}
+		});
 		
 		this.placesAutocomplete = places({
 		    appId: 'plQ4P1ZY8JUZ',
@@ -227,12 +230,6 @@ Vue.component("apartment", {
 		    type: 'address'
 		  });
 		this.placesAutocomplete.on('change', function resultSelected(e) {
-			
-			this.street = e.suggestion.value;
-			this.city = e.suggestion.city;
-			this.postNumber = e.suggestion.postcode;
-			this.longitude =  e.suggestion.latlng.lng;
-			this.latitude = e.suggestion.latlng.lat;
 		    document.querySelector('#form-street').value = e.suggestion.value || '';
 		    document.querySelector('#form-city').value = e.suggestion.city || '';
 		    document.querySelector('#form-zip').value = e.suggestion.postcode || '';
@@ -245,7 +242,7 @@ Vue.component("apartment", {
             const file = e.target.files[0];
             this.createBase64Image(file);
             this.imageCount++;
-            this.images.push(URL.createObjectURL(file));
+            this.apartment.pictures.push(URL.createObjectURL(file));
         },
         createBase64Image(file){
             const reader= new FileReader();
@@ -258,7 +255,7 @@ Vue.component("apartment", {
  
         deleteImage(index){
             this.imageCount--;
-            this.images.splice(index,1);
+            this.apartment.pictures.splice(index,1);
             this.imagesForBackend.splice(index,1);
         },
 		checkFormValid : function() {
@@ -268,51 +265,45 @@ Vue.component("apartment", {
 			this.numberOfGuestsError='';
 			this.priceError='';
 			this.checkInTimeError='';
+			this.checkOutTimeError='';
 			this.streetError = '';
-		    if(this.apartmentType == "")
+			this.streetNumberError = '';
+			
+		    if(this.apartment.type == "")
 				this.apartmentTypeError =  'Tip apartmana je obavezno polje!';
-			else if(this.numberOfRooms == "")
+			else if(this.apartment.numberOfRoom == "")
 				this.numberOfRoomsError =  'Broj soba je obavezno polje!';
-			else if(this.numberOfGuests == "")
+			else if(this.apartment.numberOfGuest == "")
 				this.numberOfGuestsError =  'Broj gostiju je obavezno polje!';
-			else if(this.price == "")
-				this.priceError =  'Broj gostiju je obavezno polje!';
-			else if(this.checkInTime == "")
+			else if(this.apartment.priceForNight == "")
+				this.priceError =  'Cena je obavezno polje!';
+			else if(this.apartment.checkInTime == "")
 				this.checkInTimeError =  'Vreme za prijavu gostiju je obavezno polje!';
-			else if(this.checkOutTime == "")
-				this.checkOutTimeError =  'Vreme za prijavu gostiju je obavezno polje!';
-			else if(this.dateFrom == "")
-				this.dateFromError =  'Pocetno vreme za rezervaciju je obavezno polje';
-			else if(this.dateTo == "")
-				this.dateToError =  'Krajnje vreme za rezervaciju je obavezno polje!';
+			else if(this.apartment.checkOutTime == "")
+				this.checkOutTimeError =  'Vreme za odjavu gostiju je obavezno polje!';
 			else if(document.querySelector('#form-street').value == "")
 				this.streetError = 'Uneta nevalidna adresa!';
+			else if(this.streetNumber == ""){
+				this.streetNumberError="Broj ulice je obavezno polje"
+			}
 			else
 				{
-				
-					//let period= { dateFrom:dateFrom, dateTo:dateTo }
 					let adressLocation = { city:transliterate(document.querySelector('#form-city').value),postNumber:parseInt(document.querySelector('#form-zip').value),
-											street:transliterate(document.querySelector('#form-street').value), streetNumber:parseInt(this.streetNumber)};
-					
-					let dateFrom = (new Date(this.dateFrom.getFullYear(),this.dateFrom.getMonth() , this.dateFrom.getDate())).getTime(); 
-					let dateTo = (new Date(this.dateTo.getFullYear(),this.dateTo.getMonth() , this.dateTo.getDate())).getTime(); 
-					let period = [ { dateFrom: dateFrom , dateTo: dateTo }];
-
-										
+						street:transliterate(document.querySelector('#form-street').value), streetNumber:parseInt(this.streetNumber)};
 					let location = { adress:adressLocation , latitude:parseFloat(document.querySelector('#form-latitude').value),longitude:parseFloat(document.querySelector('#form-longitude').value)};
 
+					
+					//let dateFrom = (new Date(this.dateFrom.getFullYear(),this.dateFrom.getMonth() , this.dateFrom.getDate())).getTime(); 
+					//let dateTo = (new Date(this.dateTo.getFullYear(),this.dateTo.getMonth() , this.dateTo.getDate())).getTime(); 
+					//let period = [ { dateFrom: dateFrom , dateTo: dateTo }];
 
-				 	let apartment = {id: 0,type:this.apartmentType, numberOfRoom: this.numberOfRooms,numberOfGuest: this.numberOfGuests,location:location,dateForRenting:period,freeDateForRenting:[]
-							,host:null,comments:[],pictures:this.imagesForBackend,priceForNight:this.price,checkInTime:this.checkInTime,checkOutTime:this.checkOutTime,amenities:this.selectedAmenities,status:this.apartmentStatus,reservations:[]};
+									
+					this.apartment.pictures= this.imagesForBackend;
+					this.apartment.location=location;
 				 	
-	        		
 				 	axios
-			        .post('/apartment/add', JSON.stringify(apartment))
-			        .then(response => {
-			        	  window.location.href = "#/";
-			        	  
-			          });
-				
+		    		.post("/apartment/edit", this.apartment)
+		    		.then(response => toast("Sadrzaj uspešno snimljen."));
 				}
 		}
 	},

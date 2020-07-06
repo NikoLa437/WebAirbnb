@@ -41,6 +41,8 @@ public class ApartmentController {
 		
 		get("/apartment/occupiedRanges/:id", (req,res) ->  apartmentService.getOccupiedRanges(req.params("id")));
 
+		post("/apartment/edit", (req, res) -> 
+			apartmentService.Update(g.fromJson(req.body(), Apartment.class)));
 		
 		post("/apartment/reserve", (req,res) -> {
 			Reservation r = g.fromJson(req.body(), Reservation.class);
