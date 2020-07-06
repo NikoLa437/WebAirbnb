@@ -111,7 +111,7 @@ Vue.component("account", {
 				this.passwordC = response.data.password;
 				this.backup = [this.username, this.name, this.surname, this.gender];
 			}else{
-      		  window.location.href = "http://localhost:8080/#/login";
+      		  window.location.href = "#/login";
 			}
 		})
 	},
@@ -169,7 +169,7 @@ Vue.component("account", {
 			this.name= this.backup[1];
 			this.surname= this.backup[2];
 			this.gender =this.backup[3];
-			window.location.href = "http://localhost:8080/";
+			window.location.href = "#/";
 		},
 		paswordChange : function(){
 			this.mode = "PASSWORD";

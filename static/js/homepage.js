@@ -50,14 +50,17 @@ template: `
 		<tr v-bind:hidden="!visibleSearchBar">
 			<td colspan="2">
 				<select class="select" name="apartmentType" v-model="type">
+				   <option class="option" value=""></option>
 				   <option class="option" value="soba">Soba</option>
 				   <option class="option" value="apartman">Apartman</option>
 				</select>
-				<select class="select" @change="onChange($event)" name="sort" v-model="sortValue">
+				<select class="select" name="sort" v-model="sortValue">
+				   <option class="option" value=""></option>
 				   <option class="option" value="rastuca">Cena rastuca</option>
 				   <option class="option" value="opadajuca">Cena opadajuca</option>
 				</select>
 				<select v-bind:hidden="mod!='ADMIN'" class="select" name="apartmentStatus" v-model="apartmentStatus">
+				   <option class="option" value=""></option>
 				   <option class="option" value="aktivan">Aktivan</option>
 				   <option class="option" value="neaktivan">Neaktivan</option>
 				</select>
@@ -67,11 +70,8 @@ template: `
 		</tr>
 	</table>
 	
-	<div v-bind:style="{ width: computedWidth }" v-on:click="selectApartment(apartment.id)" style="display: block;
-  margin-bottom: 25px;
-  margin-left: auto;
-  margin-right: auto;" v-for="(apartment, index) in apartments">
-          <table v-bind:hidden="showSearched" style = "border: solid 1px rgb(152, 0, 0);border-top-left-radius: 10px;border-top-right-radius: 10px;border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;">
+	<div v-bind:style="{ width: computedWidth }" v-on:click="selectApartment(apartment.id)"  v-for="(apartment, index) in apartments" style = "margin-left:auto;margin-right:auto;">
+          <table v-bind:hidden="showSearched" style = "margin-left:auto;margin-right:auto;margin-bottom:25px;border: solid 1px rgb(152, 0, 0);border-top-left-radius: 10px;border-top-right-radius: 10px;border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;">
           		<tr>
           			<td colspan="2" style="width: 100%;">
                         <img :src="apartment.pictures[0]" alt="Detalji" height="420" width="745">
@@ -97,11 +97,8 @@ template: `
           </table>
 	</div>
 	
-	<div v-bind:hidden="!showSearched" 	v-on:click="selectApartment(apartment.id)" v-bind:style="{ width: computedWidth }" style="display: block;
-  margin-bottom: 25px;
-  margin-left: auto;
-  margin-right: auto;" v-for="(apartment, index) in searchedApartments">
-          <table style = "border: solid 1px rgb(152, 0, 0);border-top-left-radius: 10px;border-top-right-radius: 10px;border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;">
+	<div v-bind:hidden="!showSearched" 	v-on:click="selectApartment(apartment.id)" v-bind:style="{ width: computedWidth }" style = "margin-left:auto;margin-right:auto;" v-for="(apartment, index) in searchedApartments">
+          <table style = "margin-left:auto;margin-right:auto;margin-bottom:25px;border: solid 1px rgb(152, 0, 0);border-top-left-radius: 10px;border-top-right-radius: 10px;border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;">
           		<tr>
           			<td colspan="2">
           				<img :src="apartment.pictures[0]" alt="Detalji" height="420" width="745">
@@ -204,34 +201,17 @@ template: `
 				this.visibleSearchBar=false;
 				this.dateFrom = '';
 				this.dateTo = '';
-				
+				this.location = '';
+				this.numberOfGuest = '';
+				this.minRoom = '';
+				this.maxRoom = '';
+				this.minPrice = '';
+				this.maxPrice ='';
+				this.sortValue = '';
+				this.type = '';
+				this.apartmentStatus = '';
+				this.selectedAmenities = [];
 			},
-			onChange(event) {
-				if(this.location != '' || this.dateFrom != '' || this.dateTo != '' || this.numberOfGuest != '' || this.minRoom != '' || this.maxRoom != '' || this.minPrice != '' || this.maxPrice != '' || this.sortValue != ''){
-					axios
-					.get('/apartments/search/parameters', {
-					    params: {
-					    	location: this.location,
-					        dateFrom : this.dateFrom,
-					        dateTo : this.dateTo,
-					        numberOfGuest : this.numberOfGuest,
-					        minRoom: this.minRoom,
-					        maxRoom : this.maxRoom,
-					        minPrice : this.minPrice,
-					        maxPrice : this.maxPrice,
-					        sortValue: this.sortValue,
-					        type: this.type,
-					        apartmentStatus: this.apartmentStatus
-					      }
-					    })
-					.then(response => {
-						this.searchedApartments = response.data;
-						this.showSearched = true;
-					});
-				}else{
-					this.showSearched = false;
-				}
-	        },
 	        selectApartment : function(id) {
 	        	window.location.href = "#/apartmentDetails?id=" + id;
 	    	}

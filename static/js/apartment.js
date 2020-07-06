@@ -44,12 +44,16 @@ Vue.component("apartment", {
 		        street:'',
 		        streetError:'',
 		        streetNumber:'',
+		        streetNumberError:'',
 		        longitude:'',
 		        latitude:'',
 		        images: [],
                 imagesForBackend: [],
                 imageSize: '40%',
-                imageCount: 0 
+                imageCount: 0,
+                width:window.screen.availWidth/5.5,
+                disabledDates:{to: new Date()}
+
 			    }
 	},
 	template: ` 
@@ -96,12 +100,12 @@ Vue.component("apartment", {
 		</tr>
 		<tr>
 			<td>Datum od:</td>
-			<td><vuejs-datepicker placeholder="Unesite pocetni datum" v-model="dateFrom" ></vuejs-datepicker></td>
+			<td><vuejs-datepicker placeholder="Unesite pocetni datum" :disabled-dates="disabledDates" v-model="dateFrom" ></vuejs-datepicker></td>
 			<td ><p style="color: red" >{{dateFromError}}</p></td>	
 		</tr>
 		<tr>
 			<td>Datum do:</td>
-			<td><vuejs-datepicker placeholder="Unesite krajnji datum" v-model="dateTo" ></vuejs-datepicker></td>
+			<td><vuejs-datepicker placeholder="Unesite krajnji datum" :disabled-dates="disabledDates" v-model="dateTo" ></vuejs-datepicker></td>
 			<td ><p style="color: red" >{{dateToError}}</p></td>	
 		</tr>
 		<tr>
@@ -117,6 +121,7 @@ Vue.component("apartment", {
 			<div >
 	    		<label >Broj:</label>
 	    		<input type="number" min="1" v-model="streetNumber" name="streetNumber" class="form-control"  placeholder="Unesite broj" />
+	    		<p style="color: red" >{{streetNumberError}}</p>
 			</div>
 			<br/>
 			<div class="form-group">
@@ -175,7 +180,7 @@ Vue.component("apartment", {
     <table>
         <tr>
             <td v-for="(url, index) in images"  >
-                <img :src="url" v-bind:style="{ height: computedWidth}" v-on:click="deleteImage(index)" />
+                <img :src="url" :width="width" v-on:click="deleteImage(index)" />
             </td>
         </tr>
     </table>
@@ -188,14 +193,17 @@ Vue.component("apartment", {
 </div>
 `,components : { 
 	vuejsDatepicker
-}
-	,  
-    computed: {
-        computedWidth: function () {
-          return this.imageSize;
-        }
-      },
+},
 	mounted(){
+	
+		axios
+		.get("/users/log/test")
+		.then(response => {
+			if(response.data == null){
+	      		  window.location.href = "#/login";
+			}
+		});
+	
 		axios
         .get('/amenities')
         .then(response => (this.amenities = response.data));
@@ -235,6 +243,9 @@ Vue.component("apartment", {
             this.imageCount++;
             this.images.push(URL.createObjectURL(file));
         },
+        computedWidth: function () {
+            return window.screen.availWidth/5;
+          },
         createBase64Image(file){
             const reader= new FileReader();
            
@@ -250,13 +261,18 @@ Vue.component("apartment", {
             this.imagesForBackend.splice(index,1);
         },
 		checkFormValid : function() {
-			
+			this.checkInTimeError = '';
+			this.checkOutTimeError = '';
+			this.dateToError = '';
+			this.dateFromError = '';
 			this.apartmentTypeError='';
 			this.numberOfRoomsError='';
 			this.numberOfGuestsError='';
 			this.priceError='';
 			this.checkInTimeError='';
 			this.streetError = '';
+			this.streetNumberError='';
+			
 		    if(this.apartmentType == "")
 				this.apartmentTypeError =  'Tip apartmana je obavezno polje!';
 			else if(this.numberOfRooms == "")
@@ -273,8 +289,12 @@ Vue.component("apartment", {
 				this.dateFromError =  'Pocetno vreme za rezervaciju je obavezno polje';
 			else if(this.dateTo == "")
 				this.dateToError =  'Krajnje vreme za rezervaciju je obavezno polje!';
+			else if(this.dateTo.getTime() <= this.dateFrom.getTime())
+				this.dateToError =  'Datum do mora biti veci od datuma od!';
 			else if(document.querySelector('#form-street').value == "")
 				this.streetError = 'Uneta nevalidna adresa!';
+			else if(this.streetNumber == "")
+				this.streetNumberError = 'Broj ulice je obavezno polje!';
 			else
 				{
 				

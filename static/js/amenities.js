@@ -66,9 +66,17 @@ Vue.component("amenities", {
 `
 	, 
 	mounted () {
+		axios
+		.get("/users/log/test")
+		.then(response => {
+			if(response.data == null){
+	      		  window.location.href = "#/login";
+			}
+		});
+		
         axios
           .get('/amenities')
-          .then(response => (this.amenities = response.data))
+          .then(response => (this.amenities = response.data));
     },
     computed: {
         computedWidth: function () {
@@ -85,7 +93,7 @@ Vue.component("amenities", {
 					
 					let amenity = {name: this.amenitiename, id : 0};
 	        		  axios
-			          .post('http://localhost:8080/amenities/add', JSON.stringify(amenity))
+			          .post('/amenities/add', JSON.stringify(amenity))
 			          .then(response => {
 			        	  toast('Sadrzaj ' + this.amenitiename + ' uspesno dodat!');
 			        	  

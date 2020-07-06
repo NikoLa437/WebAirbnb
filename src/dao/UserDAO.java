@@ -97,9 +97,11 @@ public class UserDAO {
 	}
 	
 	public boolean canUserComment(Guest user, String appartmentId) {
-		for (Reservation r : user.getReservations()) {
-			if(r.getAppartment().getId() == Integer.parseInt(appartmentId) && (r.getStatus() == ReservationStatus.done || r.getStatus() == ReservationStatus.rejected)) {
-				return true;
+		if(user != null) {
+			for (Reservation r : user.getReservations()) {
+				if(r.getAppartment().getId() == Integer.parseInt(appartmentId) && (r.getStatus() == ReservationStatus.done || r.getStatus() == ReservationStatus.rejected)) {
+					return true;
+				}
 			}
 		}
 		return false;

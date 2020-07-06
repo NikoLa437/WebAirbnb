@@ -30,9 +30,11 @@ public class AmenityDAO {
 	public List<Amenity> GetAll() throws JsonSyntaxException, IOException{
 		List<Amenity> retVal = new ArrayList<Amenity>();
 		List<Amenity> fromFile = g.fromJson((Files.readAllLines(Paths.get(path),Charset.defaultCharset()).size() == 0) ? "" : Files.readAllLines(Paths.get(path),Charset.defaultCharset()).get(0), new TypeToken<List<Amenity>>(){}.getType());
-		for(Amenity a: fromFile)
-			if(!a.isDeleted())
-				retVal.add(a);
+		if(fromFile != null) {
+			for(Amenity a: fromFile)
+				if(!a.isDeleted())
+					retVal.add(a);
+		}
 		return retVal;
 	}
 	

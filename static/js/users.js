@@ -35,6 +35,7 @@ Vue.component("users", {
 						<option class="option" value="female">Zenski</option>
 					</select>
 				</td>
+				<td><button class="button" v-on:click="ponistipretragu">Ponisti pretragu</button></td>
 				<td><button class="button" v-on:click="searchUser">Pretrazi</button></td>		
 			</tr>
 </table>
@@ -85,19 +86,25 @@ Vue.component("users", {
 `
 	, 
 	mounted () {
-        axios
-          .get('/users')
-          .then(response => (this.users = response.data));
-        
-        axios
+		axios
         .get('/users/log/test')
         .then(response => {
+        	if(response.data != null){
         		if(response.data.userType == "Host")
         			this.user='HOST';
         		else 
         			this.user = 'ADMIN';
         	}
-        );
+        	else{
+	      		  window.location.href = "#/login";
+        	}
+        });
+		
+        axios
+          .get('/users')
+          .then(response => (this.users = response.data));
+        
+        
     },
 	methods : {
 		searchUser : function(){
@@ -159,7 +166,16 @@ Vue.component("users", {
 			}else{
 				this.showSearched = false;
 			}
-        }
+        },
+		ponistipretragu: function(){
+			this.showSearched = false;
+			this.userType = '';
+			this.gender = '';
+			this.searchUsername = '';
+			this.searchName = '';
+			this.searchSurname = '';
+
+		}
 	}
 	
 });

@@ -37,7 +37,8 @@ Vue.component("editApartment", {
 		        latitude:'',
                 imagesForBackend: [],
                 imageSize: '40%',
-                imageCount: 0 
+                imageCount: 0,
+                width:window.screen.availWidth/5.5
 			    }
 	},
 	template: ` 
@@ -159,7 +160,7 @@ Vue.component("editApartment", {
     <table>
         <tr>
             <td v-for="(url, index) in apartment.pictures"  >
-                <img :src="url" v-bind:style="{ height: computedWidth}" v-on:click="deleteImage(index)" />
+                <img :src="url" :width="width" v-on:click="deleteImage(index)" />
             </td>
         </tr>
     </table>
@@ -182,6 +183,15 @@ Vue.component("editApartment", {
         }
       },
 	mounted(){
+    	  
+    	axios
+  		.get("/users/log/test")
+  		.then(response => {
+  			if(response.data == null){
+  	      		  window.location.href = "#/login";
+  			}
+  		});
+    	  
 		axios
         .get('/amenities')
         .then(response => (this.amenities = response.data));
@@ -280,21 +290,15 @@ Vue.component("editApartment", {
 					let adressLocation = { city:transliterate(document.querySelector('#form-city').value),postNumber:parseInt(document.querySelector('#form-zip').value),
 						street:transliterate(document.querySelector('#form-street').value), streetNumber:parseInt(this.streetNumber)};
 					let location = { adress:adressLocation , latitude:parseFloat(document.querySelector('#form-latitude').value),longitude:parseFloat(document.querySelector('#form-longitude').value)};
-
-					
-					//let dateFrom = (new Date(this.dateFrom.getFullYear(),this.dateFrom.getMonth() , this.dateFrom.getDate())).getTime(); 
-					//let dateTo = (new Date(this.dateTo.getFullYear(),this.dateTo.getMonth() , this.dateTo.getDate())).getTime(); 
-					//let period = [ { dateFrom: dateFrom , dateTo: dateTo }];
-
 									
 					this.apartment.pictures= this.imagesForBackend;
 					this.apartment.location=location;
 				 	
 				 	axios
 		    		.post("/apartment/edit", this.apartment)
-		    		.then(response => toast("Sadrzaj uspešno snimljen."));
+		    		.then(response => (window.location.href = "#/apartmentDetails?id=" + this.apartment.id));
 				 	
-		        	window.location.href = "#/apartmentDetails?id=" + this.apartment.id;
+		        	
 				}
 		}
 	},

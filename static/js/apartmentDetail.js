@@ -59,11 +59,20 @@ Vue.component("apartment-details", {
 					<td>Cena za jednu noc: </td>
 					<td class="infotext">{{apartment.priceForNight + ' dinara'}}</td>
 				</tr>
+				<tr>
+					<td>Vreme ulaska u apartman: </td>
+					<td class="infotext">{{apartment.checkInTime}}</td>
+				</tr>
+				<tr>
+					<td>Vreme izlaska iz apartmana: </td>
+					<td class="infotext">{{apartment.checkOutTime}}</td>
+				</tr>
 				<tr v-bind:hidden="userType != 'GUEST'">
 					<td colspan="2"><button class="buttonBris" v-on:click="rezervisiClick">Rezervisi</button><br/></td>
 				</tr>
 				<tr v-bind:hidden="userType != 'HOST' && userType != 'ADMIN'">
-					<td colspan="2"><button class="buttonSave" v-on:click="izmeniClick">Izmeni</button><br/></td>
+					<td><button class="buttonSave" v-on:click="izmeniClick">Izmeni</button><br/></td>
+					<td><button class="buttonRed" v-on:click="deleteClick">Izbrisi</button><br/></td>
 				</tr>
 				
 				<tr v-bind:hidden="userType != 'HOST' && userType != 'ADMIN'">
@@ -156,6 +165,7 @@ Vue.component("apartment-details", {
 			}
 			
 			this.disabledDates["ranges"] = ranges;
+			this.disabledDates["to"] = new Date();
 
 		});
 		
@@ -208,6 +218,13 @@ Vue.component("apartment-details", {
 		izmeniClick: function(){
         	window.location.href = "#/editApartment?id=" + this.$route.query.id;
 		},
+		deleteClick: function(){
+			axios
+    		.delete("/apartment/" + this.$route.query.id)
+    		.then(response => {
+    			window.location.href= "/";
+    		});
+		},
 		activate:function(){
 			this.apartment.status='active';
 			this.isActive='active'
@@ -229,33 +246,37 @@ Vue.component("apartment-details", {
 		addPeriod: function(){
 			this.error = '';
 			if(this.dateFrom != '' && this.dateTo != ''){
-				let datumOd = (new Date(this.dateFrom.getFullYear(),this.dateFrom.getMonth() , this.dateFrom.getDate())).getTime();
-				let datumDo = (new Date(this.dateTo.getFullYear(),this.dateTo.getMonth() , this.dateTo.getDate())).getTime();
-				let eror = false;
-				let datumi = [];
-				while(datumOd <= datumDo){
-					for(let d of this.disabledDates.ranges){
-						if((datumOd <= d.from.getTime() && datumDo >= d.from.getTime) || (datumOd >= d.from.getTime() || datumOd <= d.to.getTime())){
-							eror = true;
+				if(this.dateFrom.getTime() <= this.dateTo.getTime()){
+					let datumOd = (new Date(this.dateFrom.getFullYear(),this.dateFrom.getMonth() , this.dateFrom.getDate())).getTime();
+					let datumDo = (new Date(this.dateTo.getFullYear(),this.dateTo.getMonth() , this.dateTo.getDate())).getTime();
+					let eror = false;
+					let datumi = [];
+					while(datumOd <= datumDo){
+						for(let d of this.disabledDates.ranges){
+							if((datumOd <= d.from.getTime() && datumDo >= d.from.getTime) || (datumOd >= d.from.getTime() || datumOd <= d.to.getTime())){
+								eror = true;
+							}
 						}
+						
+						
+						
+						datumi.push(datumOd);
+						datumOd = datumOd + 24*60*60*1000;
 					}
-					
-					
-					
-					datumi.push(datumOd);
-					datumOd = datumOd + 24*60*60*1000;
-				}
-				if(eror === true)
-				{
-					this.error = 'Unet period nije validan!';
-				}else
-				{
-					this.apartment.dateForRenting.push({ dateFrom: datumOd , dateTo: datumDo });
-					for(let a of datumi)
-						this.apartment.freeDateForRenting.push(a);
-					axios
-		    		.post("/apartment/edit", this.apartment)
-		    		.then(response => toast("Period je uspesno dodat!"));
+					if(eror === true)
+					{
+						this.error = 'Unet period nije validan!';
+					}else
+					{
+						this.apartment.dateForRenting.push({ dateFrom: datumOd , dateTo: datumDo });
+						for(let a of datumi)
+							this.apartment.freeDateForRenting.push(a);
+						axios
+			    		.post("/apartment/edit", this.apartment)
+			    		.then(response => toast("Period je uspesno dodat!"));
+					}
+				}else{
+					toast('Datum od mora biti manja od datuma do!');
 				}
 			}else{
 				toast('Datum od i datum do se moraju uneti!');

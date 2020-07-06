@@ -60,9 +60,17 @@ Vue.component("holidays", {
 }
 	, 
 	mounted () {
+		axios
+  		.get("/users/log/test")
+  		.then(response => {
+  			if(response.data == null){
+  	      		  window.location.href = "#/login";
+  			}
+  		});
+		
         axios
           .get('/holidays')
-          .then(response => (this.holidays = response.data))
+          .then(response => (this.holidays = response.data));
     },
     computed: {
         computedWidth: function () {

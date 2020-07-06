@@ -67,6 +67,14 @@ Vue.component("reservation", {
 	},
 	created (){
 		axios
+  		.get("/users/log/test")
+  		.then(response => {
+  			if(response.data == null){
+  	      		  window.location.href = "#/login";
+  			}
+  		});
+		
+		axios
 		.get('/apartment/occupied/' + this.$route.query.id)
 		.then(response => {
 			let datess = [];
@@ -94,6 +102,8 @@ Vue.component("reservation", {
 		});
 	},
 	mounted () {
+		
+		
 		axios
 		.get('/apartment/' + this.$route.query.id)
 		.then(response => (this.apartment = response.data));
@@ -154,7 +164,7 @@ Vue.component("reservation", {
 				}
 				if(praznik === false){
 					let dan = new Date(d);
-					if(dan.getDay() === 0 || dan.getDay() ===6)
+					if(dan.getDay() === 0 || dan.getDay() ===6 || dan.getDay() === 5)
 					{
 						price = price + 0.9*this.apartment.priceForNight;
 

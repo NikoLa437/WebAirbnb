@@ -14,10 +14,11 @@ Vue.component("reservations", {
 	},
 	template: ` 
 <div>
-<table class="searchtable" style="margin-bottom: 50px;">
+<table style="margin-bottom: 50px;">
 		<tr>
 			<td><input class="searchSelect" placeholder="Korisnicko ime gosta" type="text"  v-model="guestUsername" name="guestUsername"/></td>
 			<td>
+			Sortiranje po ceni:
 				<select class="searchSelect" name="sortValue" v-model="sortValue">
 				   <option class="option" value=""></option>
 				   <option class="option" value="rastuca">Cena rastuca</option>
@@ -25,6 +26,7 @@ Vue.component("reservations", {
 				</select>
 			</td>
 			<td>
+				Sortiranje po statusu:
 				<select class="searchSelect" name="reservationStatus" v-model="reservationStatus">
 				   <option class="option" value=""></option>
 				   <option class="option" value="kreirano">Kreirano</option>
@@ -124,12 +126,9 @@ Vue.component("reservations", {
 `,
 	mounted () {
 		axios
-		.get('/apartment/get/reservations')
-		.then(response => (this.reservations = response.data));
-		
-		axios
         .get('/users/log/test')
         .then(response => {
+        	if(response.data != null){
         		if(response.data.userType == "Host")
         			this.userType='HOST';
         		else if(response.data.userType == "Administrator")
@@ -137,8 +136,16 @@ Vue.component("reservations", {
         		else
         			this.userType = 'GUEST';
 
+        	}else{
+	      		  window.location.href = "#/login";
         	}
-        );
+        });
+		
+		axios
+		.get('/apartment/get/reservations')
+		.then(response => (this.reservations = response.data));
+		
+		
 	},
 	methods :{
 		selectReservation : function(reservation){
@@ -224,6 +231,9 @@ Vue.component("reservations", {
 		ponistipretragu: function(){
 			this.searchedReservations = null;
 			this.showSearched = false;
+			this.reservationStatus = '';
+			this.sortValue = '';
+			this.guestUsername = '';
 		}
 		
 	},
