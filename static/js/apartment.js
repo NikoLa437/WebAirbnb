@@ -157,9 +157,7 @@ Vue.component("apartment", {
 			</div>
 			</td>
 		</tr>
-		<tr>
-			<td colspan="3" align="center"><input type="submit"  value="Unesi apartman"/></td>
-		</tr>
+
 	</table>
 </td>
 <td style="vertical-align:top">
@@ -182,8 +180,6 @@ Vue.component("apartment", {
         <input v-else type="file" @change="onFileChange" disabled="true"/>
  
  
- 
-     
     <table>
         <tr>
             <td v-for="(url, index) in images"  >
@@ -191,6 +187,8 @@ Vue.component("apartment", {
             </td>
         </tr>
     </table>
+
+			<td colspan="3" align="center"><input type="submit"  value="Unesi apartman"/></td>
 
 </form>	
 
@@ -210,9 +208,7 @@ Vue.component("apartment", {
         .get('/amenities')
         .then(response => (this.amenities = response.data));
 		
-		axios
-		.get('/apartment/' + this.$route.query.id)
-		.then(response => {this.apartment = response.data});
+
 		
 		this.placesAutocomplete = places({
 		    appId: 'plQ4P1ZY8JUZ',

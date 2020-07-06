@@ -21,28 +21,12 @@ Vue.component("editApartment", {
 		    return {
 		    	placesAutocomplete:null,
 		    	apartment:{},
-		    	adress:{},
-		    	location:{},
-		    	apartmentType: '',
 		    	apartmentTypeError: '',
-		    	numberOfRooms: '',
 		    	numberOfRoomsError: '',
-		    	numberOfGuests: '',
 		    	numberOfGuestsError: '',
-		    	price: '',
 		    	priceError: '',
-		    	checkInTime: '',
 		    	checkInTimeError: '',
-		    	checkOutTime: '',
 		    	checkOutTimeError: '',
-		    	apartmentStatus: 'active',
-		        amenities: null,
-		        checkedAmenities: {},
-		        selectedAmenities: [],
-		        dateFrom: new Date(Date.now() + 24*60*60*1000),
-		        dateFromError: '',
-		        dateTo: '',
-		        dateToError: '',
 		        city: '',
 		        postNumber:'',
 		        street:'',
@@ -180,9 +164,11 @@ Vue.component("editApartment", {
         </tr>
     </table>
     
-<input type="submit"  value="Izmeni apartman"/>
-    
+<input type="submit"  value="Izmeni apartman"/>     
 </form>	
+
+<button class="buttonBris" v-on:click="odustaniClick">Odustani</button><br/>
+
 
   </div>
 </div>
@@ -258,6 +244,9 @@ Vue.component("editApartment", {
             this.apartment.pictures.splice(index,1);
             this.imagesForBackend.splice(index,1);
         },
+        odustaniClick : function(){
+        	window.location.href = "#/apartmentDetails?id=" + this.apartment.id;
+		},
 		checkFormValid : function() {
 			
 			this.apartmentTypeError='';
@@ -304,6 +293,8 @@ Vue.component("editApartment", {
 				 	axios
 		    		.post("/apartment/edit", this.apartment)
 		    		.then(response => toast("Sadrzaj uspešno snimljen."));
+				 	
+		        	window.location.href = "#/apartmentDetails?id=" + this.apartment.id;
 				}
 		}
 	},
