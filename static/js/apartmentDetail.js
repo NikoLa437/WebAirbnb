@@ -55,6 +55,10 @@ Vue.component("apartment-details", {
 				<tr>
 					<td colspan="2"><button class="buttonBris" v-on:click="rezervisiClick">Rezervisi</button><br/></td>
 				</tr>
+				<tr v-bind:hidden="userType != 'HOST' && userType != 'ADMIN'">
+					<td colspan="2"><button class="buttonBris" v-on:click="izmeniClick">Izmeni</button><br/></td>
+				</tr>
+				
 			</table>
 		</td>	
 </tr>
@@ -162,6 +166,9 @@ Vue.component("apartment-details", {
 				window.location.href = "#/reservation?id=" + this.$route.query.id;
 			else
 				toast("Samo Gosti mogu rezervisati termine!");
+		},
+		izmeniClick: function(){
+        	window.location.href = "#/editApartment?id=" + this.$route.query.id;
 		},
 		selectComment : function(c){
 			this.selectedComment = c;

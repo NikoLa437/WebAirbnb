@@ -35,7 +35,7 @@ public class ApartmentService {
 	public String Update(Apartment apartment) {
 		try {
 			//TODO
-			//apartmentDao.Update(apartment);
+			apartmentDao.Update(apartment);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -50,27 +50,83 @@ public class ApartmentDAO {
 		return g.fromJson((Files.readAllLines(Paths.get(path),Charset.defaultCharset()).size() == 0) ? "" : Files.readAllLines(Paths.get(path),Charset.defaultCharset()).get(0), new TypeToken<List<Apartment>>(){}.getType());
 	}
 	
+	public Apartment Update(Apartment apartment) throws JsonSyntaxException, IOException {
+		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
+		
+		List<String> lista = new ArrayList<String>();
+		 
+		
+		for(String item : apartment.getPictures()) {
+			if(!item.startsWith("data:image")) {
+				lista.add(item);
+			}
+		}
+		
+        int numberOfImages=0;
+        for(String item : apartment.getPictures()) {
+            numberOfImages++;
+            
+            if(item.startsWith("data:image")) {
+            	String imageString = item.split(",")[1];
+            	BufferedImage image = null;
+                byte[] imageByte;
+     
+                BASE64Decoder decoder = new BASE64Decoder();
+                imageByte = decoder.decodeBuffer(imageString);
+                ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
+                image = ImageIO.read(bis);
+                bis.close();
+     
+                
+                String imageName= apartment.getId() + "-" + numberOfImages + ".png";
+                while(lista.contains("apartmentPictures\\" + imageName)) {
+                	numberOfImages++;
+                	imageName= apartment.getId() + "-" + numberOfImages + ".png";
+                }
+                
+                lista.add("apartmentPictures\\" + imageName);
+               
+                File outputfile = new File(System.getProperty("user.dir")+ "\\static\\apartmentPictures\\" + imageName);
+                ImageIO.write(image, "png", outputfile);
+        
+            }
+        }
+        apartment.setPictures(lista);
+		
+		for(Apartment a : apartments) {
+			if(a.getId() == apartment.getId()) {
+				apartments.remove(a);
+				apartments.add(apartment);
+				break;
+			}
+		}
+		SaveAll(apartments);
+		return apartment;
+	}
+	
 	public List<Apartment> GetAllApartmentForUser(int whatToGet, String username) throws JsonSyntaxException, IOException{		
 		List<Apartment> retVal = new ArrayList<Apartment>();
 		ArrayList<Apartment> apartments = (ArrayList<Apartment>) GetAll();
 		
-		
-		for(Apartment a : apartments) {
-			Host h = (Host) userDao.get(a.getHost().getUsername());
-				if(whatToGet == 0) {
-					if(a.getStatus()==ApartmentStatus.active) {
-						if(!h.isBlocked())
+		if(apartments!=null) {
+			for(Apartment a : apartments) {
+				Host h = (Host) userDao.get(a.getHost().getUsername());
+					if(whatToGet == 0) {
+						if(a.getStatus()==ApartmentStatus.active) {
+							if(!h.isBlocked())
+								retVal.add(a);
+						}
+					}else if(whatToGet == 1) {
+						if(a.getHost().getUsername().equals(username)) {
 							retVal.add(a);
+						}
 					}
-				}else if(whatToGet == 1) {
-					if(a.getHost().getUsername().equals(username)) {
+					else {
 						retVal.add(a);
 					}
 				}
-				else {
-					retVal.add(a);
-				}
-			}
+		}
+		
 		return retVal;
 	}
 	

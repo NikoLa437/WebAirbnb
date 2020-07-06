@@ -6,6 +6,7 @@ const amenities = { template: '<amenities></amenities>' }
 const login = { template: '<login></login>' }
 const apartment = { template: '<apartment></apartment>' }
 const apartmentDetails = { template: '<apartment-details></apartment-details>' }
+const editApartment = { template: '<editApartment></editApartment>' }
 const reservation = { template: '<reservation></reservation>' }
 const reservations = { template: '<reservations></reservations>' }
 const holidays = { template: '<holidays></holidays>' }
@@ -22,6 +23,7 @@ const router = new VueRouter({
 	    { path: '/login', component: login },
 	    { path: '/apartment', component: apartment },
 	    { path: '/apartmentDetails', component: apartmentDetails },
+	    { path: '/editApartment' , component: editApartment},
 	    { path: '/reservation', component: reservation},
 	    { path: '/reservations', component: reservations},
 	    { path: '/holidays', component: holidays}
