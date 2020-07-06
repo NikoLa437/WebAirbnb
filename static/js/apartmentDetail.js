@@ -10,7 +10,8 @@ Vue.component("apartment-details", {
 	        commentError:'',
 	        selectedComment:{},
 	        canReserve:null,
-	        canUserComment:null
+	        canUserComment:null,
+	        isActive:null
 	    }
 	},
 	template: ` 
@@ -57,6 +58,11 @@ Vue.component("apartment-details", {
 				</tr>
 				<tr v-bind:hidden="userType != 'HOST' && userType != 'ADMIN'">
 					<td colspan="2"><button class="buttonBris" v-on:click="izmeniClick">Izmeni</button><br/></td>
+				</tr>
+				
+				<tr v-bind:hidden="userType != 'HOST' && userType != 'ADMIN'">
+					<td v-bind:hidden="isActive === 'active'" colspan="2"><button class="buttonBris" v-on:click="activate">Aktiviraj</button><br/></td>
+					<td v-bind:hidden="isActive === 'inactive'" colspan="2"><button class="buttonBris" v-on:click="deactivate">Deaktiviraj</button><br/></td>
 				</tr>
 				
 			</table>
@@ -119,7 +125,7 @@ Vue.component("apartment-details", {
 	mounted () {
 		axios
 		.get('/apartment/' + this.$route.query.id)
-		.then(response => {this.apartment = response.data; this.picture = this.apartment.pictures[0];});
+		.then(response => {this.apartment = response.data; this.picture = this.apartment.pictures[0]; this.isActive= this.apartment.status});
 		
 		axios
 		.get('/users/apartment/cancoment/' + this.$route.query.id)
@@ -169,6 +175,21 @@ Vue.component("apartment-details", {
 		},
 		izmeniClick: function(){
         	window.location.href = "#/editApartment?id=" + this.$route.query.id;
+		},
+		activate:function(){
+			this.apartment.status='active';
+			this.isActive='active'
+				axios
+	    		.post("/apartment/edit", this.apartment)
+	    		.then(response => toast("Sadrzaj uspešno snimljen."));
+		},
+		deactivate:function(){
+			this.apartment.status='inactive';
+			this.isActive='inactive'
+			
+				axios
+	    		.post("/apartment/edit", this.apartment)
+	    		.then(response => toast("Sadrzaj uspešno snimljen."));
 		},
 		selectComment : function(c){
 			this.selectedComment = c;
