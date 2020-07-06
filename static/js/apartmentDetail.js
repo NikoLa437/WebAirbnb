@@ -1,11 +1,17 @@
 Vue.component("apartment-details", {
 	data: function () {
 	    return {
+	    	disabledDates : {},
 	        apartment:{},
 	        picture:'',
 	        comment:'',
 	        userType:'',
+	        dateFrom : '',
+	        dateTo : '',
 	        grade:'',
+	        error:'',
+	        adress: {},
+	        comments:[],
 	        user:null,
 	        commentError:'',
 	        selectedComment:{},
@@ -21,13 +27,13 @@ Vue.component("apartment-details", {
 		<td id="slike">
 			<div class="rowS">
 					<div v-for="p in apartment.pictures" class="columnS">
-							<img :src="p" alt="Slika apartmana" style="width:100%" v-on:click="myFunction(p)"/>
+							<img :src="p" alt="Slika apartmana" style="width:80%" v-on:click="myFunction(p)"/>
 					</div>
 			</div>
 			
 			<div class="containerG" ref="container">
 				<a target="_blank" :href="picture">
-						<img ref="expandedImg" :src="picture" style="width:100%"/>
+						<img ref="expandedImg" :src="picture" style="width:80%"/>
 			  	</a>
 			</div>
 		</td>
@@ -47,24 +53,34 @@ Vue.component("apartment-details", {
 				</tr>
 				<tr>
 					<td>Adresa: </td>
-					<td class="infotext">{{apartment.location.adress.street + ' ' + apartment.location.adress.streetNumber + ', ' + apartment.location.adress.postNumber + ' ' + apartment.location.adress.city}}</td>
+					<td class="infotext">{{adress.street + ' ' + adress.streetNumber + ', ' + adress.postNumber + ' ' + adress.city}}</td>
 				</tr>
 				<tr>
 					<td>Cena za jednu noc: </td>
 					<td class="infotext">{{apartment.priceForNight + ' dinara'}}</td>
 				</tr>
-				<tr>
+				<tr v-bind:hidden="userType != 'GUEST'">
 					<td colspan="2"><button class="buttonBris" v-on:click="rezervisiClick">Rezervisi</button><br/></td>
 				</tr>
 				<tr v-bind:hidden="userType != 'HOST' && userType != 'ADMIN'">
-					<td colspan="2"><button class="buttonBris" v-on:click="izmeniClick">Izmeni</button><br/></td>
+					<td colspan="2"><button class="buttonSave" v-on:click="izmeniClick">Izmeni</button><br/></td>
 				</tr>
 				
 				<tr v-bind:hidden="userType != 'HOST' && userType != 'ADMIN'">
-					<td v-bind:hidden="isActive === 'active'" colspan="2"><button class="buttonBris" v-on:click="activate">Aktiviraj</button><br/></td>
-					<td v-bind:hidden="isActive === 'inactive'" colspan="2"><button class="buttonBris" v-on:click="deactivate">Deaktiviraj</button><br/></td>
+					<td v-bind:hidden="isActive === 'active'" colspan="2"><button class="buttonSave" v-on:click="activate">Aktiviraj</button><br/></td>
+					<td v-bind:hidden="isActive === 'inactive'" colspan="2"><button class="buttonRed" v-on:click="deactivate">Deaktiviraj</button><br/></td>
 				</tr>
-				
+				<tr v-bind:hidden="userType != 'HOST'"><td colspan="2">Dodavanje perioda za izdavanje: </td></tr>
+				<tr v-bind:hidden="userType != 'HOST'">
+					<td>Datum od: <vuejs-datepicker :disabled-dates="disabledDates" v-model="dateFrom"></vuejs-datepicker></td>
+					<td>Datum do: <vuejs-datepicker :disabled-dates="disabledDates" v-model="dateTo"></vuejs-datepicker></td>
+				</tr>
+				<tr v-bind:hidden="userType != 'HOST'">
+					<td colspan="2"><button class="buttonSave" v-on:click="addPeriod">Dodaj</button><br/></td>
+				</tr>
+				<tr>
+					<p style="color: red" >{{error}}</p>
+				</tr>
 			</table>
 		</td>	
 </tr>
@@ -76,7 +92,7 @@ Vue.component("apartment-details", {
 		</tr>
 </table>
 
-<table class="komentari" v-bind:hidden="apartment.comments.length == 0">
+<table class="komentari" v-bind:hidden="comments.length == 0">
 		<h3>Komentari: </h3>
 		<tr>
 		<td v-bind:hidden="userType != 'HOST'">
@@ -121,11 +137,27 @@ Vue.component("apartment-details", {
 </table>
 
 </div>		  
-`,
+`, components : { 
+		vuejsDatepicker
+	},
 	mounted () {
 		axios
 		.get('/apartment/' + this.$route.query.id)
-		.then(response => {this.apartment = response.data; this.picture = this.apartment.pictures[0]; this.isActive= this.apartment.status});
+		.then(response => {
+			this.apartment = response.data; 
+			this.adress = this.apartment.location.adress; 
+			this.comments = this.apartment.comments; 
+			this.picture = this.apartment.pictures[0]; 
+			this.isActive= this.apartment.status
+			let ranges = [];
+
+			for(let d of this.apartment.dateForRenting){
+				ranges.push({from : new Date(d.dateFrom), to : new Date(d.dateTo)});
+			}
+			
+			this.disabledDates["ranges"] = ranges;
+
+		});
 		
 		axios
 		.get('/users/apartment/cancoment/' + this.$route.query.id)
@@ -147,7 +179,7 @@ Vue.component("apartment-details", {
         		this.user = response.data;
         		if(response.data.userType == "Guest"){
         			this.canReserve=true;
-            		this.userType = 'USER';
+            		this.userType = 'GUEST';
         		}
         		else if(response.data.userType == "Host"){
         			this.canReserve=false;
@@ -194,6 +226,41 @@ Vue.component("apartment-details", {
 		selectComment : function(c){
 			this.selectedComment = c;
 		},
+		addPeriod: function(){
+			this.error = '';
+			if(this.dateFrom != '' && this.dateTo != ''){
+				let datumOd = (new Date(this.dateFrom.getFullYear(),this.dateFrom.getMonth() , this.dateFrom.getDate())).getTime();
+				let datumDo = (new Date(this.dateTo.getFullYear(),this.dateTo.getMonth() , this.dateTo.getDate())).getTime();
+				let eror = false;
+				let datumi = [];
+				while(datumOd <= datumDo){
+					for(let d of this.disabledDates.ranges){
+						if((datumOd <= d.from.getTime() && datumDo >= d.from.getTime) || (datumOd >= d.from.getTime() || datumOd <= d.to.getTime())){
+							eror = true;
+						}
+					}
+					
+					
+					
+					datumi.push(datumOd);
+					datumOd = datumOd + 24*60*60*1000;
+				}
+				if(eror === true)
+				{
+					this.error = 'Unet period nije validan!';
+				}else
+				{
+					this.apartment.dateForRenting.push({ dateFrom: datumOd , dateTo: datumDo });
+					for(let a of datumi)
+						this.apartment.freeDateForRenting.push(a);
+					axios
+		    		.post("/apartment/edit", this.apartment)
+		    		.then(response => toast("Period je uspesno dodat!"));
+				}
+			}else{
+				toast('Datum od i datum do se moraju uneti!');
+			}
+		},	
 		commentClick : function(){
 			this.commentError = '';
 			if(this.grade == '')

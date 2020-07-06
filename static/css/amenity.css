@@ -75,6 +75,17 @@ tr.selected {
 			outline: none;
 	
 }
+
+.buttonRed{
+	background-color:rgb(152, 0, 0);
+	  color: white;
+	  border: none;
+	padding:5px 8px 5px 8px;
+	font-size: 17px;
+	border-radius: 7px;
+			outline: none;
+}
+
 .buttonBris{
 	background-color:grey;
 	  color: white;
