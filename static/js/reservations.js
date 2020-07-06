@@ -18,7 +18,7 @@ Vue.component("reservations", {
 		<tr>
 			<td><input class="searchSelect" placeholder="Korisnicko ime gosta" type="text"  v-model="guestUsername" name="guestUsername"/></td>
 			<td>
-				<select class="searchSelect" @change="onChange($event)" name="sortValue" v-model="sortValue">
+				<select class="searchSelect" name="sortValue" v-model="sortValue">
 				   <option class="option" value=""></option>
 				   <option class="option" value="rastuca">Cena rastuca</option>
 				   <option class="option" value="opadajuca">Cena opadajuca</option>

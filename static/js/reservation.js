@@ -3,11 +3,12 @@ Vue.component("reservation", {
 	    return {
 	    	disabledDates : {
 	    	},
-	    	apartment:null,
+	    	apartment:{},
 	    	numberOfDays:1,
 	    	note:'',
+	    	holidays:[],
 	    	available:'UNDEFINED',
-	    	selectedDate: new Date(Date.now() + 24*60*60*1000)
+	    	selectedDate: ''
 	    }
 	},
 	template: ` 
@@ -26,10 +27,10 @@ Vue.component("reservation", {
 		</tr>
  </table>
  
- <div v-bind:hidden="available!='OCCUPIED'">
+ <div v-bind:hidden="available!='OCCUPIED'" v-if="selectedDate != ''">
 	<h4 style="color:red">U periodu od {{selectedDate | dateFormat('DD.MM.YYYY')}} do {{(selectedDate.getTime() + (parseInt(this.numberOfDays)-1)*24*60*60*1000) | dateFormat('DD.MM.YYYY')}} nema slobodnih termina!</h4>
  </div>
- <div v-bind:hidden="available!='AVAILABLE'">
+ <div v-bind:hidden="available!='AVAILABLE'" v-if="selectedDate != ''">
 	<h4>Slobodan termin pronadjen!</h4>
 	<table style="width=50%">
 		<tr>
@@ -42,7 +43,7 @@ Vue.component("reservation", {
 		</tr>
 		<tr>
 			<td>Cena:</td>
-			<td>{{apartment.priceForNight * parseInt(this.numberOfDays)}} dinara</td>
+			<td>{{getPrice()}} dinara</td>
 		</tr>
 		<tr>
 			<td>Vreme ulaska u apartman:</td>
@@ -97,7 +98,9 @@ Vue.component("reservation", {
 		.get('/apartment/' + this.$route.query.id)
 		.then(response => (this.apartment = response.data));
 		
-		
+		axios
+		.get('/holidays')
+		.then(response => (this.holidays = response.data));
 		
 		
 	},
@@ -116,16 +119,14 @@ Vue.component("reservation", {
 					}
 				}
 			}
-			let pomoc = [];
-			for(let d of this.disabledDates["ranges"]){
-				pomoc.push(d.from.getTime());
-				pomoc.push(d.to.getTime());
-			}
-			pomoc.push(this.disabledDates["from"].getTime());
+
 			
-			for(let d of pomoc){
+			for(let d of this.disabledDates["ranges"]){
 				for(let a of seldates){
-					if(a === d){
+					if(a > d.from.getTime() && a < d.to.getTime()){
+						this.available = 'OCCUPIED';
+						return;
+					}else if(a >= this.disabledDates["from"].getTime() || a <= this.disabledDates["to"].getTime()){
 						this.available = 'OCCUPIED';
 						return;
 					}
@@ -134,10 +135,42 @@ Vue.component("reservation", {
 			
 			this.available = 'AVAILABLE';
 		},
+		getPrice : function(){
+			let price = 0;
+			let numb = parseInt(this.numberOfDays);
+			let seldates = [(new Date(this.selectedDate.getFullYear(),this.selectedDate.getMonth() , this.selectedDate.getDate())).getTime()];
+			for (i = 1; i < numb; i++) {
+				seldates.push((new Date(this.selectedDate.getFullYear(),this.selectedDate.getMonth() , this.selectedDate.getDate())).getTime() + 24*60*60*1000*i);
+			}
+			
+			for(let d of seldates){
+				let praznik = false;
+				for(let p of this.holidays){
+					if(d === p.date){
+						price = price + 1.05 * this.apartment.priceForNight;
+						praznik = true;
+						break;
+					}
+				}
+				if(praznik === false){
+					let dan = new Date(d);
+					if(dan.getDay() === 0 || dan.getDay() ===6)
+					{
+						price = price + 0.9*this.apartment.priceForNight;
+
+					}else
+					{
+						price = price + this.apartment.priceForNight;
+					}
+				}
+			}
+			
+			return Number((price).toFixed(1)); ;
+		},
 		reserve : function(){
 
 			let seldates = (new Date(this.selectedDate.getFullYear(),this.selectedDate.getMonth() , this.selectedDate.getDate())).getTime();
-			let reservation = { appartment : this.apartment, startDate : seldates, daysForStay : parseInt(this.numberOfDays) - 1, price : this.apartment.priceForNight * parseInt(this.numberOfDays)
+			let reservation = { appartment : this.apartment, startDate : seldates, daysForStay : parseInt(this.numberOfDays) - 1, price : getPrice()
 								, message : this.note, guest : null, status : 'created'};
 			
 			axios
