@@ -1,15 +1,16 @@
 Vue.component("users", {
 	data: function () {
 		    return {
-		        users: null,
+		        users: [],
 		        searchedUsers:[],
 		        showSearched:false,
 		        selectedUser:{},
-		        user : null,
+		        user : {},
 		        searchName:'',
 		        searchSurname:'',
 		        searchUsername:'',
-		        userType:''
+		        userType:'',
+		        gender:'',
 		    }
 	},
 	template: ` 
@@ -27,20 +28,27 @@ Vue.component("users", {
 						<option class="option" value="Administrator">Administrator</option>
 					</select>
 				</td>
+				<td>
+					<select class="select" name="gender" v-model="gender">
+						<option class="option" value=""></option>
+						<option class="option" value="male">Muski</option>
+						<option class="option" value="female">Zenski</option>
+					</select>
+				</td>
 				<td><button class="button" v-on:click="searchUser">Pretrazi</button></td>		
 			</tr>
 </table>
-<br/>
-<br/>
 
-<button v-bind:hidden="user != 'ADMIN'" class="button" style="width:20%" v-on:click="blockUser">Blokiraj korisnika</button>
-<br/>
-<br/>
-
-<button v-bind:hidden="user != 'ADMIN'" class="button" style="width:20%" v-on:click="unblockUser">Odblokiraj korisnika</button>
-
-<br/>
-<br/>
+<table>
+<tr>
+		<td>
+			<button v-bind:hidden="user != 'ADMIN'" class="button" v-on:click="blockUser">Blokiraj korisnika</button>
+		</td>
+		<td>
+			<button v-bind:hidden="user != 'ADMIN'" class="button" v-on:click="unblockUser">Odblokiraj korisnika</button>
+		</td>
+</tr>
+</table>
 
 <table class="users">
 		<tr>
@@ -93,14 +101,15 @@ Vue.component("users", {
     },
 	methods : {
 		searchUser : function(){
-			if(this.searchName != '' || this.searchUsername != '' || this.userType != '' || this.searchSurname != ''){
+			if(this.searchName != '' || this.searchUsername != '' || this.userType != '' || this.searchSurname != '' || this.gender != ''){
 				axios
 				.get('/users/search/parameters', {
 				    params: {
 				        username: this.searchUsername,
 				        name : this.searchName,
 				        surname : this.searchSurname,
-				        userType : this.userType
+				        userType : this.userType,
+				        gender : this.gender
 				      }
 				    })
 				.then(response => {

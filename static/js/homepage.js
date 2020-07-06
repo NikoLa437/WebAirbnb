@@ -30,8 +30,8 @@ template: `
 		</tr>
 		<tr v-bind:hidden="!visibleSearchBar" >
 			<td><input class="searchInput" placeholder="Lokacija" type="text"  v-model="location" name="location"/></td>
-			<td><vuejs-datepicker v-model="dateFrom"></vuejs-datepicker></td>
-			<td><vuejs-datepicker v-model="dateTo"></vuejs-datepicker></td>
+			<td>Datum od: <vuejs-datepicker v-model="dateFrom"></vuejs-datepicker></td>
+			<td>Datum do: <vuejs-datepicker v-model="dateTo"></vuejs-datepicker></td>
 			<td><input class="searchInput" placeholder="Broj gostiju" min=0 type="number" v-model="numberOfGuest" name="numberOfGuest"/></td>
 		</tr>
 		<tr v-bind:hidden="!visibleSearchBar">
@@ -164,12 +164,18 @@ template: `
 			  },
 			search : function(){
 				if(this.location != '' || this.dateFrom != '' || this.dateTo != '' || this.numberOfGuest != '' || this.minRoom != '' || this.maxRoom != '' || this.minPrice != '' || this.maxPrice != ''|| this.sortValue != '' || this.amenities !=null || this.apartmentStatus!='' || this.type!='' ){
+					let datumOd = '';
+					if(this.dateFrom != '')
+						datumOd = (new Date(this.dateFrom.getFullYear(),this.dateFrom.getMonth() , this.dateFrom.getDate())).getTime();
+					let datumDo='';
+					if(this.dateTo != '')
+						datumDo = (new Date(this.dateTo.getFullYear(),this.dateTo.getMonth() , this.dateTo.getDate())).getTime();
 					axios
 					.get('/apartments/search/parameters', {
 					    params: {
 					        location: this.location,
-					        dateFrom : this.dateFrom,
-					        dateTo : this.dateTo,
+					        dateFrom : datumOd,
+					        dateTo : datumDo,
 					        numberOfGuest : this.numberOfGuest,
 					        minRoom: this.minRoom,
 					        maxRoom : this.maxRoom,
@@ -196,6 +202,8 @@ template: `
 				this.searchedApartments = null;
 				this.showSearched = false;
 				this.visibleSearchBar=false;
+				this.dateFrom = '';
+				this.dateTo = '';
 				
 			},
 			onChange(event) {

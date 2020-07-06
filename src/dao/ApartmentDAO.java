@@ -406,26 +406,51 @@ public class ApartmentDAO {
 						&&((!maxPrice.isEmpty())? (item.getPriceForNight()<=Integer.parseInt(maxPrice)): true)
 						&&((!apartmentStatus.isEmpty())? (item.getStatus()==status): true)
 						&&((!type.isEmpty())? (item.getType()==tip): true)) {
-					
-					if(amenities!=null) {
-						if(whatToGet==1) {
-							if(item.getStatus()==ApartmentStatus.active)
-								if(uporediListe(item.getAmenities(), amenities))
-									retVal.add(item);
-						}
-						else {
-							if(uporediListe(item.getAmenities(), amenities))
-								retVal.add(item);
+					if(!dateFrom.isEmpty() || !dateTo.isEmpty()){
+						for(long datum : item.getFreeDateForRenting()) {
+							if(((!dateFrom.isEmpty())? datum >= Long.parseLong(dateFrom) : true) && ((!dateTo.isEmpty()) ? datum <= Long.parseLong(dateTo) : true)) {
+									if(amenities!=null) {
+										if(whatToGet==1) {
+											if(item.getStatus()==ApartmentStatus.active)
+												if(uporediListe(item.getAmenities(), amenities))
+													retVal.add(item);
+										}
+										else {
+											if(uporediListe(item.getAmenities(), amenities))
+												retVal.add(item);
+										}
+									}else {
+										if(whatToGet==1) {
+											if(item.getStatus()==ApartmentStatus.active)
+													retVal.add(item);
+										}else {
+											retVal.add(item);
+										}
+									}
+									
+									break;
+							}
 						}
 					}else {
-						if(whatToGet==1) {
-							if(item.getStatus()==ApartmentStatus.active)
+						if(amenities!=null) {
+							if(whatToGet==1) {
+								if(item.getStatus()==ApartmentStatus.active)
+									if(uporediListe(item.getAmenities(), amenities))
+										retVal.add(item);
+							}
+							else {
+								if(uporediListe(item.getAmenities(), amenities))
 									retVal.add(item);
+							}
 						}else {
-							retVal.add(item);
+							if(whatToGet==1) {
+								if(item.getStatus()==ApartmentStatus.active)
+										retVal.add(item);
+							}else {
+								retVal.add(item);
+							}
 						}
 					}
-					
 					
 				}
 						

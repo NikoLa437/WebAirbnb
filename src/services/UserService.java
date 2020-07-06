@@ -94,9 +94,9 @@ public class UserService {
 		return false;
 	}
 
-	public String searchUsers(String username, String name, String surname, String userType) {
+	public String searchUsers(String username, String name, String surname, String userType, String pol,int whatToGet, String usernameF) {
 		try {
-			return g.toJson(userDao.searchUsers(username, name, surname, userType));
+			return g.toJson(userDao.searchUsers(username, name, surname, userType,pol, whatToGet, usernameF));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

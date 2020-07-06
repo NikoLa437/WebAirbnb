@@ -17,6 +17,7 @@ import com.google.gson.reflect.TypeToken;
 
 import beans.Administrator;
 import beans.Apartment;
+import beans.Gender;
 import beans.Guest;
 import beans.Host;
 import beans.Reservation;
@@ -142,7 +143,11 @@ public class UserDAO {
 		return null;
 	}
 	
-	public List<User> searchUsers(String username, String name, String surname, String userType) throws JsonSyntaxException, IOException{
+	public List<User> searchUsers(String username, String name, String surname, String userType, String pol,int whatToGet, String usernameF) throws JsonSyntaxException, IOException{
+		Gender gender = Gender.male;
+		if(pol.equals("female"))
+			gender = Gender.female;
+		
 		UserType tip = UserType.Guest;
 		if(userType.equals("Guest"))
 			tip = UserType.Guest;
@@ -151,12 +156,12 @@ public class UserDAO {
 		else if(userType.equals("Administrator"))
 			tip = UserType.Administrator;
 		
-		ArrayList<User> list = (ArrayList<User>) GetAll();
+		ArrayList<User> list = (ArrayList<User>) GetAllByUserType(whatToGet, usernameF);
 		List<User> retVal = new ArrayList<User>();
 
 		for(User user : list) {
 			if(((!username.isEmpty()) ? user.getUsername().equals(username) : true) && ((!name.isEmpty()) ? user.getName().equals(name) : true) 
-				&& ((!surname.isEmpty()) ? user.getSurname().equals(surname) : true) && ((!userType.isEmpty()) ? tip == user.getUserType() : true)) {
+				&& ((!surname.isEmpty()) ? user.getSurname().equals(surname) : true) && ((!userType.isEmpty()) ? tip == user.getUserType() : true) && ((!pol.isEmpty()) ? gender == user.getGender() : true)) {
 					retVal.add(user);
 			}
 		}		

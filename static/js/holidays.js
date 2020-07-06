@@ -74,14 +74,14 @@ Vue.component("holidays", {
 				this.holidayNameError = '';
 				
 				if(this.holidayName == "")
-					this.holidayNameError = 'Naziv sadrzaja je obavezno polje!';
+					this.holidayNameError = 'Naziv praznika je obavezno polje!';
 				else{
-					
-					let holiday = {name: this.holidayName, date:this.date.getTime(), id : 0};
+					let datum = (new Date(this.date.getFullYear(),this.date.getMonth() , this.date.getDate())).getTime();
+					let holiday = {name: this.holidayName, date:datum, id : 0};
 	        		  axios
 			          .post('http://localhost:8080/holidays/add', JSON.stringify(holiday))
 			          .then(response => {
-			        	  toast('Sadrzaj ' + this.holidayName + ' uspesno dodat!');
+			        	  toast('Praznik ' + this.holidayName + ' uspesno dodat!');
 			        	  
 			        	  if(!this.holidays)
 			        		  this.holidays = [response.data];
